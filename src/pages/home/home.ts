@@ -15,7 +15,13 @@ export class HomePage {
   items: FirebaseListObservable<any[]>;
 
   constructor(public navCtrl: NavController, db: AngularFireDatabase) {
-      this.items = db.list('/words/ZARZUELA');
+      this.items = db.list('/alphagram_ranks/6', {
+        query: {
+          orderByChild: 'avgplay',
+          startAt: 2000,
+          endAt: 2010
+        }
+      });
   }
 
 }
