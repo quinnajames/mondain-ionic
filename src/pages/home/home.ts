@@ -13,6 +13,7 @@ export class HomePage {
 
 
   items: FirebaseListObservable<any[]>;
+  displayText: String;
 
   constructor(public navCtrl: NavController, db: AngularFireDatabase) {
       this.items = db.list('/alphagram_ranks/6', {
@@ -22,6 +23,7 @@ export class HomePage {
           endAt: 2010
         }
       });
+      this.displayText = "{{item.$key}}";
   }
 
 }
