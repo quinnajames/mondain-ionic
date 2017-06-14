@@ -8,6 +8,14 @@
 </ion-header>
 
 <ion-content padding>
+   <ion-item>
+    <ion-label>List length</ion-label>
+    <ion-input type="number" [value]="inputListSize" min="1" max="50" [(ngModel)]="inputListSize" (blur)="refreshList()"></ion-input>
+  </ion-item>
+   <ion-item>
+    <ion-label>Word length</ion-label>
+    <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
+  </ion-item>
   <ion-list>
   <ion-item class="text" *ngFor="let item of items | async">
     {{item.$key}}
