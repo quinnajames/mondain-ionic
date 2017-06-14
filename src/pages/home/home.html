@@ -9,7 +9,7 @@
 
 <ion-content padding>
   <ion-list>
-  <ion-item class="text" *ngFor="let item of items | async" (click)="toggleExtraInfo()">
+  <ion-item class="text" *ngFor="let item of items | async">
     {{item.$key}}
   </ion-item>
   </ion-list>

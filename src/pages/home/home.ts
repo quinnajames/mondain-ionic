@@ -15,14 +15,18 @@ export class HomePage {
   items: FirebaseListObservable<any[]>;
   displayText: String;
 
-  constructor(public navCtrl: NavController, db: AngularFireDatabase) {
-      this.items = db.list('/alphagram_ranks/6', {
+  getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 50) {
+    return db.list('/alphagram_ranks/' + wordLength, {
         query: {
-          orderByChild: 'avgplay',
-          startAt: 2000,
-          endAt: 2010
+          orderByChild: orderBy,
+          startAt: startPos,
+          endAt: startPos + listSize - 1
         }
       });
+  }
+
+  constructor(public navCtrl: NavController, db: AngularFireDatabase) {
+      this.items = this.getAnagramList(db);
       this.displayText = "{{item.$key}}";
   }
 
