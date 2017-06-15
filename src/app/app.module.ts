@@ -11,7 +11,6 @@ import { ListPage } from '../pages/list/list';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { LoginComponent } from '../components/login/login';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCGOb45VB012KLxfvhr8yHBapEvw4iyEC8",
@@ -28,7 +27,6 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     ListPage,
-    LoginComponent
   ],
   imports: [
     BrowserModule,
