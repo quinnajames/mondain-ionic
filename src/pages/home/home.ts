@@ -34,15 +34,17 @@ export class HomePage {
       // default values for display
       this.inputListSize = 10;
       this.inputWordLength = 7;
+      this.inputStartPos = 2000;
 
-      this.items = this.getAnagramList(db, this.inputWordLength, undefined, undefined, this.inputListSize);
+      this.items = this.getAnagramList(db, this.inputWordLength, undefined, this.inputStartPos, this.inputListSize);
       this.db = db;
       this.displayText = "{{item.$key}}";
   }
   refreshList() {
       let inputListSize = -(-this.inputListSize); // coerce to a number so the calc inside function works
       //console.log(2000 + inputListSize - 1);
-      this.items = this.getAnagramList(this.db, this.inputWordLength, undefined, undefined, inputListSize);
+      let inputStartPos = -(-this.inputStartPos);
+      this.items = this.getAnagramList(this.db, this.inputWordLength, undefined, inputStartPos, inputListSize);
   }
 
 

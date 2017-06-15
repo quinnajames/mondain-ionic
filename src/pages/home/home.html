@@ -16,6 +16,10 @@
     <ion-label>Word length</ion-label>
     <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
   </ion-item>
+   <ion-item>
+    <ion-label>Start Position</ion-label>
+    <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
+  </ion-item>
   <ion-list>
   <ion-item class="text" *ngFor="let item of items | async">
     {{item.$key}}
