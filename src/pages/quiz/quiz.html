@@ -14,5 +14,7 @@
 
 
 <ion-content padding>
-
+  <ion-item class="text" *ngFor="let item of items | async">
+    {{item.$value.avgPlay}} {{item.$key}}
+  </ion-item>
 </ion-content>
