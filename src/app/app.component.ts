@@ -3,7 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { HomePage, LoginPage, QuizPage } from '../pages/pages';
+import { HomePage, LoginPage, SignupPage, QuizPage } from '../pages/pages';
 
 @Component({
   templateUrl: 'app.html'
@@ -22,6 +22,7 @@ export class MyApp {
     this.pages = [
       { title: 'Home', component: HomePage },
       { title: 'Login', component: LoginPage },
+      { title: 'Signup', component: SignupPage },
       { title: 'Quiz', component: QuizPage }
     ];
 

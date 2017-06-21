@@ -6,10 +6,12 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import { MyApp } from './app.component';
-import { HomePage, LoginPage, QuizPage } from '../pages/pages';
+import { HomePage, LoginPage, QuizPage, SignupPage } from '../pages/pages';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+
+import { AuthProvider } from '../providers/auth/auth';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCGOb45VB012KLxfvhr8yHBapEvw4iyEC8",
@@ -26,7 +28,8 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     LoginPage,
-    QuizPage
+    QuizPage,
+    SignupPage
   ],
   imports: [
     BrowserModule,
@@ -39,11 +42,13 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     LoginPage,
-    QuizPage
+    QuizPage,
+    SignupPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    AuthProvider,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
