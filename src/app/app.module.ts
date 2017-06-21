@@ -6,7 +6,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import { MyApp } from './app.component';
-import { HomePage, ListPage, QuizPage } from '../pages/pages';
+import { HomePage, LoginPage, QuizPage } from '../pages/pages';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -25,7 +25,7 @@ export const firebaseConfig = {
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
+    LoginPage,
     QuizPage
   ],
   imports: [
@@ -38,7 +38,7 @@ export const firebaseConfig = {
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
+    LoginPage,
     QuizPage
   ],
   providers: [
