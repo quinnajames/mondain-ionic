@@ -20,6 +20,7 @@
     <ion-label>Start Position</ion-label>
     <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
   </ion-item>
+
   <ion-list>
   <ion-item class="text" *ngFor="let item of items | async">
     {{item.avgplay}} {{item.$key}}

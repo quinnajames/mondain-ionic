@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FirebaseListObservable } from 'angularfire2/database';
 
 /**
  * Generated class for the QuizPage page.
@@ -14,15 +13,18 @@ import { FirebaseListObservable } from 'angularfire2/database';
   templateUrl: 'quiz.html',
 })
 export class QuizPage {
-    items: FirebaseListObservable<any[]>;
+    quizList: any[];
   constructor(public navCtrl: NavController, public navParams: NavParams) {
 
-    //this.items = this.navParams.data;
+    this.quizList = JSON.parse(this.navParams.data);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad QuizPage');
-    console.log(this.items);
+    // this.quizList.forEach(element => {
+    //   console.log(element);
+    // });
+    console.log(this.quizList);
   }
 
 }
