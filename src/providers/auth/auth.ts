@@ -26,4 +26,26 @@ export class AuthProvider {
         return firebase.auth().signOut();
     }
 
+    // TODO: refactoring target for both these functions
+    isLoggedIn() {
+        var user = firebase.auth().currentUser;
+        if (user) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    getCurrentUserIdent() {
+        var user = firebase.auth().currentUser;
+        if (user) {
+            return user.email;
+        }
+        else {
+            return "No user";
+        }
+    }
+
+
+
 }
