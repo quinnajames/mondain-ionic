@@ -13,6 +13,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { AuthProvider } from '../providers/auth/auth';
 
+import { QuizService } from '../app/shared/shared';
+
 export const firebaseConfig = {
     apiKey: "AIzaSyCGOb45VB012KLxfvhr8yHBapEvw4iyEC8",
     authDomain: "mondain-db.firebaseapp.com",
@@ -46,6 +48,7 @@ export const firebaseConfig = {
     SignupPage
   ],
   providers: [
+    QuizService,
     StatusBar,
     SplashScreen,
     AuthProvider,
