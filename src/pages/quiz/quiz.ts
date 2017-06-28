@@ -14,25 +14,20 @@ import { QuizService } from '../../app/shared/shared';
   templateUrl: 'quiz.html',
 })
 export class QuizPage {
-    quizList: any;
+  quizList: Promise<any>;
   constructor(public navCtrl: NavController,
-   public navParams: NavParams,
-   private quizService: QuizService) {
+    public navParams: NavParams,
+    private quizService: QuizService) {
+  }
 
-    
+  refreshQuizList() {
+    this.quizList = this.quizService.getCurrentQuiz();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad QuizPage');
-    // this.quizList.forEach(element => {
-    //   console.log(element);
-    // });
-    this.quizList = this.quizService.getCurrentQuiz().then( value => {
-      console.log(value);
-  }, reason => {
-    console.log(reason);
-  } );
-
+    this.refreshQuizList();
+    
   }
 
 }

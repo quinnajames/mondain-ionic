@@ -10,7 +10,7 @@
 
 
 <ion-content padding>
-  <ion-item class="text" *ngFor="let item of items | async">
-    {{item.$value.avgPlay}} {{item.$key}}
+  <ion-item class="text" *ngFor="let item of quizList | async">
+    {{item}}
   </ion-item>
 </ion-content>
