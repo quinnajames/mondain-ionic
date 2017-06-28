@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { QuizService } from '../../app/shared/shared';
 
 /**
  * Generated class for the QuizPage page.
@@ -13,10 +14,12 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'quiz.html',
 })
 export class QuizPage {
-    quizList: any[];
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    quizList: any;
+  constructor(public navCtrl: NavController,
+   public navParams: NavParams,
+   private quizService: QuizService) {
 
-    this.quizList = JSON.parse(this.navParams.data);
+    
   }
 
   ionViewDidLoad() {
@@ -24,7 +27,12 @@ export class QuizPage {
     // this.quizList.forEach(element => {
     //   console.log(element);
     // });
-    console.log(this.quizList);
+    this.quizList = this.quizService.getCurrentQuiz().then( value => {
+      console.log(value);
+  }, reason => {
+    console.log(reason);
+  } );
+
   }
 
 }
