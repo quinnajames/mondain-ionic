@@ -8,6 +8,7 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
 @Injectable()
 export class QuizService {
     storage = new Storage(Storage);
+    db: AngularFireDatabase;
     constructor(private events: Events) { }
     quiz = <any>[];
 
@@ -20,11 +21,11 @@ export class QuizService {
         });
     }
 
-    getCurrentQuiz() {
+    getCurrentQuiz() : Promise<any> {
         return this.storage.get('quiz');
     }
 
-    getAnagrams(db: AngularFireDatabase, word) {
+    getAnagrams(db, word) {
         return db.object('/alphagrams/' + word);
     }
 
