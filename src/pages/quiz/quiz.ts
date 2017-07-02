@@ -26,15 +26,16 @@ export class QuizPage {
     solutionCount: Number;
     // nextDue
   };
+  quizIndex: any;
   solutionsGiven: String[];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private quizService: QuizService,
     public db: AngularFireDatabase) {
-      this.solutionsGiven = [];
       this.input = {
         answer: ""
       }
+      this.quizIndex = 0;
   }
 
   refreshQuizList() {
@@ -55,9 +56,10 @@ export class QuizPage {
 
 
   loadNextWord() {
+    this.solutionsGiven = [];
     console.log("in loadNextWord")
     this.quizService.getCurrentQuiz().then((quiz) => {
-      let nextword = quiz[0];
+      let nextword = quiz[this.quizIndex];
       let subscription = this.getAnagrams(nextword);
       subscription.subscribe(subscribeData => {
           console.log("in the subscription");
@@ -68,16 +70,20 @@ export class QuizPage {
             solutions: nextsolutions,
             solutionCount: nextsolutions.length
           };
-        console.log(this.nextWord.word);
-        console.log(this.nextWord.solutions);
+        console.log("nextWord.word:" +  this.nextWord.word);
+        console.log("nextWord.solutions" + this.nextWord.solutions);
       })
     });
+  }
+
+  handleCorrect() {
+    this.quizIndex++;
   }
 
 
   answerOnChange(answer) {
 
-    console.log("this.input.answer start: " + this.input.answer);
+    //console.log("this.input.answer start: " + this.input.answer);
     //console.log("**calling answerOnChange()");
     let localanswer = answer.toUpperCase();
     if (localanswer.length == this.nextWord.word.length // No need to look at array if length is wrong
@@ -91,8 +97,11 @@ export class QuizPage {
     if (this.nextWord.solutionCount == this.solutionsGiven.length )
     {
       console.log("answered all")
+      this.handleCorrect();
+      try { this.loadNextWord() }
+      catch (Exception) {console.log(Exception)};
     }
-    console.log("this.input.answer end: " + this.input.answer);
+    //console.log("this.input.answer end: " + this.input.answer);
   }
 
 }
