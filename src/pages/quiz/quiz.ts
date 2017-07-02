@@ -27,6 +27,7 @@ export class QuizPage {
     // nextDue
   };
   quizIndex: any;
+  quizLength: any;
   solutionsGiven: String[];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -39,7 +40,9 @@ export class QuizPage {
   }
 
   refreshQuizList() {
-    this.quizList = this.quizService.getCurrentQuiz();
+    this.quizList = this.quizService.getCurrentQuiz().then((ql) => {
+      this.quizLength = ql.length;
+    });
   }
 
   ionViewDidLoad() {
@@ -77,7 +80,14 @@ export class QuizPage {
   }
 
   handleCorrect() {
+    if (this.quizIndex < this.quizLength - 1)
+    {
     this.quizIndex++;
+    }
+    else
+    {
+      console.log("Quiz done.")
+    }
   }
 
 
