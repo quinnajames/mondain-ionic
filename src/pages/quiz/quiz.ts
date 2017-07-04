@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { QuizService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import * as _ from 'lodash';
+import firebase from 'firebase';
 
 /**
  * Generated class for the QuizPage page.
@@ -49,6 +50,9 @@ export class QuizPage {
     console.log('ionViewDidLoad QuizPage');
     this.refreshQuizList();
     this.loadNextWord();
+
+
+    console.log(firebase.auth().currentUser);
 
   }
 
