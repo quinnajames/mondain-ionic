@@ -55,9 +55,6 @@ export class QuizPage {
     this.loadNextWord();
 
 
-    // console.log(this.authProvider.getCurrentUser());
-    //  console.log(this.quizService.getRemoteQuiz());
-
   }
 
   getAnagrams(word) {
