@@ -45,7 +45,15 @@ export class AuthProvider {
             return "No user";
         }
     }
-
+    getCurrentUser() {
+        var user = firebase.auth().currentUser;
+        if (user) {
+            return user;
+        }
+        else {
+            return null;
+        }
+    }
 
 
 }

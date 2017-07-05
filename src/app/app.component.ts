@@ -16,7 +16,7 @@ import { QuizService } from '../app/shared/shared';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = QuizPage;
+  rootPage: any = HomePage;
 
   pages: Array<{title: string, component: any}>;
 
