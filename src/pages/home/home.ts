@@ -21,7 +21,6 @@ export class HomePage {
   inputOrderBy: String;
   inputStartPos: number;
   inputListSize: number;
-  db: AngularFireDatabase;
   requery: FirebaseListObservable<any[]>;
   quizList: any[];
   userIdent: any;
@@ -40,8 +39,8 @@ export class HomePage {
   }
 
   constructor(public navCtrl: NavController,
-    db: AngularFireDatabase,
-    auth: AuthProvider,
+    public db: AngularFireDatabase,
+    public auth: AuthProvider,
     private quizService: QuizService) {
     // default values for display
     this.inputListSize = 10;
@@ -50,7 +49,6 @@ export class HomePage {
 
     this.items = this.getAnagramList(db, this.inputWordLength, undefined, this.inputStartPos, this.inputListSize);
 
-    this.db = db;
     this.userIdent = auth.getCurrentUserIdent();
     this.loggedIn = auth.isLoggedIn();
     this.quizList = [];
@@ -95,6 +93,17 @@ export class HomePage {
       console.log(element);
     });
     this.quizService.addWordList(studyList);
+  }
+
+  syncToLocalStorage() {
+    let user = this.auth.getCurrentUser().uid;
+    let subscription = this.db.object('/userProfile/' + user);
+    subscription.subscribe(subscribeData => {
+      let quiz = JSON.parse(subscribeData.quiz);
+      console.log("sync");
+      console.log(quiz);
+      this.quizService.addListToLocalStorage(quiz);
+    });
   }
 
 }

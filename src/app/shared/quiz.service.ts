@@ -22,14 +22,14 @@ export class QuizService {
 
     }
 
-    // addWordList(list) {
-    //     return new Promise(resolve => {
-    //         this.storage.set('quiz', list).then(() => {
-    //             this.events.publish('quiz:changed');
-    //             resolve();
-    //         });  
-    //     });
-    // }
+    addListToLocalStorage(list) {
+        return new Promise(resolve => {
+            this.storage.set('quiz', list).then(() => {
+                this.events.publish('quiz:changed');
+                resolve();
+            });  
+        });
+    }
 
     getCurrentQuiz() : Promise<any> {
         return this.storage.get('quiz');
