@@ -4,7 +4,7 @@ import { QuizService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
-import firebase from 'firebase';
+import moment from 'moment';
 
 /**
  * Generated class for the QuizPage page.
@@ -95,6 +95,12 @@ export class QuizPage {
   }
 
   handleCorrect() {
+    console.log("Send the following to server:");
+    console.log("Correct: +1");
+    let unixtime = moment.utc();
+    console.log("Date/time last correct moved to: " + unixtime);
+    console.log("Which will be displayed as: " + unixtime.format());
+    
     if (this.quizIndex < this.quizLength - 1) {
       this.quizIndex++;
     }
