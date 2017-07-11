@@ -94,19 +94,44 @@ export class QuizPage {
     });
   }
 
+  // reschedule(time)
+
   handleCorrect() {
     console.log("Send the following to server:");
     console.log("Correct: +1");
     let unixtime = moment();
     console.log("Date/time last correct moved to: " + unixtime.format('x'));
     console.log("Which will be displayed as: " + unixtime.format());
-    this.quizService.addRemoteQuizWord(this.nextWord.word, unixtime.format('x'), true)
+    let reschedule = moment().add('1', 'days');
+    console.log("Correct reschedules to: " + reschedule.format());
+    this.quizService.addRemoteQuizWord(this.nextWord.word, reschedule.format('x'), true)
     if (this.quizIndex < this.quizLength - 1) {
       this.quizIndex++;
+      try { this.loadNextWord() }
+      catch (Exception) { console.log(Exception) };
     }
     else {
       console.log("Quiz done.")
     }
+  }
+
+  handleIncorrect() {
+    console.log("Send the following to server:");
+    console.log("Incorrect: +1");
+    let unixtime = moment();
+    console.log("Date/time last correct moved to: " + unixtime.format('x'));
+    console.log("Which will be displayed as: " + unixtime.format());
+    let reschedule = moment().add('1', 'minutes');
+    console.log("Incorrect reschedules to: " + reschedule.format());
+    this.quizService.addRemoteQuizWord(this.nextWord.word, reschedule.format('x'), false)
+    if (this.quizIndex < this.quizLength - 1) {
+      this.quizIndex++;
+      try { this.loadNextWord() }
+      catch (Exception) { console.log(Exception) };
+    }
+    else {
+      console.log("Quiz done.")
+    }  
   }
 
 
@@ -125,8 +150,7 @@ export class QuizPage {
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
       console.log("answered all")
       this.handleCorrect();
-      try { this.loadNextWord() }
-      catch (Exception) { console.log(Exception) };
+
     }
     //console.log("this.input.answer end: " + this.input.answer);
   }

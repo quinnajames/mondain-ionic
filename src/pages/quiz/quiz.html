@@ -18,6 +18,11 @@
       {{ input.answer }}
     </ion-item>
     <ion-item>
+    <button ion-button (click)="handleIncorrect()">
+        Mark Incorrect
+    </button>
+    </ion-item>
+    <ion-item>
       <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
     </ion-item>
   </ion-card>
