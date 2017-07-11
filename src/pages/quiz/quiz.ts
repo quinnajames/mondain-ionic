@@ -20,17 +20,17 @@ import moment from 'moment';
 export class QuizPage {
   quizList: Promise<any>;
   input: { // encapsulate this in input to avoid an issue with Angular scopes
-    answer: String;
+    answer: string;
   }
   nextWord: {
-    word: String,
+    word: string,
     solutions: FirebaseObjectObservable<any[]>,
     solutionCount: Number;
     // nextDue
   };
   quizIndex: any;
   quizLength: any;
-  solutionsGiven: String[];
+  solutionsGiven: string[];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private quizService: QuizService,
@@ -97,10 +97,10 @@ export class QuizPage {
   handleCorrect() {
     console.log("Send the following to server:");
     console.log("Correct: +1");
-    let unixtime = moment.utc();
-    console.log("Date/time last correct moved to: " + unixtime);
+    let unixtime = moment();
+    console.log("Date/time last correct moved to: " + unixtime.format('x'));
     console.log("Which will be displayed as: " + unixtime.format());
-    
+    this.quizService.addRemoteQuizWord(this.nextWord.word, unixtime.format('x'), true)
     if (this.quizIndex < this.quizLength - 1) {
       this.quizIndex++;
     }

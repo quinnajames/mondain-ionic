@@ -10,7 +10,6 @@ export class QuizService {
     storage = new Storage(Storage);
     constructor(private events: Events,
     private authProvider: AuthProvider) { }
-    quiz = <any>[];
 
     addWordList(list) {
         let user = this.authProvider.getCurrentUser();
@@ -20,6 +19,26 @@ export class QuizService {
             });
         }
 
+    }
+
+    addRemoteQuizWord(alpha: string, time, correct: boolean) {
+        let user = this.authProvider.getCurrentUser();
+        time = time.toString();
+        let right_answers = 1;
+        let wrong_answers = 0;
+        if (!correct) {
+            right_answers = 0;
+            wrong_answers = 1;
+        }
+        console.log(time);
+        if (user) {
+            firebase.database().ref('/userProfile').child(user.uid).child(alpha).update({
+                last_correct: time,
+                right: right_answers,
+                wrong: wrong_answers,
+                next_scheduled: time
+            });
+        }
     }
 
     addListToLocalStorage(list) {
