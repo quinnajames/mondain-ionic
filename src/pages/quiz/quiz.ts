@@ -26,11 +26,14 @@ export class QuizPage {
     word: string,
     solutions: FirebaseObjectObservable<any[]>,
     solutionCount: Number;
+    lastCorrect: Number;
+    nextScheduled: Number;
     // nextDue
   };
   quizIndex: any;
   quizLength: any;
   solutionsGiven: string[];
+  subscription: FirebaseObjectObservable<any>;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private quizService: QuizService,
@@ -77,19 +80,24 @@ export class QuizPage {
     this.solutionsGiven = [];
     console.log("in loadNextWord")
     this.quizService.getCurrentQuiz().then((quiz) => {
-      let nextword = quiz[this.quizIndex];
-      let subscription = this.getAnagrams(nextword);
-      subscription.subscribe(subscribeData => {
+      let nextQuizWord = quiz[this.quizIndex];
+      this.subscription = this.getAnagrams(nextQuizWord);
+      this.subscription.subscribe(subscribeData => {
         console.log("in the subscription");
+
         let nextsolutions = subscribeData.solutions;
         console.log(subscribeData);
         this.nextWord = {
-          word: nextword,
+          word: nextQuizWord,
           solutions: nextsolutions,
-          solutionCount: nextsolutions.length
+          solutionCount: nextsolutions.length,
+          lastCorrect: null,
+          nextScheduled: null
         };
         console.log("nextWord.word:" + this.nextWord.word);
         console.log("nextWord.solutions" + this.nextWord.solutions);
+        console.log("nextWord.lastCorrect:" + this.nextWord.lastCorrect);
+        console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
       })
     });
   }
@@ -99,39 +107,51 @@ export class QuizPage {
   handleCorrect() {
     console.log("Send the following to server:");
     console.log("Correct: +1");
-    let unixtime = moment();
-    console.log("Date/time last correct moved to: " + unixtime.format('x'));
-    console.log("Which will be displayed as: " + unixtime.format());
-    let reschedule = moment().add('1', 'days');
-    console.log("Correct reschedules to: " + reschedule.format());
-    this.quizService.addRemoteQuizWord(this.nextWord.word, reschedule.format('x'), true)
-    if (this.quizIndex < this.quizLength - 1) {
-      this.quizIndex++;
-      try { this.loadNextWord() }
-      catch (Exception) { console.log(Exception) };
-    }
-    else {
-      console.log("Quiz done.")
-    }
+    let wordMoment = moment();
+    let unixtime = parseInt(wordMoment.format('x'), 10);
+    console.log("Date/time last correct moved to: " + unixtime);
+    console.log("Which is equivalent to: " + wordMoment.format());
+    let rescheduleMoment = wordMoment.add('1', 'days');
+    let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
+    console.log("Correct reschedules to: " + rescheduletime);
+    console.log("Which is equivalent to " + rescheduleMoment.format());
+
+    this.subscription.subscribe(subscribeData => {
+      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions, unixtime, rescheduletime, true);
+      if (this.quizIndex < this.quizLength - 1) {
+        this.quizIndex++;
+        try { this.loadNextWord() }
+        catch (Exception) { console.log(Exception) };
+      }
+      else {
+        console.log("Quiz done.")
+      }
+    })
   }
 
   handleIncorrect() {
     console.log("Send the following to server:");
     console.log("Incorrect: +1");
-    let unixtime = moment();
-    console.log("Date/time last correct moved to: " + unixtime.format('x'));
-    console.log("Which will be displayed as: " + unixtime.format());
-    let reschedule = moment().add('1', 'minutes');
-    console.log("Incorrect reschedules to: " + reschedule.format());
-    this.quizService.addRemoteQuizWord(this.nextWord.word, reschedule.format('x'), false)
-    if (this.quizIndex < this.quizLength - 1) {
-      this.quizIndex++;
-      try { this.loadNextWord() }
-      catch (Exception) { console.log(Exception) };
-    }
-    else {
-      console.log("Quiz done.")
-    }  
+    let wordMoment = moment();
+    let unixtime = parseInt(wordMoment.format('x'), 10);
+    //let unixtime = this.nextWord.lastCorrect;
+    console.log("Date/time last correct remains at: " + unixtime); // No change on server - refactor
+    console.log("Which is equivalent to: " + wordMoment.format());
+    let rescheduleMoment = wordMoment.add('1', 'minutes');
+    let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
+    console.log("Incorrect reschedules to: " + rescheduletime);
+    console.log("Which is equivalent to " + rescheduleMoment.format());
+    this.subscription.subscribe(subscribeData => {
+      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData, unixtime, rescheduletime, false)
+      if (this.quizIndex < this.quizLength - 1) {
+        this.quizIndex++;
+        try { this.loadNextWord() }
+        catch (Exception) { console.log(Exception) };
+      }
+      else {
+        console.log("Quiz done.")
+      }
+    })
   }
 
 

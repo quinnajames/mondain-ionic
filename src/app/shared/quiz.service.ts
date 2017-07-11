@@ -21,7 +21,7 @@ export class QuizService {
 
     }
 
-    addRemoteQuizWord(alpha: string, time, correct: boolean) {
+    addRemoteQuizWord(alpha: string, solutions: string[], time, next_scheduled, correct: boolean) {
         let user = this.authProvider.getCurrentUser();
         time = time.toString();
         let right_answers = 1;
@@ -30,13 +30,24 @@ export class QuizService {
             right_answers = 0;
             wrong_answers = 1;
         }
-        console.log(time);
         if (user) {
-            firebase.database().ref('/userProfile').child(user.uid).child(alpha).update({
-                last_correct: time,
-                right: right_answers,
-                wrong: wrong_answers,
-                next_scheduled: time
+            firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function(trans) {
+                console.log(trans);
+                if (trans) {
+                    console.log(trans.right);
+                    console.log(trans.wrong);
+                    
+                    if (trans.right !== null && trans.wrong !== null) { // #ZeroBeingFalsyParty
+                        trans.right = trans.right + right_answers;
+                        trans.wrong = trans.wrong + wrong_answers;
+                    }
+                    
+                    trans.solutions = solutions;
+                    trans.last_correct = time;
+                    trans.next_scheduled = next_scheduled
+
+                }
+                return trans;
             });
         }
     }
