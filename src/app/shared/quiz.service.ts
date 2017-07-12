@@ -7,9 +7,9 @@ import firebase from 'firebase';
 
 @Injectable()
 export class QuizService {
-    storage = new Storage(Storage);
     constructor(private events: Events,
-    private authProvider: AuthProvider) { }
+    private authProvider: AuthProvider,
+    private storage: Storage) { }
 
     addWordList(list) {
         let user = this.authProvider.getCurrentUser();
