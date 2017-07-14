@@ -11,7 +11,7 @@
 
 <ion-content padding>
   <ion-segment>
-    <ion-col col-6>
+    <ion-col col-10 col-md-8 col-lg-6>
       <ion-card id="quizCard">
         <ion-item class="text quizQuestion" *ngIf="nextWord">
           {{ nextWord.word }}
@@ -36,13 +36,13 @@
     </ion-col>
   </ion-segment>
   <ion-segment>
-    <ion-col col-4>
+    <ion-col col-8 col-md-6 col-lg-4>
       <ion-card padding>
         <h3>Stats</h3><br />
         <b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-        = {{sessionStats.overall.percent}} %<br />
+        = {{sessionStats.overall.percent}}%<br />
         <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
-        = {{sessionStats.last10.percent}} %
+        = {{sessionStats.last10.percent}}%
       </ion-card>
     </ion-col>
   </ion-segment>

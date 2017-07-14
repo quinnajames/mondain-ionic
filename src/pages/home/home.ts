@@ -55,6 +55,13 @@ export class HomePage {
   }
 
 
+  refreshLogin() {
+    console.log("refreshLogin()");
+    this.userIdent = this.auth.getCurrentUserIdent();
+    this.loggedIn = this.auth.isLoggedIn();  
+    console.log(this.auth.getCurrentUserIdent()); 
+  }
+
   refreshQuery() {
     this.requery = this.getAnagramList(this.db, this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize), true);
     this.quizList = [];
@@ -66,6 +73,10 @@ export class HomePage {
     });
   }
 
+
+  ionViewDidLoad() {
+    console.log('ionViewDidLoad QuizPage');
+  }
 
 
 
