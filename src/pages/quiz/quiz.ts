@@ -25,21 +25,21 @@ export class QuizPage {
   nextWord: {
     word: string,
     solutions: FirebaseObjectObservable<any[]>,
-    solutionCount: Number;
-    lastCorrect: Number;
-    nextScheduled: Number;
+    solutionCount: number;
+    lastCorrect: number;
+    nextScheduled: number;
     // nextDue
   };
   sessionStats: {
     overall: {
-      correct: Number;
-      incorrect: Number;
-      percent: Number;
+      correct: number;
+      incorrect: number;
+      percent: number;
     }
     last10: {
-      correct: Number;
-      incorrect: Number;
-      percent: Number;
+      correct: number;
+      incorrect: number;
+      percent: number;
       queue: boolean[];
     }
   };
@@ -93,6 +93,40 @@ export class QuizPage {
     return anagrams;
   }
 
+  updateStats(wasCorrect: boolean) { // consider moving all these lastCorrect or whatever into a global variable
+    let ss = this.sessionStats;
+    if (wasCorrect) { this.sessionStats.overall.correct += 1; } else { ss.overall.incorrect += 1; }
+    ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
+    // todo: optimize last10 algorithms after first run
+    ss.last10.queue.push(wasCorrect);
+    if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
+    console.log("last10 queue: " + ss.last10.queue);
+    ss.last10.correct = ss.last10.incorrect = 0;
+    ss.last10.queue.forEach(el => {
+      if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
+    })
+    ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
+    this.sessionStats = ss;
+  }
+
+  handleCorrectOrIncorrect(lastCorrect: boolean) {
+    this.updateStats(lastCorrect);
+    let rescheduleObj = this.rescheduleLogic(lastCorrect);
+      this.subscription.subscribe(subscribeData => {
+        this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
+          rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
+        if (this.quizIndex < this.quizLength - 1) {
+          this.quizIndex++;
+          try { this.loadNextWord() }
+          catch (Exception) { console.log(Exception) };
+        }
+        else {
+          console.log("Quiz done - looping back.");
+          this.jumpToIndexAndLoad(0);
+        }
+      })
+  }
+
   getCurrentUserQuiz() {
     let user = this.authProvider.getCurrentUser().uid;
     let subscription = this.db.object('/userProfile/' + user);
@@ -128,26 +162,20 @@ export class QuizPage {
         console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
       })
     });
+    
+    console.log("Session stats:")
+    console.log("Overall correct:" + this.sessionStats.overall.correct);
+    console.log("Overall incorrect:" + this.sessionStats.overall.incorrect);
+    console.log("Overall % right" + this.sessionStats.overall.percent);
+    console.log("Last 10 correct:" + this.sessionStats.last10.correct);
+    console.log("Last 10 incorrect:" + this.sessionStats.last10.incorrect);
+    console.log("Last 10 % right" + this.sessionStats.last10.percent);
+    
   }
 
   // reschedule(time)
 
-  handleCorrectOrIncorrect(lastCorrect: boolean) {
-    let rescheduleObj = this.rescheduleLogic(lastCorrect);
-      this.subscription.subscribe(subscribeData => {
-        this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
-          rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
-        if (this.quizIndex < this.quizLength - 1) {
-          this.quizIndex++;
-          try { this.loadNextWord() }
-          catch (Exception) { console.log(Exception) };
-        }
-        else {
-          console.log("Quiz done - looping back.");
-          this.jumpToIndexAndLoad(0);
-        }
-      })
-  }
+
 
   rescheduleLogic(wasCorrect: boolean) : any {
     console.log("Send the following to server:");
