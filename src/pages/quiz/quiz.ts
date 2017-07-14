@@ -70,6 +70,9 @@ export class QuizPage {
         queue: []
       }
     }
+    this.getCurrentUserQuiz();
+    this.refreshQuizList();
+    this.loadNextWord();
   }
 
   refreshQuizList() {
@@ -80,9 +83,7 @@ export class QuizPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad QuizPage');
-    this.getCurrentUserQuiz();
-    this.refreshQuizList();
-    this.loadNextWord();
+
 
 
   }
@@ -199,7 +200,7 @@ export class QuizPage {
       this.solutionsGiven.push(localanswer);
       this.input.answer = ""; // Reset global answer
     }
-    console.log(this.solutionsGiven);
+    //console.log(this.solutionsGiven);
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
       console.log("answered all")
       this.handleCorrect();
