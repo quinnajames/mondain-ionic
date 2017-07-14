@@ -10,26 +10,40 @@
 
 
 <ion-content padding>
-  <ion-card id="quizCard">
-    <ion-item class="text quizQuestion" *ngIf="nextWord">
-      {{ nextWord.word }}
-    </ion-item>
-    <ion-item>
-      {{ input.answer }}
-    </ion-item>
-    <ion-item>
-    <button ion-button (click)="handleIncorrect()">
+  <ion-segment>
+    <ion-col col-6>
+      <ion-card id="quizCard">
+        <ion-item class="text quizQuestion" *ngIf="nextWord">
+          {{ nextWord.word }}
+        </ion-item>
+        <ion-item>
+          {{ input.answer }}
+        </ion-item>
+        <ion-item>
+          <button ion-button (click)="handleIncorrect()">
         Mark Incorrect
     </button>
-    </ion-item>
-    <ion-item>
-      <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
-    </ion-item>
-  </ion-card>
-  <ion-card *ngIf="solutionsGiven">
-    <ion-item class="text" *ngFor="let item of solutionsGiven">
-      {{item}}
-    </ion-item>
-  </ion-card>
-
+        </ion-item>
+        <ion-item>
+          <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
+        </ion-item>
+      </ion-card>
+      <ion-card *ngIf="solutionsGiven">
+        <ion-item class="text" *ngFor="let item of solutionsGiven">
+          {{item}}
+        </ion-item>
+      </ion-card>
+    </ion-col>
+  </ion-segment>
+  <ion-segment>
+    <ion-col col-4>
+      <ion-card padding>
+        <h3>Stats</h3><br />
+        <b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
+        = {{sessionStats.overall.percent}} %<br />
+        <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
+        = {{sessionStats.last10.percent}} %
+      </ion-card>
+    </ion-col>
+  </ion-segment>
 </ion-content>
