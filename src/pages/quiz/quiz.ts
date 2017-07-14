@@ -30,6 +30,19 @@ export class QuizPage {
     nextScheduled: Number;
     // nextDue
   };
+  sessionStats: {
+    overall: {
+      correct: Number;
+      incorrect: Number;
+      percent: Number;
+    }
+    last10: {
+      correct: Number;
+      incorrect: Number;
+      percent: Number;
+      queue: boolean[];
+    }
+  };
   quizIndex: any;
   quizLength: any;
   solutionsGiven: string[];
@@ -42,7 +55,21 @@ export class QuizPage {
     this.input = {
       answer: ""
     }
+    // Initialize session variables
     this.quizIndex = 0;
+    this.sessionStats = {
+      overall: {
+        correct: 0,
+        incorrect: 0,
+        percent: 0.0
+      },
+      last10: {
+        correct: 0,
+        incorrect: 0,
+        percent: 0.0,
+        queue: []
+      }
+    }
   }
 
   refreshQuizList() {
@@ -104,20 +131,40 @@ export class QuizPage {
 
   // reschedule(time)
 
-  handleCorrect() {
+  handleCorrectOrIncorrect() {
+    // todo
+  }
+
+  rescheduleLogic(wasCorrect: boolean) : any {
     console.log("Send the following to server:");
-    console.log("Correct: +1");
+    if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
     let wordMoment = moment();
     let unixtime = parseInt(wordMoment.format('x'), 10);
     console.log("Date/time last correct moved to: " + unixtime);
     console.log("Which is equivalent to: " + wordMoment.format());
-    let rescheduleMoment = wordMoment.add('1', 'days');
+    let rescheduleMoment = moment();
+    if (wasCorrect) {
+      rescheduleMoment = wordMoment.add('1', 'days');
+    }
+    else {
+      rescheduleMoment = wordMoment.add('1', 'minutes');
+    }
     let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
-    console.log("Correct reschedules to: " + rescheduletime);
+    console.log("Reschedules to: " + rescheduletime);
     console.log("Which is equivalent to " + rescheduleMoment.format());
+    return {
+      unixtime: unixtime,
+      rescheduletime: rescheduletime
+    }
+  }
 
+
+  handleCorrect() {
+    let lastCorrect = true;
+    let rescheduleObj = this.rescheduleLogic(lastCorrect);
     this.subscription.subscribe(subscribeData => {
-      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions, unixtime, rescheduletime, true);
+      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
+        rescheduleObj.unixtime, rescheduleObj.rescheduletime, true);
       if (this.quizIndex < this.quizLength - 1) {
         this.quizIndex++;
         try { this.loadNextWord() }
@@ -125,35 +172,34 @@ export class QuizPage {
       }
       else {
         console.log("Quiz done.")
+        this.jumpToIndexAndLoad(0);
       }
     })
   }
 
   handleIncorrect() {
-    console.log("Send the following to server:");
-    console.log("Incorrect: +1");
-    let wordMoment = moment();
-    let unixtime = parseInt(wordMoment.format('x'), 10);
-    //let unixtime = this.nextWord.lastCorrect;
-    console.log("Date/time last correct remains at: " + unixtime); // No change on server - refactor
-    console.log("Which is equivalent to: " + wordMoment.format());
-    let rescheduleMoment = wordMoment.add('1', 'minutes');
-    let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
-    console.log("Incorrect reschedules to: " + rescheduletime);
-    console.log("Which is equivalent to " + rescheduleMoment.format());
+  let lastCorrect = false; 
+  let rescheduleObj = this.rescheduleLogic(lastCorrect);
     this.subscription.subscribe(subscribeData => {
-      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData, unixtime, rescheduletime, false)
+      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
+        rescheduleObj.unixtime, rescheduleObj.rescheduletime, false)
       if (this.quizIndex < this.quizLength - 1) {
         this.quizIndex++;
         try { this.loadNextWord() }
         catch (Exception) { console.log(Exception) };
       }
       else {
-        console.log("Quiz done.")
+        console.log("Quiz done - looping back.");
+        this.jumpToIndexAndLoad(0);
       }
     })
   }
 
+  jumpToIndexAndLoad(index) {
+         this.quizIndex = index;
+         try { this.loadNextWord() }
+        catch (Exception) { console.log(Exception) };          
+  }
 
   answerOnChange(answer) {
 
