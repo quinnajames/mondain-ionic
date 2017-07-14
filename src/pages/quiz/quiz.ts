@@ -131,8 +131,21 @@ export class QuizPage {
 
   // reschedule(time)
 
-  handleCorrectOrIncorrect() {
-    // todo
+  handleCorrectOrIncorrect(lastCorrect: boolean) {
+    let rescheduleObj = this.rescheduleLogic(lastCorrect);
+      this.subscription.subscribe(subscribeData => {
+        this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
+          rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
+        if (this.quizIndex < this.quizLength - 1) {
+          this.quizIndex++;
+          try { this.loadNextWord() }
+          catch (Exception) { console.log(Exception) };
+        }
+        else {
+          console.log("Quiz done - looping back.");
+          this.jumpToIndexAndLoad(0);
+        }
+      })
   }
 
   rescheduleLogic(wasCorrect: boolean) : any {
@@ -159,40 +172,14 @@ export class QuizPage {
   }
 
 
+//aliases
+
   handleCorrect() {
-    let lastCorrect = true;
-    let rescheduleObj = this.rescheduleLogic(lastCorrect);
-    this.subscription.subscribe(subscribeData => {
-      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
-        rescheduleObj.unixtime, rescheduleObj.rescheduletime, true);
-      if (this.quizIndex < this.quizLength - 1) {
-        this.quizIndex++;
-        try { this.loadNextWord() }
-        catch (Exception) { console.log(Exception) };
-      }
-      else {
-        console.log("Quiz done.")
-        this.jumpToIndexAndLoad(0);
-      }
-    })
+    this.handleCorrectOrIncorrect(true);
   }
 
   handleIncorrect() {
-  let lastCorrect = false; 
-  let rescheduleObj = this.rescheduleLogic(lastCorrect);
-    this.subscription.subscribe(subscribeData => {
-      this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
-        rescheduleObj.unixtime, rescheduleObj.rescheduletime, false)
-      if (this.quizIndex < this.quizLength - 1) {
-        this.quizIndex++;
-        try { this.loadNextWord() }
-        catch (Exception) { console.log(Exception) };
-      }
-      else {
-        console.log("Quiz done - looping back.");
-        this.jumpToIndexAndLoad(0);
-      }
-    })
+    this.handleCorrectOrIncorrect(false);
   }
 
   jumpToIndexAndLoad(index) {
