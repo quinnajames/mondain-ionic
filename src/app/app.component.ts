@@ -7,6 +7,7 @@ import { HomePage, LoginPage, SignupPage, QuizPage } from '../pages/pages';
 
 import { QuizService } from '../app/shared/shared';
 
+
 @Component({
   templateUrl: 'app.html',
   providers: [

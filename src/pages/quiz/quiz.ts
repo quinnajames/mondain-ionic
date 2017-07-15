@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { QuizService, FirebaseService } from '../../app/shared/shared';
+import { QuizService, FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
@@ -52,7 +52,8 @@ export class QuizPage {
     private quizService: QuizService,
     private authProvider: AuthProvider,
     public db: AngularFireDatabase,
-    public firebaseService: FirebaseService) {
+    public firebaseService: FirebaseService,
+    public angularFireService: AngularFireService) {
     this.input = {
       answer: ""
     }
@@ -89,10 +90,6 @@ export class QuizPage {
 
   }
 
-  getAnagrams(word) {
-    let anagrams = this.db.object('/alphagrams/' + word);
-    return anagrams;
-  }
 
   updateStats(wasCorrect: boolean) { // consider moving all these lastCorrect or whatever into a global variable
     let ss = this.sessionStats;
@@ -144,7 +141,7 @@ export class QuizPage {
     console.log("in loadNextWord")
     this.quizService.getCurrentQuiz().then((quiz) => {
       let nextQuizWord = quiz[this.quizIndex];
-      this.subscription = this.getAnagrams(nextQuizWord);
+      this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
       this.subscription.subscribe(subscribeData => {
         console.log("in the subscription");
 
