@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { QuizService } from '../../app/shared/shared';
+import { QuizService, FirebaseService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
@@ -51,7 +51,8 @@ export class QuizPage {
     public navParams: NavParams,
     private quizService: QuizService,
     private authProvider: AuthProvider,
-    public db: AngularFireDatabase) {
+    public db: AngularFireDatabase,
+    public firebaseService: FirebaseService) {
     this.input = {
       answer: ""
     }
@@ -113,7 +114,7 @@ export class QuizPage {
     this.updateStats(lastCorrect);
     let rescheduleObj = this.rescheduleLogic(lastCorrect);
       this.subscription.subscribe(subscribeData => {
-        this.quizService.addRemoteQuizWord(this.nextWord.word, subscribeData,
+        this.firebaseService.addRemoteQuizWord(this.nextWord.word, subscribeData,
           rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
         if (this.quizIndex < this.quizLength - 1) {
           this.quizIndex++;

@@ -14,7 +14,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { AuthProvider } from '../providers/auth/auth';
 
-import { QuizService } from '../app/shared/shared';
+import { QuizService, FirebaseService } from '../app/shared/shared';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyCGOb45VB012KLxfvhr8yHBapEvw4iyEC8",
@@ -51,6 +51,7 @@ export const firebaseConfig = {
   ],
   providers: [
     QuizService,
+    FirebaseService,
     StatusBar,
     SplashScreen,
     AuthProvider,
