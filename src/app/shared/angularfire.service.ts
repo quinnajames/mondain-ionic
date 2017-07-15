@@ -9,4 +9,9 @@ export class AngularFireService {
         let anagrams = this.db.object('/alphagrams/' + word);
         return anagrams;
     }
+    
+    getPerUserWordStats(word, uid) {
+        let stats = this.db.object('/userProfile/' + uid + '/' + word);
+        return stats;
+    }
 }

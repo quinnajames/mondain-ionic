@@ -11,22 +11,22 @@
 
 <ion-content padding>
   <ion-segment>
-    <ion-col col-10 col-md-8 col-lg-6 >
+    <ion-col col-10 col-md-8 col-lg-6>
       <ion-card color="item-background" id="quizCard">
-        <ion-item  color="item-background">
-        <ion-item class="text quizQuestion" *ngIf="nextWord"  color="item-background">
-          {{ nextWord.word }}
-        </ion-item>
-        <ion-item  color="item-background">
-          {{ input.answer }}
-        </ion-item>
-        <ion-item  color="item-background">
-          <button ion-button (click)="handleIncorrect()">
+        <ion-item color="item-background">
+          <ion-item class="text quizQuestion" *ngIf="nextWord" color="item-background">
+            {{ nextWord.word }}
+          </ion-item>
+          <ion-item color="item-background">
+            {{ input.answer }}
+          </ion-item>
+          <ion-item color="item-background">
+            <button ion-button (click)="handleIncorrect()">
         Mark Incorrect
     </button>
+          </ion-item>
         </ion-item>
-        </ion-item>
-        <ion-item  color="item-background">
+        <ion-item color="item-background">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
       </ion-card>
@@ -40,12 +40,23 @@
   <ion-segment>
     <ion-col col-8 col-md-6 col-lg-4>
       <ion-card padding>
-        <h3>Stats</h3><br />
+        <h2>Stats</h2><br />
         <b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
         = {{sessionStats.overall.percent}}%<br />
         <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
         = {{sessionStats.last10.percent}}%
       </ion-card>
+      <ion-card padding *ngIf="lastQuizAlpha">
+        <h2>Last Word:</h2> {{lastQuizAlpha.alpha}}<br />
+        <b>Solutions:</b> {{lastQuizAlpha.solutions}}<br />
+      </ion-card>
+      <ion-card padding *ngIf="lastQuizWord">
+        <b>Historical stats:</b> {{lastQuizWord.right}} of {{lastQuizWord.right + lastQuizWord.wrong}}<br />
+        <b>Last correct:</b> {{lastQuizWord.last_correct | date : 'yMMMdjms'}}<br />
+        <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}}
+      </ion-card>
+
+
     </ion-col>
   </ion-segment>
 </ion-content>
