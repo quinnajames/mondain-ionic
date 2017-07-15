@@ -10,26 +10,26 @@
 <ion-content padding>
 
   <ion-card padding>
-    <ion-item class="text">Logged in as: {{userIdent}}</ion-item>
+    <ion-item class="text" color="item-background">Logged in as: {{userIdent}}</ion-item>
     <button ion-button (click)="refreshLogin()">Refresh Login</button>
   </ion-card>
 
 
   <ion-card>
     <ion-row>
-      <ion-item>
+      <ion-item color="item-background">
         <ion-label>List length</ion-label>
         <ion-input type="number" [value]="inputListSize" min="1" max="50" [(ngModel)]="inputListSize" (blur)="refreshList()"></ion-input>
       </ion-item>
     </ion-row>
     <ion-row>
-      <ion-item>
+      <ion-item color="item-background">
         <ion-label>Word length</ion-label>
         <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
       </ion-item>
     </ion-row>
     <ion-row>
-      <ion-item>
+      <ion-item color="item-background">
         <ion-label>Start Position</ion-label>
         <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
       </ion-item>
@@ -45,9 +45,11 @@
         Sync Quiz Locally
       </button>
   </ion-item>
-  <ion-list>
-    <ion-item class="text" *ngFor="let item of items | async">
-      {{item.avgplay}} {{item.$key}}
-    </ion-item>
-  </ion-list>
+  <ion-card color="item-background">
+    <ion-list>
+      <ion-item class="text" *ngFor="let item of items | async" color="item-background">
+        {{item.avgplay}} {{item.$key}}
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>

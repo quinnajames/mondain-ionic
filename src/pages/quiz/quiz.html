@@ -11,20 +11,22 @@
 
 <ion-content padding>
   <ion-segment>
-    <ion-col col-10 col-md-8 col-lg-6>
-      <ion-card id="quizCard">
-        <ion-item class="text quizQuestion" *ngIf="nextWord">
+    <ion-col col-10 col-md-8 col-lg-6 >
+      <ion-card color="item-background" id="quizCard">
+        <ion-item  color="item-background">
+        <ion-item class="text quizQuestion" *ngIf="nextWord"  color="item-background">
           {{ nextWord.word }}
         </ion-item>
-        <ion-item>
+        <ion-item  color="item-background">
           {{ input.answer }}
         </ion-item>
-        <ion-item>
+        <ion-item  color="item-background">
           <button ion-button (click)="handleIncorrect()">
         Mark Incorrect
     </button>
         </ion-item>
-        <ion-item>
+        </ion-item>
+        <ion-item  color="item-background">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
       </ion-card>

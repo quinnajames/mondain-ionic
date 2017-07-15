@@ -14,3 +14,17 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner {
+  border-bottom-color: color($colors, secondary);
+  box-shadow: inset 0 -1px 0 0 color($colors, secondary);
+}
+
+.list-md .item-input.ng-valid.input-has-value:not(.input-has-focus):last-child {
+  border-bottom-color: color($colors, secondary);
+  box-shadow: inset 0 -1px 0 0 color($colors, secondary);
+}
+
+ion-navbar {
+    color: color($colors, item-background)
+}
