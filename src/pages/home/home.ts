@@ -5,7 +5,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
-import { QuizService, FirebaseService } from '../../app/shared/shared';
+import { LocalQuizService, FirebaseService } from '../../app/shared/shared';
 
 @Component({
   selector: 'page-home',
@@ -40,7 +40,7 @@ export class HomePage {
   constructor(public navCtrl: NavController,
     public db: AngularFireDatabase,
     public auth: AuthProvider,
-    private quizService: QuizService,
+    private LocalQuizService: LocalQuizService,
     private firebaseService: FirebaseService) {
     // default values for display
     this.inputListSize = 10;
@@ -113,7 +113,7 @@ export class HomePage {
       let quiz = JSON.parse(subscribeData.quiz);
       console.log("sync");
       console.log(quiz);
-      this.quizService.addListToLocalStorage(quiz);
+      this.LocalQuizService.addListToLocalStorage(quiz);
     });
   }
 

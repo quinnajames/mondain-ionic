@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import { AuthProvider } from '../../providers/auth/auth';
-import firebase from 'firebase';
 
 
 @Injectable()
-export class QuizService {
+export class LocalQuizService {
     constructor(private events: Events,
     private authProvider: AuthProvider,
     private storage: Storage) { }

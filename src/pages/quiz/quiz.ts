@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { QuizService, FirebaseService, AngularFireService } from '../../app/shared/shared';
+import { LocalQuizService, FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
@@ -63,7 +63,7 @@ export class QuizPage {
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    private quizService: QuizService,
+    private LocalQuizService: LocalQuizService,
     private authProvider: AuthProvider,
     public db: AngularFireDatabase,
     public firebaseService: FirebaseService,
@@ -92,7 +92,7 @@ export class QuizPage {
   }
 
   refreshQuizList() {
-    this.quizList = this.quizService.getCurrentQuiz().then((ql) => {
+    this.quizList = this.LocalQuizService.getCurrentQuiz().then((ql) => {
       this.quizLength = ql.length;
     });
   }
@@ -166,7 +166,7 @@ export class QuizPage {
         else {
           console.log("No lastQuizWord - perhaps this is the start of the quiz");
         }
-    this.quizService.getCurrentQuiz().then((quiz) => {
+    this.LocalQuizService.getCurrentQuiz().then((quiz) => {
       let nextQuizWord = quiz[this.quizIndex];
       // let lastCorrect = null;
       // let nextScheduled = null;

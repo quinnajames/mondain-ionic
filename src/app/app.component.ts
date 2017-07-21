@@ -5,13 +5,13 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage, LoginPage, SignupPage, QuizPage } from '../pages/pages';
 
-import { QuizService } from '../app/shared/shared';
+import { LocalQuizService } from '../app/shared/shared';
 
 
 @Component({
   templateUrl: 'app.html',
   providers: [
-    QuizService
+    LocalQuizService
   ]
 })
 export class MyApp {
@@ -25,7 +25,7 @@ export class MyApp {
               public statusBar: StatusBar, 
               public splashScreen: SplashScreen,
               public events: Events,
-              public quizService: QuizService
+              public LocalQuizService: LocalQuizService
               ) {
     this.initializeApp();
 
