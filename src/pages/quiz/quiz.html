@@ -10,7 +10,7 @@
 
 
 <ion-content padding>
-  <ion-segment>
+  <ion-row>
     <ion-col col-10 col-md-8 col-lg-6>
       <ion-card color="item-background" id="quizCard">
         <ion-item color="item-background">
@@ -34,29 +34,31 @@
         <ion-item class="text" *ngFor="let item of solutionsGiven">
           {{item}}
         </ion-item>
+        
+      <ion-item padding *ngIf="lastQuizAlpha">
+        <h1>Previous Word</h1> <h2> {{lastQuizAlpha.alpha}}</h2><br />
+        <h2><b>Solutions:</b> {{lastQuizAlpha.solutions}}</h2><br />
+      </ion-item>
       </ion-card>
     </ion-col>
-  </ion-segment>
-  <ion-segment>
-    <ion-col col-8 col-md-6 col-lg-4>
+    <ion-col>
+      
       <ion-card padding>
-        <h2>Stats</h2><br />
-        <b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-        = {{sessionStats.overall.percent}}%<br />
+        <h1>This Quiz</h1><br />
+        <h2><b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
+        = {{sessionStats.overall.percent}}%<br /></h2>
         <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
         = {{sessionStats.last10.percent}}%
       </ion-card>
-      <ion-card padding *ngIf="lastQuizAlpha">
-        <h2>Last Word:</h2> {{lastQuizAlpha.alpha}}<br />
-        <b>Solutions:</b> {{lastQuizAlpha.solutions}}<br />
-      </ion-card>
       <ion-card padding *ngIf="lastQuizWord">
-        <b>Historical stats:</b> {{lastQuizWord.right}} of {{lastQuizWord.right + lastQuizWord.wrong}}<br />
+        <h1>Word History</h1> <h2>for <b>{{lastQuizAlpha.alpha}}</b></h2><br />
+        {{lastQuizWord.right}} of {{lastQuizWord.right + lastQuizWord.wrong}}<br />
         <b>Last correct:</b> {{lastQuizWord.last_correct | date : 'yMMMdjms'}}<br />
         <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}}
       </ion-card>
 
 
-    </ion-col>
-  </ion-segment>
+      </ion-col>
+  </ion-row>
+
 </ion-content>
