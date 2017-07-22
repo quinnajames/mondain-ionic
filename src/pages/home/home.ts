@@ -24,7 +24,7 @@ export class HomePage {
   quizList: any[];
   userIdent: any;
   loggedIn: boolean;
-
+  userQuizList: any;
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
     return db.list('/alphagram_ranks/' + wordLength, {
@@ -40,7 +40,7 @@ export class HomePage {
   constructor(public navCtrl: NavController,
     public db: AngularFireDatabase,
     public auth: AuthProvider,
-    private LocalQuizService: LocalQuizService,
+    private localQuizService: LocalQuizService,
     private firebaseService: FirebaseService) {
     // default values for display
     this.inputListSize = 10;
@@ -113,8 +113,22 @@ export class HomePage {
       let quiz = JSON.parse(subscribeData.quiz);
       console.log("sync");
       console.log(quiz);
-      this.LocalQuizService.addListToLocalStorage(quiz);
+      this.localQuizService.addListToLocalStorage(quiz);
     });
+  }
+
+  setEmptyCustomList() {
+    this.userQuizList = [];
+
+  }
+
+  saveUserQuizList() {
+     this.userQuizList = this.userQuizList.split(/\r?\n/);
+     for (var x = 0; x < this.userQuizList.length; x++) {
+       this.userQuizList[x] = this.localQuizService.makeAlphagram(this.userQuizList[x]);
+     }
+     this.firebaseService.addWordList(this.userQuizList);
+     this.localQuizService.addListToLocalStorage(this.userQuizList);     
   }
 
 }

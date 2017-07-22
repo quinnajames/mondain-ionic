@@ -10,39 +10,43 @@
 <ion-content padding>
 
   <ion-row>
-  <ion-card padding>
-    <ion-item class="text" color="item-background">Logged in as: {{userIdent}}</ion-item>
-    <button ion-button (click)="refreshLogin()">Refresh Login</button>
-  </ion-card>
+    <ion-card padding>
+      <ion-item class="text" color="item-background">Logged in as: {{userIdent}}</ion-item>
+      <button ion-button (click)="refreshLogin()">Refresh Login</button>
+    </ion-card>
   </ion-row>
-<ion-row>
+  <ion-row>
 
-  <ion-col col-6 col-md-6 col-sm-6>
-  <ion-card>
-    <ion-row>
-      <ion-item color="item-background">
-        <ion-label>List length</ion-label>
-        <ion-input type="number" [value]="inputListSize" min="1" max="50" [(ngModel)]="inputListSize" (blur)="refreshList()"></ion-input>
-      </ion-item>
-    </ion-row>
-    <ion-row>
-      <ion-item color="item-background">
-        <ion-label>Word length</ion-label>
-        <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
-      </ion-item>
-    </ion-row>
-    <ion-row>
-      <ion-item color="item-background">
-        <ion-label>Start Position</ion-label>
-        <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
-      </ion-item>
-    </ion-row>
-  </ion-card>
-  </ion-col>
-  <ion-col padding>
-    <ion-textarea placeholder="Enter a list of words here"></ion-textarea>
+    <ion-col col-6 col-md-6 col-sm-6>
+      <ion-card>
+        <ion-row>
+          <ion-item color="item-background">
+            <ion-label>List length</ion-label>
+            <ion-input type="number" [value]="inputListSize" min="1" max="50" [(ngModel)]="inputListSize" (blur)="refreshList()"></ion-input>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item color="item-background">
+            <ion-label>Word length</ion-label>
+            <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
+          </ion-item>
+        </ion-row>
+        <ion-row>
+          <ion-item color="item-background">
+            <ion-label>Start Position</ion-label>
+            <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
+          </ion-item>
+        </ion-row>
+      </ion-card>
     </ion-col>
-</ion-row>
+    <ion-col padding>
+      <button ion-button *ngIf="!userQuizList" (click)="setEmptyCustomList()">Enter Custom List</button>
+      <ion-card *ngIf="userQuizList">
+        <ion-textarea [(ngModel)]="userQuizList" placeholder="Enter a list of words here"></ion-textarea>
+        <button ion-button (click)="saveUserQuizList()">Save Custom List</button>
+      </ion-card>
+    </ion-col>
+  </ion-row>
   <h3>Search Results</h3>
   <ion-item>
     <button ion-button [disabled]="!isLoggedIn()" (click)="addToStudyList()">

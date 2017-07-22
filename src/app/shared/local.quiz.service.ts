@@ -23,5 +23,10 @@ export class LocalQuizService {
         return this.storage.get('quiz');
     }
 
+    makeAlphagram(word) {
+        word = word.split("").sort().join("");
+        return word;
+    }
+
 
 }
