@@ -92,7 +92,7 @@ export class FirebaseService {
         let user = this.authProvider.getCurrentUser();
         if (user) {
             return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function(snapshot) {
-                let quiz = JSON.parse(snapshot.val().quiz);
+                //let quiz = JSON.parse(snapshot.val().quiz);
                 console.log(snapshot);
             })
         }  
