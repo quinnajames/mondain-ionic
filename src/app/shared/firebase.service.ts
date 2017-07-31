@@ -77,7 +77,7 @@ export class FirebaseService {
     }
     if (user) {
         firebase.database().ref('/userProfile').child(user.uid).child(word).once('value').then(function (snapshot) {
-            console.log("**snapshot**:" + snapshot);
+            //console.log("**snapshot**:" + snapshot);
             stats.lastCorrect = snapshot.last_correct;
             stats.nextScheduled = snapshot.next_scheduled;
             });
@@ -92,10 +92,21 @@ export class FirebaseService {
         let user = this.authProvider.getCurrentUser();
         if (user) {
             return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function(snapshot) {
-                //let quiz = JSON.parse(snapshot.val().quiz);
-                console.log(snapshot);
+               // console.log(snapshot);
             })
         }  
     }
-
+    getWordHooks(word) {
+        let hooks = {
+            front: null,
+            back: null
+        }
+        if (word) {
+            firebase.database().ref('/hooks').child(word).once('value').then(function(snapshot) {
+                hooks.front = snapshot.front;
+                hooks.back = snapshot.back;
+            });
+            return hooks;
+        }  
+    }
 }
