@@ -51,6 +51,11 @@ export class FirebaseService {
                     };
                     return trans_object;
                 };
+                // TODO:
+                // Restructure the error checking below
+                // (See: https://firebase.google.com/docs/reference/js/firebase.database.Reference#transaction)
+                // There is some repeated stuff here, and I want to be able to get this transaction right
+                // so I can use the same pattern elsewhere in the app
             },
                 function (Error, committed, snapshot) {
                     if (!committed) {
@@ -77,18 +82,6 @@ export class FirebaseService {
     }
 
     getPerUserWordStats(word: string) {
-<<<<<<< HEAD
-        let user = this.authProvider.getCurrentUser();
-        let stats = {
-            lastCorrect: null,
-            nextScheduled: null
-        }
-        if (user) {
-            firebase.database().ref('/userProfile').child(user.uid).child(word).once('value').then(function (snapshot) {
-                console.log("**snapshot**:" + snapshot);
-                stats.lastCorrect = snapshot.last_correct;
-                stats.nextScheduled = snapshot.next_scheduled;
-=======
     let user = this.authProvider.getCurrentUser();
     let stats = {
         lastCorrect: null,
@@ -99,7 +92,6 @@ export class FirebaseService {
             //console.log("**snapshot**:" + snapshot);
             stats.lastCorrect = snapshot.last_correct;
             stats.nextScheduled = snapshot.next_scheduled;
->>>>>>> d6254b1ad2e3159425e15a1d4b7d90444151d713
             });
             return stats;
         }
@@ -111,14 +103,9 @@ export class FirebaseService {
     getRemoteQuiz() {
         let user = this.authProvider.getCurrentUser();
         if (user) {
-<<<<<<< HEAD
             return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function (snapshot) {
                 //let quiz = JSON.parse(snapshot.val().quiz);
                 console.log(snapshot);
-=======
-            return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function(snapshot) {
-               // console.log(snapshot);
->>>>>>> d6254b1ad2e3159425e15a1d4b7d90444151d713
             })
         }
     }
