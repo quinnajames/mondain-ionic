@@ -60,10 +60,12 @@ export class FirebaseService {
                         }
                     }
                 }
-                delete word_object.solutions; // don't need this in the transaction if solutions are already present; they won't change
-                console.log("word_object to return: ")
-                console.log(removeSolutions(word_object));
-                return removeSolutions(word_object); // returns TO THE DB (if transaction)
+                if (trans && trans.solutions) {
+                    return removeSolutions(word_object);
+                }
+                else {
+                    return word_object;
+                }
             },
                 function (Error, committed, snapshot) {
                     if (Error) {
