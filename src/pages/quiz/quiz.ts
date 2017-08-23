@@ -92,6 +92,11 @@ export class QuizPage {
         queue: []
       }
     }
+    
+    firebaseService.getAlphagramsDueRef(moment()).on('value', function(snapshot){
+      console.log(snapshot.val());
+    })
+    
     this.getCurrentUserQuiz();
     this.refreshQuizList();
     this.loadNextWord();
@@ -105,8 +110,6 @@ export class QuizPage {
 
   ionViewDidLoad() {
     //console.log('ionViewDidLoad QuizPage');
-
-
 
   }
 

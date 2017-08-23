@@ -18,6 +18,15 @@ export class FirebaseService {
         }
     }
 
+    getAlphagramsDueRef(due_moment: any) {
+        due_moment = parseInt(due_moment.format('x'), 10);
+        var user = this.authProvider.getCurrentUser();
+        if (user) {
+            var dueRef = firebase.database().ref('/userProfile').child(user.uid).orderByChild('next_scheduled').endAt(due_moment);
+            return dueRef;
+        }
+    }
+
     addRemoteQuizWord(alpha: string, solutions: string[], time, next_scheduled, correct: boolean) {
         let user = this.authProvider.getCurrentUser();
         var right_answers = 1;
@@ -35,6 +44,7 @@ export class FirebaseService {
         };
         if (user) {
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function (trans) {
+                // Transaction callback
                 console.log(trans);
                 function removeSolutions(obj) {
                     delete obj.solutions;
@@ -67,6 +77,7 @@ export class FirebaseService {
                     return word_object;
                 }
             },
+            // onComplete function
                 function (Error, committed, snapshot) {
                     if (Error) {
                         console.log("Error trying to update word stats");
