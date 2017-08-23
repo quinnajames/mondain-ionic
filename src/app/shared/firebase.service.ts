@@ -74,13 +74,6 @@ export class FirebaseService {
                     }
                     else if (!committed) {
                         firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
-                        // firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set({
-                        //     solutions: solutions, // have to add the solutions if creating for first time/using set
-                        //     last_correct: time,
-                        //     next_scheduled: next_scheduled,
-                        //     right: right_answers,
-                        //     wrong: wrong_answers
-                        // });
                     }
                     else {
                         console.log("successfully committed");
@@ -89,24 +82,6 @@ export class FirebaseService {
         }
         return word_object; // returns TO FUNCTION CALLER to get data back
     }
-
-    getPerUserWordStats(word: string) {
-        let user = this.authProvider.getCurrentUser();
-        let stats = {
-            lastCorrect: null,
-            nextScheduled: null
-        }
-        if (user) {
-            firebase.database().ref('/userProfile').child(user.uid).child(word).once('value').then(function (snapshot) {
-                //console.log("**snapshot**:" + snapshot);
-                stats.lastCorrect = snapshot.last_correct;
-                stats.nextScheduled = snapshot.next_scheduled;
-            });
-            return stats;
-        }
-    }
-    //let stats = this.db.object('/userProfile/' + uid + '/' + word);
-    // return stats;
 
 
     getRemoteQuiz() {

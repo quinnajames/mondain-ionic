@@ -9,11 +9,6 @@ export class AngularFireService {
         let anagrams = this.db.object('/alphagrams/' + word);
         return anagrams;
     }
-    
-    getPerUserWordStats(word, uid) : FirebaseObjectObservable<any[]> {
-        let stats = this.db.object('/userProfile/' + uid + '/' + word);
-        return stats;
-    }
 
     getHooks(word) {
         let hooks = this.db.object('/hooks/' + word);
