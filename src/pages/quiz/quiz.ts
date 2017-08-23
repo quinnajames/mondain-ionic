@@ -186,16 +186,6 @@ export class QuizPage {
         console.log("nextWord.word:" + this.nextWord.word);
         console.log("nextWord.solutions" + this.nextWord.solutions);
       })
-      //let wordStats = this.firebaseService.getPerUserWordStats(nextQuizWord);
-      // this.wordStatSubscription = this.angularFireService.getPerUserWordStats(nextQuizWord, this.authProvider.getCurrentUser().uid);
-      // this.wordStatSubscription.subscribe(wordStatData => {
-      //   console.log("in the word stats subscription");
-      //   console.log(this.nextWord || "false");
-      //   if(this.nextWord) {
-      //     this.nextWord.lastCorrect = wordStatData.last_correct;
-      //     this.nextWord.nextScheduled = wordStatData.next_scheduled;
-      //   }
-      // })
       if (this.nextWord) {
       console.log("nextWord.lastCorrect:" + this.nextWord.lastCorrect);
       console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
@@ -259,8 +249,6 @@ export class QuizPage {
 
   answerOnChange(answer) {
 
-    //console.log("this.input.answer start: " + this.input.answer);
-    //console.log("**calling answerOnChange()");
     let localanswer = answer.toUpperCase();
     if (localanswer.length == this.nextWord.word.length // No need to look at array if length is wrong
       && _.indexOf(this.nextWord.solutions, localanswer) > -1
