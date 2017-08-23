@@ -77,6 +77,7 @@ export class FirebaseService {
     }
 
     getPerUserWordStats(word: string) {
+<<<<<<< HEAD
         let user = this.authProvider.getCurrentUser();
         let stats = {
             lastCorrect: null,
@@ -87,6 +88,18 @@ export class FirebaseService {
                 console.log("**snapshot**:" + snapshot);
                 stats.lastCorrect = snapshot.last_correct;
                 stats.nextScheduled = snapshot.next_scheduled;
+=======
+    let user = this.authProvider.getCurrentUser();
+    let stats = {
+        lastCorrect: null,
+        nextScheduled: null
+    }
+    if (user) {
+        firebase.database().ref('/userProfile').child(user.uid).child(word).once('value').then(function (snapshot) {
+            //console.log("**snapshot**:" + snapshot);
+            stats.lastCorrect = snapshot.last_correct;
+            stats.nextScheduled = snapshot.next_scheduled;
+>>>>>>> d6254b1ad2e3159425e15a1d4b7d90444151d713
             });
             return stats;
         }
@@ -98,11 +111,28 @@ export class FirebaseService {
     getRemoteQuiz() {
         let user = this.authProvider.getCurrentUser();
         if (user) {
+<<<<<<< HEAD
             return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function (snapshot) {
                 //let quiz = JSON.parse(snapshot.val().quiz);
                 console.log(snapshot);
+=======
+            return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function(snapshot) {
+               // console.log(snapshot);
+>>>>>>> d6254b1ad2e3159425e15a1d4b7d90444151d713
             })
         }
     }
-
+    getWordHooks(word) {
+        let hooks = {
+            front: null,
+            back: null
+        }
+        if (word) {
+            firebase.database().ref('/hooks').child(word).once('value').then(function(snapshot) {
+                hooks.front = snapshot.front;
+                hooks.back = snapshot.back;
+            });
+            return hooks;
+        }  
+    }
 }

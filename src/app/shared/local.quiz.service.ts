@@ -24,7 +24,7 @@ export class LocalQuizService {
     }
 
     makeAlphagram(word) {
-        word = word.split("").sort().join("");
+        word = word.toUpperCase().split("").sort().join("");
         return word;
     }
 

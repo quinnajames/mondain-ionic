@@ -14,4 +14,9 @@ export class AngularFireService {
         let stats = this.db.object('/userProfile/' + uid + '/' + word);
         return stats;
     }
+
+    getHooks(word) {
+        let hooks = this.db.object('/hooks/' + word);
+        return hooks;
+    }
 }
