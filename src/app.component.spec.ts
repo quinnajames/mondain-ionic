@@ -4,17 +4,13 @@ import { AuthProvider } from './providers/auth/auth';
 import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app/app.component';
 
-import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { HomePage, LoginPage, SignupPage, QuizPage } from './pages/pages';
-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { ErrorHandler } from '@angular/core';
+import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { LocalQuizService, FirebaseService, AngularFireService } from './app/shared/shared';
 
