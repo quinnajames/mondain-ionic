@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage } from 'ionic-angular';
 import { LocalQuizService, FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -67,8 +67,7 @@ export class QuizPage {
   wordStatSubscription: FirebaseObjectObservable<any>;
   hookSubscription: FirebaseObjectObservable<any>;
 
-  constructor(public navCtrl: NavController,
-    public navParams: NavParams,
+  constructor(
     private LocalQuizService: LocalQuizService,
     private authProvider: AuthProvider,
     public db: AngularFireDatabase,
@@ -111,9 +110,9 @@ export class QuizPage {
   }
 
 
-  updateStats(wasCorrect: boolean) { // consider moving all these lastCorrect or whatever into a global variable
-    let ss = this.sessionStats;
-    if (wasCorrect) { this.sessionStats.overall.correct += 1; } else { ss.overall.incorrect += 1; }
+  updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
+
+    if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
     // todo: optimize last10 algorithms after first run
     ss.last10.queue.push(wasCorrect);
@@ -124,11 +123,11 @@ export class QuizPage {
       if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
     })
     ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
-    this.sessionStats = ss;
+    return ss;
   }
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
-    this.updateStats(lastCorrect);
+    this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
     let rescheduleObj = this.rescheduleLogic(lastCorrect);
       this.subscription.subscribe(subscribeData => {
        this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
