@@ -18,6 +18,7 @@ export class FirebaseService {
         }
     }
 
+
     addRemoteQuizWord(alpha: string, solutions: string[], time, next_scheduled, correct: boolean) {
         let user = this.authProvider.getCurrentUser();
         var right_answers = 1;
@@ -83,6 +84,36 @@ export class FirebaseService {
         return word_object; // returns TO FUNCTION CALLER to get data back
     }
 
+    /** Expects a number that is a unix timestamp. */
+    getWordsDueListener(deadline: number): firebase.database.Query {
+        const user = this.authProvider.getCurrentUser();
+        if (user) {
+            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").endAt(deadline);
+        }
+        return null;
+    }
+
+
+    // addQuizItem(alphagram: string) {
+
+    //     let user = this.authProvider.getCurrentUser();
+    //     if (user) {
+    //         let userRef = firebase.database().ref('/userProfile').child(user.uid).child("dynamicQuiz");
+    
+    //         userRef.transaction(function (currentQuiz) {
+    //             if (currentQuiz === null) {
+    //                 return JSON.stringify([alphagram]);
+    //             }
+    //             else {
+    //                 let list = <string[]>JSON.parse(currentQuiz);
+    //                 if (list.indexOf(alphagram) === -1) {
+    //                     list.push(alphagram);
+    //                 }
+    //                 return JSON.stringify(list);
+    //             }
+    //         })
+    //     }
+    // }
 
     getRemoteQuiz() {
         let user = this.authProvider.getCurrentUser();

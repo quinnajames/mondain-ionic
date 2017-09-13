@@ -19,6 +19,8 @@ import moment from 'moment';
 })
 export class QuizPage {
   quizList: Promise<any>;
+  quizListRef: firebase.database.Reference;
+  dueRef: firebase.database.Query;
   input: { // encapsulate this in input to avoid an issue with Angular scopes
     answer: string;
   }
@@ -46,6 +48,7 @@ export class QuizPage {
   quizIndex: any;
   quizLength: any;
   solutionsGiven: string[];
+  dynamicQuiz: Map<string, boolean>;
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -58,8 +61,8 @@ export class QuizPage {
     solutionsStringRep: string
   }
   lastQuizWordHooks: {
-      front: FirebaseObjectObservable<any[]>,
-      back: FirebaseObjectObservable<any[]>
+    front: FirebaseObjectObservable<any[]>,
+    back: FirebaseObjectObservable<any[]>
   }
 
   // subscriptions
@@ -90,11 +93,26 @@ export class QuizPage {
         percent: 0.0,
         queue: []
       }
-    }
+    };
+    this.dynamicQuiz = new Map<string, boolean>();
     this.getCurrentUserQuiz();
     this.refreshQuizList();
     this.loadNextWord();
+
   }
+
+
+  // wordAdded(alpha: string) {
+  //   console.log("word became due: " + alpha);
+  //   this.firebaseService.addQuizItem(alpha);
+  // }
+  // wordChanged(alpha: string) {
+  //   console.log("word info changed: " + alpha);
+  // }
+  // wordRemoved(alpha: string) {
+  //   console.log("word no longer due: " + alpha);
+  // }
+
 
   refreshQuizList() {
     this.quizList = this.LocalQuizService.getCurrentQuiz().then((ql) => {
@@ -102,13 +120,43 @@ export class QuizPage {
     });
   }
 
+
+
   ionViewDidLoad() {
-    //console.log('ionViewDidLoad QuizPage');
-
-
-
+    this.dueRef = this.firebaseService.getWordsDueListener(parseInt(moment().format('x'), 10)); // sending it current time
+    this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
+      this.onChildAdded(data);
+    }, undefined, this);
+    this.dueRef.on('child_changed', (data) => {
+      this.onChildRemoved(data);
+    });
+    this.dueRef.on('child_removed', (data) => {
+      this.onChildRemoved(data);
+    }, undefined, this);
   }
 
+  onChildAdded(data) {
+    if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
+      this.dynamicQuiz.set(data.key, true);
+      console.log("word became due: " + data.key);
+    }    
+  }
+
+  onChildChanged(data) {
+    console.log("word info changed: " + data.key);
+  }
+
+  onChildRemoved(data) {
+    console.log("word no longer due: " + data.key);
+    if (this && this.dynamicQuiz) {
+      this.dynamicQuiz.delete(data.key);
+    }    
+  }
+
+  ionViewWillLeave() {
+    this.dueRef.off();
+    //    this.quizListRef.off();
+  }
 
   updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
 
@@ -123,37 +171,47 @@ export class QuizPage {
       if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
     })
     ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
+
+    if (this.lastQuizAlpha)
+      {
+
+        console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
+        
+      }
+    console.log("Map size: " + this.dynamicQuiz.size);
     return ss;
+
   }
+
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
     this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
     let rescheduleObj = this.rescheduleLogic(lastCorrect);
-      this.subscription.subscribe(subscribeData => {
-       this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
-          rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
-          let solutionString = "";
-          for (var x = 0; x < subscribeData.solutions.length; x++) {
-            solutionString = solutionString += subscribeData.solutions[x] + " ";
-          }
-          solutionString = solutionString.slice()
-          console.log(subscribeData.solutions);
-          console.log(solutionString);
+    this.subscription.subscribe(subscribeData => {
+      this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
+        rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
+      let solutionString = "";
+      for (var x = 0; x < subscribeData.solutions.length; x++) {
+        solutionString = solutionString += subscribeData.solutions[x] + " ";
+      }
+      solutionString = solutionString.slice()
+      console.log(subscribeData.solutions);
+      console.log(solutionString);
       this.lastQuizAlpha = {
         alpha: this.nextWord.word,
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-        if (this.quizIndex < this.quizLength - 1) {
-          this.quizIndex++;
-          try { this.loadNextWord() }
-          catch (Exception) { console.log(Exception) };
-        }
-        else {
-          //console.log("Quiz done - looping back.");
-          this.jumpToIndexAndLoad(0);
-        }
-      })
+      if (this.quizIndex < this.quizLength - 1) {
+        this.quizIndex++;
+        try { this.loadNextWord() }
+        catch (Exception) { console.log(Exception) };
+      }
+      else {
+        //console.log("Quiz done - looping back.");
+        this.jumpToIndexAndLoad(0);
+      }
+    })
   }
 
   getCurrentUserQuiz() {
@@ -170,15 +228,15 @@ export class QuizPage {
   loadNextWord() {
     this.solutionsGiven = [];
     //console.log("in loadNextWord")
-      if (this.lastQuizWord) {
-          //console.log("**lastQuizWord.right:" + this.lastQuizWord.right);
-          //console.log("**lastQuizWord.wrong:" + this.lastQuizWord.wrong);
-          //console.log("**lastQuizWord.lastCorrect:" + this.lastQuizWord.last_correct);
-          //console.log("**lastQuizWord.nextScheduled:" + this.lastQuizWord.next_scheduled);
-      }
-        else {
-          //console.log("No lastQuizWord - perhaps this is the start of the quiz");
-        }
+    if (this.lastQuizWord) {
+      //console.log("**lastQuizWord.right:" + this.lastQuizWord.right);
+      //console.log("**lastQuizWord.wrong:" + this.lastQuizWord.wrong);
+      //console.log("**lastQuizWord.lastCorrect:" + this.lastQuizWord.last_correct);
+      //console.log("**lastQuizWord.nextScheduled:" + this.lastQuizWord.next_scheduled);
+    }
+    else {
+      //console.log("No lastQuizWord - perhaps this is the start of the quiz");
+    }
     this.LocalQuizService.getCurrentQuiz().then((quiz) => {
       let nextQuizWord = quiz[this.quizIndex];
       // let lastCorrect = null;
@@ -200,12 +258,12 @@ export class QuizPage {
         //console.log("nextWord.solutions" + this.nextWord.solutions);
       })
       if (this.nextWord) {
-      //console.log("nextWord.lastCorrect:" + this.nextWord.lastCorrect);
-      //console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
+        //console.log("nextWord.lastCorrect:" + this.nextWord.lastCorrect);
+        //console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
       }
     });
 
-    
+
     //console.log("Session stats:")
     //console.log("Overall correct:" + this.sessionStats.overall.correct);
     //console.log("Overall incorrect:" + this.sessionStats.overall.incorrect);
@@ -213,14 +271,14 @@ export class QuizPage {
     //console.log("Last 10 correct:" + this.sessionStats.last10.correct);
     //console.log("Last 10 incorrect:" + this.sessionStats.last10.incorrect);
     //console.log("Last 10 % right" + this.sessionStats.last10.percent);
-    
+
   }
 
   // reschedule(time)
 
 
 
-  rescheduleLogic(wasCorrect: boolean) : any {
+  rescheduleLogic(wasCorrect: boolean): any {
     //console.log("Send the following to server:");
     if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
     let wordMoment = moment();
@@ -243,9 +301,9 @@ export class QuizPage {
     }
   }
 
-  
 
-//aliases
+
+  //aliases
 
   handleCorrect() {
     this.handleCorrectOrIncorrect(true);
@@ -256,9 +314,9 @@ export class QuizPage {
   }
 
   jumpToIndexAndLoad(index) {
-         this.quizIndex = index;
-         try { this.loadNextWord() }
-        catch (Exception) { console.log(Exception) };          
+    this.quizIndex = index;
+    try { this.loadNextWord() }
+    catch (Exception) { console.log(Exception) };
   }
 
   answerOnChange(answer) {
@@ -272,7 +330,7 @@ export class QuizPage {
     }
     //console.log(this.solutionsGiven);
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
-     // console.log("answered all")
+      // console.log("answered all")
       this.handleCorrect();
 
     }
