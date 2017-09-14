@@ -6,12 +6,6 @@ import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
 import moment from 'moment';
 
-/**
- * Generated class for the QuizPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
 @IonicPage()
 @Component({
   selector: 'page-quiz',
@@ -103,26 +97,11 @@ export class QuizPage {
 
   }
 
-
-  // wordAdded(alpha: string) {
-  //   console.log("word became due: " + alpha);
-  //   this.firebaseService.addQuizItem(alpha);
-  // }
-  // wordChanged(alpha: string) {
-  //   console.log("word info changed: " + alpha);
-  // }
-  // wordRemoved(alpha: string) {
-  //   console.log("word no longer due: " + alpha);
-  // }
-
-
   refreshQuizList() {
     this.quizList = this.LocalQuizService.getCurrentQuiz().then((ql) => {
       this.quizLength = ql.length;
     });
   }
-
-
 
   ionViewDidLoad() {
     this.dueRef = this.firebaseService.getWordsDueListener(parseInt(moment().format('x'), 10)); // sending it current time
@@ -167,7 +146,6 @@ export class QuizPage {
     // todo: optimize last10 algorithms after first run
     ss.last10.queue.push(wasCorrect);
     if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
-    //console.log("last10 queue: " + ss.last10.queue);
     ss.last10.correct = ss.last10.incorrect = 0;
     ss.last10.queue.forEach(el => {
       if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
@@ -188,7 +166,6 @@ export class QuizPage {
       }
       if (this.dynamicQuizIterator) {
         this.nextWordDynamic = this.dynamicQuizIterator.next().value[0];
-        //console.log("next due in iterator: " + this.dynamicQuizIterator.next().value[0]);
       }
       else {
         console.log("Iterator not initialized");
@@ -198,9 +175,6 @@ export class QuizPage {
       console.log("Quiz not initialized");
     }
     return ss;
-
-
-
   }
 
 
@@ -239,7 +213,6 @@ export class QuizPage {
     let subscription = this.db.object('/userProfile/' + user);
     subscription.subscribe(subscribeData => {
       let quiz = JSON.parse(subscribeData.quiz);
-      //console.log(quiz);
       this.quizList = quiz;
     });
   }
@@ -247,7 +220,6 @@ export class QuizPage {
 
   loadNextWord() {
     this.solutionsGiven = [];
-    //console.log("in loadNextWord")
     let dynamic;
     if (this.nextWordDynamic) {
       dynamic = this.nextWordDynamic;
@@ -255,19 +227,14 @@ export class QuizPage {
     this.LocalQuizService.getCurrentQuiz().then((quiz) => {
       console.log(dynamic);
       let nextQuizWord = quiz[this.quizIndex];
-      // let lastCorrect = null;
-      // let nextScheduled = null;
-
       if (dynamic) {
         nextQuizWord = dynamic;
       }
 
       this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
       this.subscription.subscribe(subscribeData => {
-        //console.log("in the getAnagrams subscription");
 
         let nextsolutions = subscribeData.solutions;
-        //console.log(subscribeData);
         this.nextWord = {
           word: nextQuizWord,
           solutions: nextsolutions,
@@ -275,34 +242,16 @@ export class QuizPage {
           lastCorrect: null,
           nextScheduled: null
         };
-        //console.log("nextWord.word:" + this.nextWord.word);
-        //console.log("nextWord.solutions" + this.nextWord.solutions);
       })
 
     });
 
-
-    //console.log("Session stats:")
-    //console.log("Overall correct:" + this.sessionStats.overall.correct);
-    //console.log("Overall incorrect:" + this.sessionStats.overall.incorrect);
-    //console.log("Overall % right" + this.sessionStats.overall.percent);
-    //console.log("Last 10 correct:" + this.sessionStats.last10.correct);
-    //console.log("Last 10 incorrect:" + this.sessionStats.last10.incorrect);
-    //console.log("Last 10 % right" + this.sessionStats.last10.percent);
-
   }
 
-  // reschedule(time)
-
-
-
   rescheduleLogic(wasCorrect: boolean): any {
-    //console.log("Send the following to server:");
     if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
     let wordMoment = moment();
     let unixtime = parseInt(wordMoment.format('x'), 10);
-    //console.log("Date/time last correct moved to: " + unixtime);
-    //console.log("Which is equivalent to: " + wordMoment.format());
     let rescheduleMoment = moment();
     if (wasCorrect) {
       rescheduleMoment = wordMoment.add('1', 'days');
@@ -311,15 +260,11 @@ export class QuizPage {
       rescheduleMoment = wordMoment.add('1', 'minutes');
     }
     let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
-    //console.log("Reschedules to: " + rescheduletime);
-    //console.log("Which is equivalent to " + rescheduleMoment.format());
     return {
       unixtime: unixtime,
       rescheduletime: rescheduletime
     }
   }
-
-
 
   //aliases
 
@@ -338,7 +283,6 @@ export class QuizPage {
   }
 
   answerOnChange(answer) {
-
     let localanswer = answer.toUpperCase();
     if (localanswer.length == this.nextWord.word.length // No need to look at array if length is wrong
       && _.indexOf(this.nextWord.solutions, localanswer) > -1
@@ -346,13 +290,9 @@ export class QuizPage {
       this.solutionsGiven.push(localanswer);
       this.input.answer = ""; // Reset global answer
     }
-    //console.log(this.solutionsGiven);
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
-      // console.log("answered all")
       this.handleCorrect();
-
     }
-    //console.log("this.input.answer end: " + this.input.answer);
   }
 
 }
