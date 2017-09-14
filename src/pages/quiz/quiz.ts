@@ -97,6 +97,10 @@ export class QuizPage {
 
   }
 
+  getCurrentUnixTimestamp(): number {
+    return parseInt(moment().format('x'), 10);
+  }
+
   refreshQuizList() {
     this.quizList = this.LocalQuizService.getCurrentQuiz().then((ql) => {
       this.quizLength = ql.length;
@@ -104,12 +108,12 @@ export class QuizPage {
   }
 
   ionViewDidLoad() {
-    this.dueRef = this.firebaseService.getWordsDueListener(parseInt(moment().format('x'), 10)); // sending it current time
+    this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
     this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
       this.onChildAdded(data);
     }, undefined, this);
     this.dueRef.on('child_changed', (data) => {
-      this.onChildRemoved(data);
+      this.onChildChanged(data);
     });
     this.dueRef.on('child_removed', (data) => {
       this.onChildRemoved(data);
@@ -125,12 +129,18 @@ export class QuizPage {
 
   onChildChanged(data) {
     console.log("word info changed: " + data.key);
+    if (data.child("next_scheduled")) {
+      console.log(data.val().next_scheduled);
+      if (data.val().next_scheduled > this.getCurrentUnixTimestamp()) {
+        this.dynamicQuiz.set(data.key, false);
+      }
+    }
   }
 
   onChildRemoved(data) {
     console.log("word no longer due: " + data.key);
     if (this && this.dynamicQuiz) {
-      this.dynamicQuiz.delete(data.key);
+      this.dynamicQuiz.set(data.key, false);
     }
   }
 
@@ -164,9 +174,38 @@ export class QuizPage {
       if (!this.dynamicQuizIterator) {
         this.dynamicQuizIterator = this.dynamicQuiz.entries();
       }
-      if (this.dynamicQuizIterator) {
-        this.nextWordDynamic = this.dynamicQuizIterator.next().value[0];
+      let nextword = this.dynamicQuizIterator.next();
+      if (nextword.done) {
+        this.dynamicQuizIterator = this.dynamicQuiz.entries();
       }
+      if (nextword) {
+        while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
+          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
+          nextword = this.dynamicQuizIterator.next();
+        }
+        if (!nextword.done) {
+          this.nextWordDynamic = nextword.value[0];
+          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
+        }
+        else {
+          this.dynamicQuizIterator = this.dynamicQuiz.entries();
+          if (this.dynamicQuiz.size > 0) {
+            nextword = this.dynamicQuizIterator.next();
+            if (nextword.value[1]) {
+              this.nextWordDynamic = nextword.value[0];
+            }
+            else {
+              console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
+              this.nextWordDynamic = "AA"; // ran outta words!
+            }
+          }
+          else {
+            this.nextWordDynamic = "AA"; // ran outta words!
+          }
+          console.log("I think this means the quiz is done");
+        }
+      }
+
       else {
         console.log("Iterator not initialized");
       }
