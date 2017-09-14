@@ -50,13 +50,15 @@ export class FirebaseService {
                         word_object.wrong += trans.wrong;
                     }
                     correctness = word_object.right - word_object.wrong;
-                    if (correctness < 0) correctness = 0;
-                    if (trans.next_scheduled) {
-                        if (trans.last_correct) {
-                            word_object.last_correct = parseInt(trans.last_correct, 10);
-                        }
-                        word_object.next_scheduled = parseInt(moment().add(correctness.toString(), 'days').format('x'), 10);
+                    //if (correctness < 0) correctness = 0;
+                    if (!correct) {
+                        correctness = -1;
                     }
+                    if (trans.last_correct) {
+                        word_object.last_correct = parseInt(trans.last_correct, 10);
+                    }
+                    console.log("correctness: " + correctness);
+                    word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
                 }
                 if (trans && trans.solutions) {
                     return removeSolutions(word_object);
