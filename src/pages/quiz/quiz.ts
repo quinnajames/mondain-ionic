@@ -49,6 +49,8 @@ export class QuizPage {
   quizLength: any;
   solutionsGiven: string[];
   dynamicQuiz: Map<string, boolean>;
+  dynamicQuizIterator: any;
+  nextWordDynamic: string;
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -139,7 +141,7 @@ export class QuizPage {
     if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
       this.dynamicQuiz.set(data.key, true);
       console.log("word became due: " + data.key);
-    }    
+    }
   }
 
   onChildChanged(data) {
@@ -150,7 +152,7 @@ export class QuizPage {
     console.log("word no longer due: " + data.key);
     if (this && this.dynamicQuiz) {
       this.dynamicQuiz.delete(data.key);
-    }    
+    }
   }
 
   ionViewWillLeave() {
@@ -172,14 +174,32 @@ export class QuizPage {
     })
     ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
 
-    if (this.lastQuizAlpha)
-      {
+    if (this.lastQuizAlpha) {
 
-        console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
-        
-      }
+      console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
+
+    }
     console.log("Map size: " + this.dynamicQuiz.size);
+
+
+    if (this.dynamicQuiz) {
+      if (!this.dynamicQuizIterator) {
+        this.dynamicQuizIterator = this.dynamicQuiz.entries();
+      }
+      if (this.dynamicQuizIterator) {
+        this.nextWordDynamic = this.dynamicQuizIterator.next().value[0];
+        //console.log("next due in iterator: " + this.dynamicQuizIterator.next().value[0]);
+      }
+      else {
+        console.log("Iterator not initialized");
+      }
+    }
+    else {
+      console.log("Quiz not initialized");
+    }
     return ss;
+
+
 
   }
 
@@ -228,19 +248,20 @@ export class QuizPage {
   loadNextWord() {
     this.solutionsGiven = [];
     //console.log("in loadNextWord")
-    if (this.lastQuizWord) {
-      //console.log("**lastQuizWord.right:" + this.lastQuizWord.right);
-      //console.log("**lastQuizWord.wrong:" + this.lastQuizWord.wrong);
-      //console.log("**lastQuizWord.lastCorrect:" + this.lastQuizWord.last_correct);
-      //console.log("**lastQuizWord.nextScheduled:" + this.lastQuizWord.next_scheduled);
-    }
-    else {
-      //console.log("No lastQuizWord - perhaps this is the start of the quiz");
+    let dynamic;
+    if (this.nextWordDynamic) {
+      dynamic = this.nextWordDynamic;
     }
     this.LocalQuizService.getCurrentQuiz().then((quiz) => {
+      console.log(dynamic);
       let nextQuizWord = quiz[this.quizIndex];
       // let lastCorrect = null;
       // let nextScheduled = null;
+
+      if (dynamic) {
+        nextQuizWord = dynamic;
+      }
+
       this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
       this.subscription.subscribe(subscribeData => {
         //console.log("in the getAnagrams subscription");
@@ -254,13 +275,10 @@ export class QuizPage {
           lastCorrect: null,
           nextScheduled: null
         };
-        console.log("nextWord.word:" + this.nextWord.word);
+        //console.log("nextWord.word:" + this.nextWord.word);
         //console.log("nextWord.solutions" + this.nextWord.solutions);
       })
-      if (this.nextWord) {
-        //console.log("nextWord.lastCorrect:" + this.nextWord.lastCorrect);
-        //console.log("nextWord.nextScheduled:" + this.nextWord.nextScheduled);
-      }
+
     });
 
 

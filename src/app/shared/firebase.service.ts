@@ -42,23 +42,20 @@ export class FirebaseService {
                     return obj;
                 }
                 if (trans) {
+                    let correctness = 0;
                     if (trans.right) {
                         word_object.right += trans.right;
                     }
                     if (trans.wrong) {
                         word_object.wrong += trans.wrong;
                     }
+                    correctness = word_object.right - word_object.wrong;
+                    if (correctness < 0) correctness = 0;
                     if (trans.next_scheduled) {
-                        if (correct) { // regular moment() parse is ms (x in format); moment.unix() parse is s (X in format)
-                            // the moment() function for unix accepts ints, which is what we're working with
-                            word_object.next_scheduled = parseInt(moment(trans.next_scheduled).add('1', 'days').format('x'), 10); // push forward next scheduled time by 1 day
+                        if (trans.last_correct) {
+                            word_object.last_correct = parseInt(trans.last_correct, 10);
                         }
-                        else {
-                            if (trans.last_correct) {
-                                word_object.last_correct = parseInt(trans.last_correct, 10);
-                            }
-                            word_object.next_scheduled = parseInt(moment().add('1', 'minutes').format('x'), 10); // move back to 1 minute after now
-                        }
+                        word_object.next_scheduled = parseInt(moment().add(correctness.toString(), 'days').format('x'), 10);
                     }
                 }
                 if (trans && trans.solutions) {
@@ -99,7 +96,7 @@ export class FirebaseService {
     //     let user = this.authProvider.getCurrentUser();
     //     if (user) {
     //         let userRef = firebase.database().ref('/userProfile').child(user.uid).child("dynamicQuiz");
-    
+
     //         userRef.transaction(function (currentQuiz) {
     //             if (currentQuiz === null) {
     //                 return JSON.stringify([alphagram]);
