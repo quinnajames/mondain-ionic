@@ -35,20 +35,13 @@
           {{item}}
         </ion-item>
         
-      <ion-item padding *ngIf="lastQuizAlpha">
-        <h1>Previous Word</h1> <h2> {{lastQuizAlpha.alpha}}</h2><br />
-        <h2><b>Solutions:</b> {{lastQuizAlpha.solutionsStringRep}}</h2><br />
-      </ion-item>
       </ion-card>
     </ion-col>
     <ion-col>
       
       <ion-card padding>
-        <h1>This Quiz</h1><br />
-        <h2><b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-        = {{sessionStats.overall.percent}}%<br /></h2>
-        <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
-        = {{sessionStats.last10.percent}}%
+        <h1><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
+        ({{sessionStats.overall.percent}}%)</b></h1> / <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
       </ion-card>
       <ion-card padding *ngIf="lastQuizWord">
         <h1>Word History</h1>
