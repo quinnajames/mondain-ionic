@@ -18,29 +18,38 @@ export class FirebaseService {
         }
     }
 
-
-    addRemoteQuizWord(alpha: string, solutions: string[], time, next_scheduled, correct: boolean) {
+    addDynamicWordList(list: string[]) {
         let user = this.authProvider.getCurrentUser();
-        var right_answers = 1;
-        var wrong_answers = 0;
-        if (!correct) {
-            right_answers = 0;
+        if (user) {
+            console.log(list);
+            for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
+                this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10), false);
+            }
+        };
+    }
+
+
+    addRemoteQuizWord(alpha: string, time, next_scheduled, correct?: boolean) {
+        let user = this.authProvider.getCurrentUser();
+        let right_answers = 0;
+        let wrong_answers = 0;
+        if (correct === true) {
+            right_answers = 1;
+        }
+        if (correct === false) {
             wrong_answers = 1;
         }
+        // null is neither so stays at 0
         var word_object = {
             last_correct: time,
             next_scheduled: next_scheduled,
-            solutions: solutions,
             right: right_answers,
             wrong: wrong_answers
         };
+        console.log(word_object);
         if (user) {
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function (trans) {
                 console.log(trans);
-                function removeSolutions(obj) {
-                    delete obj.solutions;
-                    return obj;
-                }
                 if (trans) {
                     let correctness = 0;
                     if (trans.right) {
@@ -60,12 +69,8 @@ export class FirebaseService {
                     console.log("correctness: " + correctness);
                     word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
                 }
-                if (trans && trans.solutions) {
-                    return removeSolutions(word_object);
-                }
-                else {
                     return word_object;
-                }
+                
             },
                 function (Error, committed, snapshot) {
                     if (Error) {
@@ -74,7 +79,8 @@ export class FirebaseService {
                     }
                     else if (!committed) {
                         firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
-                    }
+                        console.log(word_object);
+                    }  
                     else {
                         console.log("successfully committed");
                     }

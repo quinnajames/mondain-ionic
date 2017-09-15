@@ -221,7 +221,8 @@ export class QuizPage {
     this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
     let rescheduleObj = this.rescheduleLogic(lastCorrect);
     this.subscription.subscribe(subscribeData => {
-      this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, subscribeData.solutions,
+      // turns out I don't care about the subscribeData in this call bc not getting solutions anymore
+      this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, 
         rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
