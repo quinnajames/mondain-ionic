@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>QuizPage</ion-title>
+    <ion-title>Quiz</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -41,7 +41,7 @@
 
       <ion-card padding>
         <h1><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-        ({{sessionStats.overall.percent}}%)</b></h1> / <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct
+        ({{sessionStats.overall.percent}}%)</b></h1><b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct
         + sessionStats.last10.incorrect}}
       </ion-card>
       <ion-card padding *ngIf="lastQuizWord">
