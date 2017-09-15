@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>QuizPage</ion-title>
+    <ion-title>Quiz</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -11,54 +11,52 @@
 
 <ion-content padding>
   <ion-row>
-    <ion-col col-10 col-md-8 col-lg-6>
+    <ion-col col-12 col-md-5 col-lg-3>
       <ion-card color="item-background" id="quizCard">
+        <ion-item class="text quizQuestion" *ngIf="nextWord" color="item-background" id="quizAnswer">
+          {{ nextWord.word }}
+        </ion-item>
         <ion-item color="item-background">
-          <ion-item class="text quizQuestion" *ngIf="nextWord" color="item-background">
-            {{ nextWord.word }}
-          </ion-item>
-          <ion-item color="item-background">
-            {{ input.answer }}
-          </ion-item>
-          <ion-item color="item-background">
-            <button ion-button (click)="handleIncorrect()">
-        Mark Incorrect
-    </button>
-          </ion-item>
+          {{ input.answer }}
         </ion-item>
         <ion-item color="item-background">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
-      </ion-card>
-      <ion-card *ngIf="solutionsGiven">
-        <ion-item class="text" *ngFor="let item of solutionsGiven">
-          {{item}}
+        <ion-item *ngIf="solutionsGiven" id="solutionsGivenItem">
+          <span *ngFor="let item of solutionsGiven" class="solution">
+            {{item}}
+          </span>
         </ion-item>
-        
-      <ion-item padding *ngIf="lastQuizAlpha">
-        <h1>Previous Word</h1> <h2> {{lastQuizAlpha.alpha}}</h2><br />
-        <h2><b>Solutions:</b> {{lastQuizAlpha.solutionsStringRep}}</h2><br />
-      </ion-item>
+        <ion-item color="item-background" id="quizButtonItem">
+          <button ion-button (click)="handleCorrect()" class="quizButton">
+                Mark Right
+            </button>
+          <button ion-button (click)="handleIncorrect()" class="quizButton">
+      Mark Incorrect
+  </button>
+        </ion-item>
       </ion-card>
     </ion-col>
-    <ion-col>
-      
+    <ion-col col-12 col-md-5 col-lg-3>
+
       <ion-card padding>
-        <h1>This Quiz</h1><br />
-        <h2><b>Overall:</b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-        = {{sessionStats.overall.percent}}%<br /></h2>
-        <b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct + sessionStats.last10.incorrect}}
-        = {{sessionStats.last10.percent}}%
+        <h1><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
+        ({{sessionStats.overall.percent}}%)</b></h1><b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct
+        + sessionStats.last10.incorrect}}
       </ion-card>
       <ion-card padding *ngIf="lastQuizWord">
-        <h1>Word History</h1> <h2>for <b>{{lastQuizAlpha.alpha}}</b></h2><br />
-        {{lastQuizWord.right}} of {{lastQuizWord.right + lastQuizWord.wrong}}<br />
-        <b>Last correct:</b> {{lastQuizWord.last_correct | date : 'yMMMdjms'}}<br />
+        <h1>Word History</h1>
+        <h2>for <b>{{lastQuizAlpha.alpha}}</b>: {{lastQuizAlpha.solutionsStringRep}}</h2><br /> {{lastQuizWord.right}} of {{lastQuizWord.right
+        + lastQuizWord.wrong}}<br />
+        <b>Last correct: </b>
+        <span *ngIf="lastQuizWord.last_correct">{{lastQuizWord.last_correct | date : 'yMMMdjms'}}</span>
+        <span *ngIf="!lastQuizWord.last_correct">never</span>
+        <br />
         <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}}
       </ion-card>
 
 
-      </ion-col>
+    </ion-col>
   </ion-row>
 
 </ion-content>

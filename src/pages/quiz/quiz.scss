@@ -3,4 +3,25 @@ page-quiz {
         font-size: 250%;
         font-size-adjust: 0.58
     }
+    #quizAnswer, .centered {
+        text-align: center;
+    }
+    .quizSolutions {
+        font-family: 'roboto', 'noto sans', sans-serif;
+        padding: 1px;
+        font-weight: bold;
+    }
+    #quizInput {
+        width: 90%;
+        margin-right: 5%;
+        margin-left: 5%;
+    }
+    #quizButtonItem {
+        text-align: center;
+    }
+    ion-item #solutionsGivenItem {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
 }

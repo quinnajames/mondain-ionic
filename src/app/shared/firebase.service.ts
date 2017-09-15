@@ -18,64 +18,60 @@ export class FirebaseService {
         }
     }
 
-    getAlphagramsDueRef(due_moment: any) {
-        due_moment = parseInt(due_moment.format('x'), 10);
-        var user = this.authProvider.getCurrentUser();
+    addDynamicWordList(list: string[]) {
+        let user = this.authProvider.getCurrentUser();
         if (user) {
-            var dueRef = firebase.database().ref('/userProfile').child(user.uid).orderByChild('next_scheduled').endAt(due_moment);
-            return dueRef;
-        }
+            console.log(list);
+            for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
+                this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10), false);
+            }
+        };
     }
 
-    addRemoteQuizWord(alpha: string, solutions: string[], time, next_scheduled, correct: boolean) {
+
+    addRemoteQuizWord(alpha: string, time, next_scheduled, correct?: boolean) {
         let user = this.authProvider.getCurrentUser();
-        var right_answers = 1;
-        var wrong_answers = 0;
-        if (!correct) {
-            right_answers = 0;
+        let right_answers = 0;
+        let wrong_answers = 0;
+        if (correct === true) {
+            right_answers = 1;
+        }
+        if (correct === false) {
             wrong_answers = 1;
         }
+        // null is neither so stays at 0
         var word_object = {
             last_correct: time,
             next_scheduled: next_scheduled,
-            solutions: solutions,
             right: right_answers,
             wrong: wrong_answers
         };
+        console.log(word_object);
         if (user) {
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function (trans) {
                 // Transaction callback
                 console.log(trans);
-                function removeSolutions(obj) {
-                    delete obj.solutions;
-                    return obj;
-                }
                 if (trans) {
+                    let correctness = 0;
                     if (trans.right) {
                         word_object.right += trans.right;
                     }
                     if (trans.wrong) {
                         word_object.wrong += trans.wrong;
                     }
-                    if (trans.next_scheduled) {
-                        if (correct) { // regular moment() parse is ms (x in format); moment.unix() parse is s (X in format)
-                            // the moment() function for unix accepts ints, which is what we're working with
-                            word_object.next_scheduled = parseInt(moment(trans.next_scheduled).add('1', 'days').format('x'), 10); // push forward next scheduled time by 1 day
-                        }
-                        else {
-                            if (trans.last_correct) {
-                                word_object.last_correct = parseInt(trans.last_correct, 10);
-                            }
-                            word_object.next_scheduled = parseInt(moment().add('1', 'minutes').format('x'), 10); // move back to 1 minute after now
-                        }
+                    correctness = word_object.right - word_object.wrong;
+                    //if (correctness < 0) correctness = 0;
+                    if (!correct) {
+                        correctness = -1;
                     }
+                    if (trans.last_correct) {
+                        word_object.last_correct = parseInt(trans.last_correct, 10);
+                    }
+                    console.log("correctness: " + correctness);
+                    word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
                 }
-                if (trans && trans.solutions) {
-                    return removeSolutions(word_object);
-                }
-                else {
                     return word_object;
-                }
+                
             },
             // onComplete function
                 function (Error, committed, snapshot) {
@@ -85,7 +81,8 @@ export class FirebaseService {
                     }
                     else if (!committed) {
                         firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
-                    }
+                        console.log(word_object);
+                    }  
                     else {
                         console.log("successfully committed");
                     }
@@ -94,6 +91,36 @@ export class FirebaseService {
         return word_object; // returns TO FUNCTION CALLER to get data back
     }
 
+    /** Expects a number that is a unix timestamp. */
+    getWordsDueListener(deadline: number): firebase.database.Query {
+        const user = this.authProvider.getCurrentUser();
+        if (user) {
+            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").endAt(deadline);
+        }
+        return null;
+    }
+
+
+    // addQuizItem(alphagram: string) {
+
+    //     let user = this.authProvider.getCurrentUser();
+    //     if (user) {
+    //         let userRef = firebase.database().ref('/userProfile').child(user.uid).child("dynamicQuiz");
+
+    //         userRef.transaction(function (currentQuiz) {
+    //             if (currentQuiz === null) {
+    //                 return JSON.stringify([alphagram]);
+    //             }
+    //             else {
+    //                 let list = <string[]>JSON.parse(currentQuiz);
+    //                 if (list.indexOf(alphagram) === -1) {
+    //                     list.push(alphagram);
+    //                 }
+    //                 return JSON.stringify(list);
+    //             }
+    //         })
+    //     }
+    // }
 
     getRemoteQuiz() {
         let user = this.authProvider.getCurrentUser();

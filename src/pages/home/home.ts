@@ -104,6 +104,7 @@ export class HomePage {
       console.log(element);
     });
     this.firebaseService.addWordList(studyList);
+    this.firebaseService.addDynamicWordList(studyList);
   }
 
   syncToLocalStorage() {
@@ -128,6 +129,7 @@ export class HomePage {
        this.userQuizList[x] = this.localQuizService.makeAlphagram(this.userQuizList[x]);
      }
      this.firebaseService.addWordList(this.userQuizList);
+    this.firebaseService.addDynamicWordList(this.userQuizList);
      this.localQuizService.addListToLocalStorage(this.userQuizList);     
   }
 
