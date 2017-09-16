@@ -23,7 +23,7 @@ export class FirebaseService {
         if (user) {
             console.log(list);
             for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
-                this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10), false);
+                this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10));
             }
         };
     }
@@ -69,6 +69,9 @@ export class FirebaseService {
                     }
                     console.log("correctness: " + correctness);
                     word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
+                }
+                else {
+
                 }
                     return word_object;
                 
