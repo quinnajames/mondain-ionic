@@ -49,9 +49,6 @@
           <button ion-button [disabled]="!isLoggedIn()" (click)="addToStudyList()">
         Add to Study List
       </button>
-          <button ion-button [disabled]="!isLoggedIn()" (click)="syncToLocalStorage()">
-        Sync Locally
-      </button>
         </ion-item>
         <ion-list>
           <ion-item class="text" *ngFor="let item of items | async" color="item-background">

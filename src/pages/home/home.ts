@@ -105,9 +105,7 @@ export class HomePage {
     });
     this.firebaseService.addWordList(studyList);
     this.firebaseService.addDynamicWordList(studyList);
-  }
-
-  syncToLocalStorage() {
+    
     let user = this.auth.getCurrentUser().uid;
     let subscription = this.db.object('/userProfile/' + user);
     subscription.subscribe(subscribeData => {
