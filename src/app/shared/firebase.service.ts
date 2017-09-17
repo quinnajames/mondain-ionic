@@ -51,6 +51,10 @@ export class FirebaseService {
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function (trans) {
                 // Transaction callback
                 console.log(trans);
+                const right_multiplier = 1.4;
+                const wrong_multiplier = 2;
+                const right_exponent = 1.7;
+                const wrong_exponent = 1.5;
                 if (trans) {
                     let correctness = 0;
                     if (trans.right) {
@@ -59,8 +63,11 @@ export class FirebaseService {
                     if (trans.wrong) {
                         word_object.wrong += trans.wrong;
                     }
-                    correctness = word_object.right - word_object.wrong;
-                    //if (correctness < 0) correctness = 0;
+                    console.log(word_object.right);
+                    console.log(word_object.wrong);
+                    correctness = Math.floor(right_multiplier*Math.pow(word_object.right,right_exponent) - 
+                    wrong_multiplier*Math.pow(word_object.wrong,wrong_exponent));
+                    if (correctness < 0) correctness = 0;
                     if (!correct) {
                         correctness = -1;
                     }
@@ -70,13 +77,10 @@ export class FirebaseService {
                     console.log("correctness: " + correctness);
                     word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
                 }
-                else {
+                return word_object;
 
-                }
-                    return word_object;
-                
             },
-            // onComplete function
+                // onComplete function
                 function (Error, committed, snapshot) {
                     if (Error) {
                         console.log("Error trying to update word stats");
@@ -85,7 +89,7 @@ export class FirebaseService {
                     else if (!committed) {
                         firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
                         console.log(word_object);
-                    }  
+                    }
                     else {
                         console.log("successfully committed");
                     }
