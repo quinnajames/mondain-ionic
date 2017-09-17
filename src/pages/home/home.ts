@@ -25,6 +25,7 @@ export class HomePage {
   userIdent: any;
   loggedIn: boolean;
   userQuizList: any;
+  userQuizListSplit: string[];
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
     return db.list('/alphagram_ranks/' + wordLength, {
@@ -105,7 +106,7 @@ export class HomePage {
     });
     this.firebaseService.addWordList(studyList);
     this.firebaseService.addDynamicWordList(studyList);
-    
+
     let user = this.auth.getCurrentUser().uid;
     let subscription = this.db.object('/userProfile/' + user);
     subscription.subscribe(subscribeData => {
@@ -118,17 +119,17 @@ export class HomePage {
 
   setEmptyCustomList() {
     this.userQuizList = [];
-
+    this.userQuizListSplit = [];
   }
 
   saveUserQuizList() {
-     this.userQuizList = this.userQuizList.split(/\r?\n/);
-     for (var x = 0; x < this.userQuizList.length; x++) {
-       this.userQuizList[x] = this.localQuizService.makeAlphagram(this.userQuizList[x]);
+     this.userQuizListSplit = this.userQuizList.split(/\r?\n/);
+     for (var x = 0; x < this.userQuizListSplit.length; x++) {
+       this.userQuizListSplit[x] = this.localQuizService.makeAlphagram(this.userQuizListSplit[x]);
      }
-     this.firebaseService.addWordList(this.userQuizList);
-    this.firebaseService.addDynamicWordList(this.userQuizList);
-     this.localQuizService.addListToLocalStorage(this.userQuizList);     
+    this.firebaseService.addDynamicWordList(this.userQuizListSplit);
+     this.localQuizService.addListToLocalStorage(this.userQuizListSplit);     
+     this.setEmptyCustomList();
   }
 
 }
