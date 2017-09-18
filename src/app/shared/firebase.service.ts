@@ -9,6 +9,17 @@ export class FirebaseService {
     constructor(private events: Events,
         private authProvider: AuthProvider) { }
 
+    getAnagramListStatic(wordLength = 7, orderBy = 'avgplay', startPos = 1000, listSize = 10) {
+        console.log("in getAnagramListStatic");
+        let user = this.authProvider.getCurrentUser();
+        if (user) {
+            console.log("user exists");
+            let ref = firebase.database().ref('/alphagram_ranks/' + wordLength);
+            ref.orderByChild(orderBy).startAt(startPos).endAt(startPos + listSize - 1).once('value').then((data) => {
+                console.log(data);
+            }, (Error) => { console.log(Error); });
+        }
+    }
     addWordList(list) {
         let user = this.authProvider.getCurrentUser();
         if (user) {
@@ -20,12 +31,14 @@ export class FirebaseService {
 
     addDynamicWordList(list: string[]) {
         let user = this.authProvider.getCurrentUser();
+        let word_objects = [];
         if (user) {
             console.log(list);
             for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
-                this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10));
+                word_objects.push(this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10)));
             }
         };
+        return word_objects;
     }
 
 
@@ -65,10 +78,10 @@ export class FirebaseService {
                     }
                     console.log(word_object.right);
                     console.log(word_object.wrong);
-                    correctness = Math.floor(right_multiplier*Math.pow(word_object.right,right_exponent) - 
-                    wrong_multiplier*Math.pow(word_object.wrong,wrong_exponent));
+                    correctness = Math.floor(right_multiplier * Math.pow(word_object.right, right_exponent) -
+                        wrong_multiplier * Math.pow(word_object.wrong, wrong_exponent));
                     if (correctness < 0) correctness = 0;
-                    if (!correct) {
+                    if (correct === false) {
                         correctness = -1;
                     }
                     if (trans.last_correct) {

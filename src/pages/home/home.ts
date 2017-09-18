@@ -28,6 +28,7 @@ export class HomePage {
   userQuizListSplit: string[];
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
+    this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
     return db.list('/alphagram_ranks/' + wordLength, {
       query: {
         orderByChild: orderBy,
@@ -37,6 +38,7 @@ export class HomePage {
       preserveSnapshot: getSnapshot
     });
   }
+
 
   constructor(public navCtrl: NavController,
     public db: AngularFireDatabase,
@@ -49,7 +51,7 @@ export class HomePage {
     this.inputStartPos = 2000;
 
     this.items = this.getAnagramList(db, this.inputWordLength, undefined, this.inputStartPos, this.inputListSize);
-
+    
     this.userIdent = auth.getCurrentUserIdent();
     this.loggedIn = auth.isLoggedIn();
     this.quizList = [];
@@ -105,7 +107,8 @@ export class HomePage {
       console.log(element);
     });
     this.firebaseService.addWordList(studyList);
-    this.firebaseService.addDynamicWordList(studyList);
+    
+    console.log(this.firebaseService.addDynamicWordList(studyList));
 
     let user = this.auth.getCurrentUser().uid;
     let subscription = this.db.object('/userProfile/' + user);

@@ -132,7 +132,7 @@ export class QuizPage {
     if (data.child("next_scheduled")) {
       console.log(data.val().next_scheduled);
       if (data.val().next_scheduled > this.getCurrentUnixTimestamp()) {
-        this.dynamicQuiz.set(data.key, false);
+        this.dynamicQuiz.delete(data.key);
       }
     }
   }
@@ -140,7 +140,7 @@ export class QuizPage {
   onChildRemoved(data) {
     console.log("word no longer due: " + data.key);
     if (this && this.dynamicQuiz) {
-      this.dynamicQuiz.set(data.key, false);
+      this.dynamicQuiz.delete(data.key);
     }
   }
 
