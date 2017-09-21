@@ -18,17 +18,17 @@
   <ion-row>
 
 
-    <ion-col col-12 col-md-10 col-lg-8>
+    <ion-col col-14 col-md-8 col-lg-4>
       <ion-card>
-        <ion-item color="item-background">
+        <ion-item color="item-background" class="searchInput">
           <ion-label>List length</ion-label>
           <ion-input type="number" [value]="inputListSize" min="1" max="50" [(ngModel)]="inputListSize" (blur)="refreshList()"></ion-input>
         </ion-item>
-        <ion-item color="item-background">
+        <ion-item color="item-background" class="searchInput">
           <ion-label>Word length</ion-label>
           <ion-input type="number" [value]="inputWordLength" min="2" max="15" [(ngModel)]="inputWordLength" (blur)="refreshList()"></ion-input>
         </ion-item>
-        <ion-item color="item-background">
+        <ion-item color="item-background" class="searchInput">
           <ion-label>Start Position</ion-label>
           <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [step]="inputListSize" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
         </ion-item>
@@ -41,7 +41,7 @@
         <button ion-button (click)="saveUserQuizList()">Save Custom List</button>
       </ion-card>
     </ion-col>
-    <ion-col col-14 col-md-12 col-lg-10>
+    <ion-col col-14 col-md-10 col-lg-6>
       <ion-card color="item-background">
         <ion-item>
         <h1>Search Results</h1>
