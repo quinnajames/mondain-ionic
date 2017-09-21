@@ -48,9 +48,9 @@ export class HomePage {
     private firebaseService: FirebaseService,
     public utils: Utils) {
     // default values for display
-    this.inputListSize = 10;
+    this.inputListSize = 25;
     this.inputWordLength = 7;
-    this.inputStartPos = 2000;
+    this.inputStartPos = 1;
 
     this.items = this.getAnagramList(db, this.inputWordLength, undefined, this.inputStartPos, this.inputListSize);
     
