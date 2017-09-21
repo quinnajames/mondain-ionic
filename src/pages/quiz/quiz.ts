@@ -153,27 +153,7 @@ export class QuizPage {
     //    this.quizListRef.off();
   }
 
-  /** Update function, has side effects on this.sessionStats */
-  updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
-
-    if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
-    ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
-    // todo: optimize last10 algorithms after first run
-    ss.last10.queue.push(wasCorrect);
-    if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
-    ss.last10.correct = ss.last10.incorrect = 0;
-    ss.last10.queue.forEach(el => {
-      if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
-    })
-    ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
-
-    if (this.lastQuizAlpha) {
-
-      console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
-
-    }
-    console.log("Map size: " + this.dynamicQuiz.size);
-
+  updateDynamicQuiz() {
 
     if (this.dynamicQuiz) {
       if (!this.dynamicQuizIterator) {
@@ -218,6 +198,30 @@ export class QuizPage {
     else {
       console.log("Quiz not initialized");
     }
+  }
+
+  /** Update function, has side effects on this.sessionStats */
+  updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
+
+    if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
+    ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
+    // todo: optimize last10 algorithms after first run
+    ss.last10.queue.push(wasCorrect);
+    if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
+    ss.last10.correct = ss.last10.incorrect = 0;
+    ss.last10.queue.forEach(el => {
+      if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
+    })
+    ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
+
+    if (this.lastQuizAlpha) {
+
+      console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
+
+    }
+    console.log("Map size: " + this.dynamicQuiz.size);
+    this.updateDynamicQuiz();
+
     this.sessionStats = ss;
   }
 
