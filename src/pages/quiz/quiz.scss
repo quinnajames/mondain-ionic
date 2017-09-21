@@ -27,4 +27,13 @@ page-quiz {
         flex-direction: column;
         overflow: auto;
     }
+    
+    .outer-table {
+        display: table;
+    }
+    .inner-table {
+        display: table-cell;
+        vertical-align: middle;
+        padding: 5px;
+    }
 }
