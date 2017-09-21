@@ -74,7 +74,7 @@ export class FirebaseService {
         const wrong_multiplier = 2;
         const right_exponent = 1.7;
         const wrong_exponent = 1.5;
-        let correctness = Math.floor(right_multiplier * Math.pow(right, right_exponent) -
+        let correctness = 1 + Math.floor(right_multiplier * Math.pow(right, right_exponent) -
         wrong_multiplier * Math.pow(wrong, wrong_exponent));
         if (correctness < 0) correctness = 0;
         return correctness;
