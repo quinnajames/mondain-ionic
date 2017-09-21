@@ -7,28 +7,28 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content padding [ngClass]="getBackground()">
   <ion-row>
     <ion-col col-12 col-md-5 col-lg-3>
-      <ion-card class="outer-table" padding>
-        <div class="inner-table">
-          <h1><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
+      <ion-card class="outer-table translucent" padding>
+        <div class="inner-table translucent">
+          <h1 class="translucent"><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
             ({{sessionStats.overall.percent}}%)</b></h1><b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct
           + sessionStats.last10.incorrect}}
         </div>
-        <div class="inner-table">
-          <h1><span id="mapSize" *ngIf="this.dynamicQuiz">
+        <div class="inner-table translucent">
+          <h1><span id="mapSize" class="translucent" *ngIf="this.dynamicQuiz">
               {{this.dynamicQuiz.size}}
             </span></h1>
           remaining
         </div>
       </ion-card>
 
-      <ion-card id="quizCard" color="item-background">
-        <ion-item id="quizAnswer" class="text quizQuestion" *ngIf="nextWord" color="item-background" >
+      <ion-card id="quizCard" class="translucent">
+        <ion-item id="quizAnswer" class="text quizQuestion translucent" *ngIf="nextWord">
           {{ nextWord.word }}
         </ion-item>
-        <ion-item color="item-background">
+        <ion-item class="translucent">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
         <ion-item id="solutionsGivenItem" *ngIf="solutionsGiven">

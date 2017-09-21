@@ -177,6 +177,40 @@ export class QuizPage {
     this.nextWordDynamic = "AA";
   }
 
+  getBackground() {
+    let base = 'color-';
+    if (this.sessionStats) {
+      if (this.sessionStats.overall.percent) {
+        let percent = Math.floor(this.sessionStats.overall.percent);
+        if (percent > 95) {
+          return base + '100';
+        }
+        else if (percent > 90) {
+          return base + '95';
+        }
+        else if (percent > 85) {
+          return base + '90';
+        }
+        else if (percent > 80) {
+          return base + '85';
+        }
+        else if (percent > 60 && percent < 70) {
+          return base + '70';
+        }
+        else if (percent > 50) {
+          return base + '60';
+        }
+        else if (percent > 20) {
+          return base +  '50';
+        }
+        else if (percent >= 0) {
+          return base + '0';
+        }
+      }
+    }
+    return base + '80';
+  }
+
   setNextWordDynamic(nextword) {
     while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
       console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
