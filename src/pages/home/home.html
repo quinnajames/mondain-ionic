@@ -5,12 +5,12 @@
     </button>
     <ion-title>Home</ion-title>
   </ion-navbar>
-  
+
   <ion-item color="item-background" class="login-bar">
     <span class="login-item">
         Logged in as: {{userIdent}}</span>
-  <span class="login-item"><button ion-button *ngIf="!loggedIn" (click)="refreshLogin()">Login</button></span>
-</ion-item>
+    <span class="login-item"><button ion-button *ngIf="!loggedIn" (click)="refreshLogin()">Login</button></span>
+  </ion-item>
 
 </ion-header>
 
@@ -34,7 +34,7 @@
         </ion-item>
       </ion-card>
       <ion-item>
-      <button ion-button *ngIf="!userQuizList" (click)="setEmptyCustomList()">Enter Custom List</button>
+        <button ion-button *ngIf="!userQuizList" (click)="setEmptyCustomList()">Enter Custom List</button>
       </ion-item>
       <ion-card *ngIf="userQuizList">
         <ion-textarea [(ngModel)]="userQuizList" placeholder="Enter a list of words here"></ion-textarea>
@@ -42,21 +42,21 @@
       </ion-card>
     </ion-col>
     <ion-col col-14 col-md-10 col-lg-6>
+      
       <ion-card color="item-background">
         <ion-item>
-        <h1>Search Results</h1>
+          <h1>Search Results</h1>
         </ion-item>
         <ion-item>
           <button ion-button [disabled]="!isLoggedIn()" (click)="addToStudyList()">
         Add to Study List
       </button>
         </ion-item>
-      <span *ngIf="dynamicQueryList"></span>
-      <ion-item class="text" *ngFor="let item of dynamicQueryList" color="item-background" [ngClass]="{'green': item.hasHistory}">
-          {{item.rank}} {{item.alphagram}}
-      </ion-item>
+         <ion-item class="text" *ngFor="let item of dynamicQueryList" color="item-background" [ngClass]="{'green': item.hasHistory}">
+            {{item.rank}} {{item.alphagram}}
+        </ion-item>
+      </ion-card>
       
-    </ion-card>
     </ion-col>
   </ion-row>
 </ion-content>
