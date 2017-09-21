@@ -97,6 +97,10 @@ export class QuizPage {
 
   }
 
+  getCurrentMoment() {
+    return moment();
+  }
+
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
   }
@@ -220,9 +224,9 @@ export class QuizPage {
 
   rescheduleLogic(wasCorrect: boolean): any {
     if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
-    let wordMoment = moment();
+    let wordMoment = this.getCurrentMoment();
     let unixtime = parseInt(wordMoment.format('x'), 10);
-    let rescheduleMoment = moment();
+    let rescheduleMoment;
     if (wasCorrect) {
       rescheduleMoment = wordMoment.add('1', 'days');
     }
