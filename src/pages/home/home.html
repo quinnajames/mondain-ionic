@@ -30,7 +30,7 @@
         </ion-item>
         <ion-item color="item-background">
           <ion-label>Start Position</ion-label>
-          <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
+          <ion-input type="number" [value]="inputStartPos" min="1" max="40000" [step]="inputListSize" [(ngModel)]="inputStartPos" (blur)="refreshList()"></ion-input>
         </ion-item>
       </ion-card>
       <ion-item>
