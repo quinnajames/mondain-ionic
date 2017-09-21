@@ -5,7 +5,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
-import { LocalQuizService, FirebaseService } from '../../app/shared/shared';
+import { LocalQuizService, FirebaseService, Utils } from '../../app/shared/shared';
 
 @Component({
   selector: 'page-home',
@@ -44,7 +44,8 @@ export class HomePage {
     public db: AngularFireDatabase,
     public auth: AuthProvider,
     private localQuizService: LocalQuizService,
-    private firebaseService: FirebaseService) {
+    private firebaseService: FirebaseService,
+    public utils: Utils) {
     // default values for display
     this.inputListSize = 10;
     this.inputWordLength = 7;
@@ -128,7 +129,7 @@ export class HomePage {
   saveUserQuizList() {
      this.userQuizListSplit = this.userQuizList.split(/\r?\n/);
      for (var x = 0; x < this.userQuizListSplit.length; x++) {
-       this.userQuizListSplit[x] = this.localQuizService.makeAlphagram(this.userQuizListSplit[x]);
+       this.userQuizListSplit[x] = this.utils.makeAlphagram(this.userQuizListSplit[x]);
      }
     this.firebaseService.addDynamicWordList(this.userQuizListSplit);
      this.localQuizService.addListToLocalStorage(this.userQuizListSplit);     

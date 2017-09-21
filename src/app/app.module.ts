@@ -11,10 +11,9 @@ import { HomePage, LoginPage, QuizPage, SignupPage } from '../pages/pages';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { AuthProvider } from '../providers/auth/auth';
 
-import { LocalQuizService, FirebaseService, AngularFireService } from '../app/shared/shared';
+import { LocalQuizService, FirebaseService, AngularFireService, Utils } from '../app/shared/shared';
 
 import { firebaseConfig } from './firebase.config';
 
@@ -48,6 +47,7 @@ import { firebaseConfig } from './firebase.config';
     StatusBar,
     SplashScreen,
     AuthProvider,
+    Utils,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

@@ -23,10 +23,4 @@ export class LocalQuizService {
         return this.storage.get('quiz');
     }
 
-    makeAlphagram(word) { // this function should not be here. perhaps separate utils, or a shared Word type with this method attached to it
-        word = word.toUpperCase().split("").sort().join("");
-        return word;
-    }
-
-
 }
