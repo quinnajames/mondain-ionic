@@ -103,7 +103,7 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-  
+
 
   }
 
@@ -167,15 +167,43 @@ export class QuizPage {
     //    this.quizListRef.off();
   }
 
- initializeIterator() {
-  if (!this.dynamicQuizIterator) {
-    this.dynamicQuizIterator = this.dynamicQuiz.entries();
+  initializeIterator() {
+    if (!this.dynamicQuizIterator) {
+      this.dynamicQuizIterator = this.dynamicQuiz.entries();
+    }
   }
- }
 
- setDefaultNextWord() {
-  this.nextWordDynamic = "AA";
- }
+  setDefaultNextWord() {
+    this.nextWordDynamic = "AA";
+  }
+
+  setNextWordDynamic(nextword) {
+    while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
+      console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
+      nextword = this.dynamicQuizIterator.next();
+    }
+    if (!nextword.done) {
+      this.nextWordDynamic = nextword.value[0];
+      console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
+    }
+    else {
+      this.dynamicQuizIterator = this.dynamicQuiz.entries();
+      if (this.dynamicQuiz.size > 0) {
+        nextword = this.dynamicQuizIterator.next();
+        if (nextword.value[1]) {
+          this.nextWordDynamic = nextword.value[0];
+        }
+        else {
+          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
+          this.setDefaultNextWord();
+        }
+      }
+      else {
+        this.setDefaultNextWord();
+      }
+      console.log("I think this means the quiz is done");
+    }
+  }
 
   updateDynamicQuiz() {
     if (this.dynamicQuiz) {
@@ -185,31 +213,7 @@ export class QuizPage {
         this.initializeIterator();
       }
       if (nextword) {
-        while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
-          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
-          nextword = this.dynamicQuizIterator.next();
-        }
-        if (!nextword.done) {
-          this.nextWordDynamic = nextword.value[0];
-          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
-        }
-        else {
-          this.dynamicQuizIterator = this.dynamicQuiz.entries();
-          if (this.dynamicQuiz.size > 0) {
-            nextword = this.dynamicQuizIterator.next();
-            if (nextword.value[1]) {
-              this.nextWordDynamic = nextword.value[0];
-            }
-            else {
-              console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
-              this.setDefaultNextWord();
-            }
-          }
-          else {
-            this.setDefaultNextWord();
-          }
-          console.log("I think this means the quiz is done");
-        }
+        this.setNextWordDynamic(nextword);
       }
 
       else {
@@ -265,10 +269,10 @@ export class QuizPage {
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
     this.updateRescheduleObj;
-    this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, 
+    this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
-      // get solutions
+    // get solutions
     this.subscription.subscribe(subscribeData => {
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
@@ -303,17 +307,17 @@ export class QuizPage {
     else {
       nextQuizWord = "AA";
     }
-      this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
-      this.subscription.subscribe(subscribeData => {
-        let nextsolutions = subscribeData.solutions;
-        this.nextWord = {
-          word: nextQuizWord,
-          solutions: nextsolutions,
-          solutionCount: nextsolutions.length,
-          lastCorrect: null,
-          nextScheduled: null
-        };
-      })
+    this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
+    this.subscription.subscribe(subscribeData => {
+      let nextsolutions = subscribeData.solutions;
+      this.nextWord = {
+        word: nextQuizWord,
+        solutions: nextsolutions,
+        solutionCount: nextsolutions.length,
+        lastCorrect: null,
+        nextScheduled: null
+      };
+    })
   }
 
 
