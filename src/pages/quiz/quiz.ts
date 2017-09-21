@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -72,6 +73,7 @@ export class QuizPage {
   hookSubscription: FirebaseObjectObservable<any>;
 
   constructor(
+    public loading: LoadingController,
     private authProvider: AuthProvider,
     public db: AngularFireDatabase,
     public firebaseService: FirebaseService,
@@ -101,7 +103,7 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-    this.loadNextWord();
+  
 
   }
 
@@ -114,16 +116,26 @@ export class QuizPage {
   }
 
   ionViewDidLoad() {
-    this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
-    this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
-      this.onChildAdded(data);
-    }, undefined, this);
-    this.dueRef.on('child_changed', (data) => {
-      this.onChildChanged(data);
+    let loader = this.loading.create({
+      content: 'Getting quiz entries...',
     });
-    this.dueRef.on('child_removed', (data) => {
-      this.onChildRemoved(data);
-    }, undefined, this);
+    loader.present().then(() => {
+      this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
+      this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
+        this.onChildAdded(data);
+      }, undefined, this);
+      this.dueRef.on('child_changed', (data) => {
+        this.onChildChanged(data);
+      });
+      this.dueRef.on('child_removed', (data) => {
+        this.onChildRemoved(data);
+      }, undefined, this);
+    }).then(() => {
+      this.updateDynamicQuiz();
+    }).then(() => {
+      this.loadNextWord();
+      loader.dismiss();
+    });
   }
 
   onChildAdded(data) {
@@ -155,15 +167,22 @@ export class QuizPage {
     //    this.quizListRef.off();
   }
 
-  updateDynamicQuiz() {
+ initializeIterator() {
+  if (!this.dynamicQuizIterator) {
+    this.dynamicQuizIterator = this.dynamicQuiz.entries();
+  }
+ }
 
+ setDefaultNextWord() {
+  this.nextWordDynamic = "AA";
+ }
+
+  updateDynamicQuiz() {
     if (this.dynamicQuiz) {
-      if (!this.dynamicQuizIterator) {
-        this.dynamicQuizIterator = this.dynamicQuiz.entries();
-      }
+      this.initializeIterator();
       let nextword = this.dynamicQuizIterator.next();
       if (nextword.done) {
-        this.dynamicQuizIterator = this.dynamicQuiz.entries();
+        this.initializeIterator();
       }
       if (nextword) {
         while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
@@ -183,11 +202,11 @@ export class QuizPage {
             }
             else {
               console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
-              this.nextWordDynamic = "AA"; // ran outta words!
+              this.setDefaultNextWord();
             }
           }
           else {
-            this.nextWordDynamic = "AA"; // ran outta words!
+            this.setDefaultNextWord();
           }
           console.log("I think this means the quiz is done");
         }
