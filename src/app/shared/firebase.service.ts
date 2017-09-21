@@ -147,16 +147,8 @@ export class FirebaseService {
         return null;
     }
 
-    getRemoteQuiz() {
-        let user = this.authProvider.getCurrentUser();
-        if (user) {
-            return firebase.database().ref('/userProfile').child(user.uid).once('value').then(function (snapshot) {
-                //let quiz = JSON.parse(snapshot.val().quiz);
-                console.log(snapshot);
-            })
-        }
-    }
     getWordHooks(word) {
+        // to use
         let hooks = {
             front: null,
             back: null
