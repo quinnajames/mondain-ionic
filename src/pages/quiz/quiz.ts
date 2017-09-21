@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
-import { LocalQuizService, FirebaseService, AngularFireService } from '../../app/shared/shared';
+import { FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
 import * as _ from 'lodash';
@@ -72,7 +72,6 @@ export class QuizPage {
   hookSubscription: FirebaseObjectObservable<any>;
 
   constructor(
-    private LocalQuizService: LocalQuizService,
     private authProvider: AuthProvider,
     public db: AngularFireDatabase,
     public firebaseService: FirebaseService,
@@ -82,6 +81,7 @@ export class QuizPage {
     }
     // Initialize session variables
     this.quizIndex = 0;
+    this.quizLength = 1;
     this.sessionStats = {
       overall: {
         correct: 0,
@@ -101,8 +101,6 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-    this.getCurrentUserQuiz();
-    this.refreshQuizList();
     this.loadNextWord();
 
   }
@@ -113,12 +111,6 @@ export class QuizPage {
 
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
-  }
-
-  refreshQuizList() {
-    this.quizList = this.LocalQuizService.getCurrentQuiz().then((ql) => {
-      this.quizLength = ql.length;
-    });
   }
 
   ionViewDidLoad() {
@@ -283,32 +275,17 @@ export class QuizPage {
     })
   }
 
-  getCurrentUserQuiz() {
-    let user = this.authProvider.getCurrentUser().uid;
-    let subscription = this.db.object('/userProfile/' + user);
-    subscription.subscribe(subscribeData => {
-      let quiz = JSON.parse(subscribeData.quiz);
-      this.quizList = quiz;
-    });
-  }
-
-
   loadNextWord() {
     this.solutionsGiven = [];
-    let dynamic;
+    let nextQuizWord;
     if (this.nextWordDynamic) {
-      dynamic = this.nextWordDynamic;
+      nextQuizWord = this.nextWordDynamic;
     }
-    this.LocalQuizService.getCurrentQuiz().then((quiz) => {
-      console.log(dynamic);
-      let nextQuizWord = quiz[this.quizIndex];
-      if (dynamic) {
-        nextQuizWord = dynamic;
-      }
-
+    else {
+      nextQuizWord = "AA";
+    }
       this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
       this.subscription.subscribe(subscribeData => {
-
         let nextsolutions = subscribeData.solutions;
         this.nextWord = {
           word: nextQuizWord,
@@ -318,9 +295,6 @@ export class QuizPage {
           nextScheduled: null
         };
       })
-
-    });
-
   }
 
 
