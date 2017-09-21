@@ -68,6 +68,17 @@ export class FirebaseService {
         return word_objects;
     }
 
+    correctnessCalc(right, wrong) {
+
+        const right_multiplier = 1.4;
+        const wrong_multiplier = 2;
+        const right_exponent = 1.7;
+        const wrong_exponent = 1.5;
+        let correctness = Math.floor(right_multiplier * Math.pow(right, right_exponent) -
+        wrong_multiplier * Math.pow(wrong, wrong_exponent));
+        if (correctness < 0) correctness = 0;
+        return correctness;
+    }
 
     addRemoteQuizWord(alpha: string, time, next_scheduled, correct?: boolean) {
         let user = this.authProvider.getCurrentUser();
@@ -88,13 +99,8 @@ export class FirebaseService {
         };
         console.log(word_object);
         if (user) {
-            firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction(function (trans) {
-                // Transaction callback
+            firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction((trans) => {
                 console.log(trans);
-                const right_multiplier = 1.4;
-                const wrong_multiplier = 2;
-                const right_exponent = 1.7;
-                const wrong_exponent = 1.5;
                 if (trans) {
                     let correctness = 0;
                     if (trans.right) {
@@ -105,9 +111,7 @@ export class FirebaseService {
                     }
                     console.log(word_object.right);
                     console.log(word_object.wrong);
-                    correctness = Math.floor(right_multiplier * Math.pow(word_object.right, right_exponent) -
-                        wrong_multiplier * Math.pow(word_object.wrong, wrong_exponent));
-                    if (correctness < 0) correctness = 0;
+                    correctness = this.correctnessCalc(word_object.right, word_object.wrong);
                     if (correct === false) {
                         correctness = -1;
                     }
@@ -117,7 +121,7 @@ export class FirebaseService {
                     console.log("correctness: " + correctness);
                     word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
                 }
-                return word_object;
+                return word_object; // posts transaction
 
             },
                 // onComplete function
@@ -135,7 +139,7 @@ export class FirebaseService {
                     }
                 }, false);
         }
-        return word_object; // returns TO FUNCTION CALLER to get data back
+        return word_object; // returns to function caller
     }
 
     /** Expects a number that is a unix timestamp. */
