@@ -29,9 +29,6 @@
           {{ nextWord.word }}
         </ion-item>
         <ion-item color="item-background">
-          {{ input.answer }}
-        </ion-item>
-        <ion-item color="item-background">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
         <ion-item *ngIf="solutionsGiven" id="solutionsGivenItem">
