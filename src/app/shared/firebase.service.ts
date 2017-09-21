@@ -69,7 +69,6 @@ export class FirebaseService {
     }
 
     correctnessCalc(right, wrong) {
-
         const right_multiplier = 1.4;
         const wrong_multiplier = 2;
         const right_exponent = 1.7;
@@ -78,6 +77,12 @@ export class FirebaseService {
         wrong_multiplier * Math.pow(wrong, wrong_exponent));
         if (correctness < 0) correctness = 0;
         return correctness;
+    }
+
+    getRandomMinutes(days) {
+        const MINS_IN_FULL_DAY = 1440;
+        const minutes_max = days * MINS_IN_FULL_DAY;
+        return Math.floor(Math.random() * minutes_max);
     }
 
     addRemoteQuizWord(alpha: string, time, next_scheduled, correct?: boolean) {
@@ -119,7 +124,8 @@ export class FirebaseService {
                         word_object.last_correct = parseInt(trans.last_correct, 10);
                     }
                     console.log("correctness: " + correctness);
-                    word_object.next_scheduled = parseInt(moment().add(correctness, 'days').format('x'), 10);
+                    const MINS_IN_HALF_DAY = 720;
+                    word_object.next_scheduled = parseInt(moment().add(correctness*MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
                 }
                 return word_object; // posts transaction
 
