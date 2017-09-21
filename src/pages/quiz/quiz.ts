@@ -149,6 +149,7 @@ export class QuizPage {
     //    this.quizListRef.off();
   }
 
+  /** Update function, has side effects on this.sessionStats */
   updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
 
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
@@ -213,12 +214,30 @@ export class QuizPage {
     else {
       console.log("Quiz not initialized");
     }
-    return ss;
+    this.sessionStats = ss;
   }
 
 
+  rescheduleLogic(wasCorrect: boolean): any {
+    if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
+    let wordMoment = moment();
+    let unixtime = parseInt(wordMoment.format('x'), 10);
+    let rescheduleMoment = moment();
+    if (wasCorrect) {
+      rescheduleMoment = wordMoment.add('1', 'days');
+    }
+    else {
+      rescheduleMoment = wordMoment.add('1', 'minutes');
+    }
+    let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
+    return {
+      unixtime: unixtime,
+      rescheduletime: rescheduletime
+    }
+  }
+
   handleCorrectOrIncorrect(lastCorrect: boolean) {
-    this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
+    this.updateStats(lastCorrect, this.sessionStats);
     let rescheduleObj = this.rescheduleLogic(lastCorrect);
     this.subscription.subscribe(subscribeData => {
       // turns out I don't care about the subscribeData in this call bc not getting solutions anymore
@@ -288,23 +307,6 @@ export class QuizPage {
 
   }
 
-  rescheduleLogic(wasCorrect: boolean): any {
-    if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
-    let wordMoment = moment();
-    let unixtime = parseInt(wordMoment.format('x'), 10);
-    let rescheduleMoment = moment();
-    if (wasCorrect) {
-      rescheduleMoment = wordMoment.add('1', 'days');
-    }
-    else {
-      rescheduleMoment = wordMoment.add('1', 'minutes');
-    }
-    let rescheduletime = parseInt(rescheduleMoment.format('x'), 10);
-    return {
-      unixtime: unixtime,
-      rescheduletime: rescheduletime
-    }
-  }
 
   //aliases
 
