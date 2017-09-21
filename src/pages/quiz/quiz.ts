@@ -51,6 +51,11 @@ export class QuizPage {
     last_correct: any,
     next_scheduled: any
   }
+  lastWasCorrect: boolean // eventually to be made redundant with the stats queue
+  rescheduleObj: {
+    unixtime: number
+    rescheduletime: number
+  }
   lastQuizAlpha: {
     alpha: string,
     solutions: string[],
@@ -90,6 +95,11 @@ export class QuizPage {
         queue: []
       }
     };
+    this.lastWasCorrect = null;
+    this.rescheduleObj = {
+      unixtime: null,
+      rescheduletime: null
+    }
     this.dynamicQuiz = new Map<string, boolean>();
     this.getCurrentUserQuiz();
     this.refreshQuizList();
@@ -213,16 +223,8 @@ export class QuizPage {
       if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
     })
     ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
-
-    if (this.lastQuizAlpha) {
-
-      console.log(this.dynamicQuiz.get(this.lastQuizAlpha.alpha));
-
-    }
-    console.log("Map size: " + this.dynamicQuiz.size);
-    this.updateDynamicQuiz();
-
     this.sessionStats = ss;
+    this.lastWasCorrect = ss.last10.queue[-1] || null;
   }
 
 
@@ -244,11 +246,16 @@ export class QuizPage {
     }
   }
 
+  updateRescheduleObj() {
+    this.rescheduleObj = this.rescheduleLogic(this.lastWasCorrect);
+  }
+
   handleCorrectOrIncorrect(lastCorrect: boolean) {
     this.updateStats(lastCorrect, this.sessionStats);
-    let rescheduleObj = this.rescheduleLogic(lastCorrect);
+    this.updateDynamicQuiz();
+    this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word, 
-      rescheduleObj.unixtime, rescheduleObj.rescheduletime, lastCorrect)
+      this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
       // get solutions
     this.subscription.subscribe(subscribeData => {
