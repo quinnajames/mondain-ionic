@@ -7,4 +7,12 @@ page-home {
     .green {
         background-color: #B3D8B3;
     }
+    #login-bar {
+        display: table;
+    }
+    .login-item {
+        display: table-cell;
+        vertical-align: middle;
+        padding-right: 10px;
+    }
 }

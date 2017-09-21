@@ -5,17 +5,18 @@
     </button>
     <ion-title>Home</ion-title>
   </ion-navbar>
+  
+  <ion-item color="item-background" class="login-bar">
+    <span class="login-item">
+        Logged in as: {{userIdent}}</span>
+  <span class="login-item"><button ion-button *ngIf="!loggedIn" (click)="refreshLogin()">Login</button></span>
+</ion-item>
+
 </ion-header>
 
 <ion-content padding>
   <ion-row>
 
-    <ion-col col-12 col-md-10 col-lg-8>
-      <ion-card padding>
-        <ion-item class="text" color="item-background">Logged in as: {{userIdent}}</ion-item>
-        <button ion-button (click)="refreshLogin()">Refresh Login</button>
-      </ion-card>
-    </ion-col>
 
     <ion-col col-12 col-md-10 col-lg-8>
       <ion-card>
