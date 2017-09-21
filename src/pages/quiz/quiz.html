@@ -39,14 +39,18 @@
             {{item}}
           </span>
         </ion-item>
-        <ion-item color="item-background" id="quizButtonItem">
-          <button ion-button (click)="handleCorrect()" class="quizButton">
-                Mark Right
-            </button>
-          <button ion-button (click)="handleIncorrect()" class="quizButton">
-      Mark Incorrect
-  </button>
-        </ion-item>
+        <ion-card id="buttonCard" class="outer-table">
+          <div class="inner-table" >
+            <button ion-fab (click)="handleCorrect()" class="quizButtonItem button-align">
+                  <ion-icon name="checkmark"></ion-icon>
+                </button>
+          </div>
+          <div class="inner-table">
+            <button ion-fab (click)="handleIncorrect()" class="quizButtonItem button-align">
+              <ion-icon name="thumbs-down"></ion-icon>
+              </button>
+          </div>
+        </ion-card>
       </ion-card>
     </ion-col>
     <ion-col col-12 col-md-5 col-lg-3>

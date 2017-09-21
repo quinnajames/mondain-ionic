@@ -20,14 +20,17 @@ page-quiz {
         margin-left: 5%;
     }
     #quizButtonItem {
-        text-align: center;
+        line-height: 100px;
     }
     ion-item #solutionsGivenItem {
         display: flex;
         flex-direction: column;
         overflow: auto;
     }
-    
+    ion-card #buttonCard {
+        border: none;
+        box-shadow: none;
+    }
     .outer-table {
         display: table;
     }
@@ -35,5 +38,8 @@ page-quiz {
         display: table-cell;
         vertical-align: middle;
         padding: 5px;
+    }
+    .button-align {
+        margin: auto;
     }
 }
