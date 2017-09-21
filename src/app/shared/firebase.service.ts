@@ -20,6 +20,33 @@ export class FirebaseService {
             }, (Error) => { console.log(Error); });
         }
     }
+
+    getWordHistoryList(wordLength = 7, orderBy = 'avgplay', startPos = 1000, listSize = 10) {
+        let user = this.authProvider.getCurrentUser();
+        if (user) {
+            let wordList = [];
+            console.log("user exists");
+            let ref = firebase.database().ref('/alphagram_ranks/' + wordLength).orderByChild(orderBy).startAt(startPos).endAt(startPos + listSize - 1);
+            ref.on('child_added', (dataSnapshot) => { // I do child_added so it calls once per child
+                let quizStatsRef = firebase.database().ref('/userProfile').child(user.uid).child(dataSnapshot.key);
+                let hasHistory = false;
+                quizStatsRef.once('value').then((val) => {
+                    if (val && val.val() && val.val().next_scheduled) {
+                        hasHistory = true;
+                    }
+                    wordList.push({
+                        alphagram: dataSnapshot.key,
+                        rank: dataSnapshot.val().avgplay,
+                        hasHistory: hasHistory
+                    })
+                }, (Error) => { console.log(Error); })
+
+            }, (Error) => { console.log(Error); });
+            return wordList;
+        }
+        return null;
+    }
+
     addWordList(list) {
         let user = this.authProvider.getCurrentUser();
         if (user) {
@@ -119,28 +146,6 @@ export class FirebaseService {
         }
         return null;
     }
-
-
-    // addQuizItem(alphagram: string) {
-
-    //     let user = this.authProvider.getCurrentUser();
-    //     if (user) {
-    //         let userRef = firebase.database().ref('/userProfile').child(user.uid).child("dynamicQuiz");
-
-    //         userRef.transaction(function (currentQuiz) {
-    //             if (currentQuiz === null) {
-    //                 return JSON.stringify([alphagram]);
-    //             }
-    //             else {
-    //                 let list = <string[]>JSON.parse(currentQuiz);
-    //                 if (list.indexOf(alphagram) === -1) {
-    //                     list.push(alphagram);
-    //                 }
-    //                 return JSON.stringify(list);
-    //             }
-    //         })
-    //     }
-    // }
 
     getRemoteQuiz() {
         let user = this.authProvider.getCurrentUser();

@@ -26,6 +26,7 @@ export class HomePage {
   loggedIn: boolean;
   userQuizList: any;
   userQuizListSplit: string[];
+  dynamicQueryList: any[];
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
     this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
@@ -56,6 +57,7 @@ export class HomePage {
     this.userIdent = auth.getCurrentUserIdent();
     this.loggedIn = auth.isLoggedIn();
     this.quizList = [];
+    this.dynamicQueryList = [];
     this.refreshQuery();
   }
 
@@ -76,6 +78,7 @@ export class HomePage {
         console.log(snapshot.key);
       });
     });
+    this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
   }
 
 
@@ -89,6 +92,8 @@ export class HomePage {
     let inputListSize = -(-this.inputListSize); // coerce to a number so the calc inside function works
     let inputStartPos = -(-this.inputStartPos);
     this.items = this.getAnagramList(this.db, this.inputWordLength, undefined, inputStartPos, inputListSize);
+    
+    this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
     this.refreshQuery();
   }
 

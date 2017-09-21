@@ -50,13 +50,11 @@
         Add to Study List
       </button>
         </ion-item>
-        <ion-list>
-          <ion-item class="text" *ngFor="let item of items | async" color="item-background">
-            {{item.avgplay}} {{item.$key}}
-          </ion-item>
-        </ion-list>
       </ion-card>
-
+      <span *ngIf="dynamicQueryList"></span>
+      <ion-item class="text" *ngFor="let item of dynamicQueryList" color="item-background" [ngClass]="{'green': item.hasHistory}">
+        {{item.alphagram}} {{item.rank}} {{item.hasHistory}}
+      </ion-item>
     </ion-col>
   </ion-row>
 </ion-content>
