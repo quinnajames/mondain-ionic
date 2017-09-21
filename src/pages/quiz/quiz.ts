@@ -225,7 +225,7 @@ export class QuizPage {
   rescheduleLogic(wasCorrect: boolean): any {
     if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
     let wordMoment = this.getCurrentMoment();
-    let unixtime = parseInt(wordMoment.format('x'), 10);
+    let unixtime = this.getCurrentUnixTimestamp();
     let rescheduleMoment;
     if (wasCorrect) {
       rescheduleMoment = wordMoment.add('1', 'days');
