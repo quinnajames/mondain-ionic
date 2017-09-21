@@ -22,6 +22,12 @@ page-quiz {
     #quizButtonItem {
         line-height: 100px;
     }
+    #correctButton {
+        background-color: $correct;
+    }
+    #incorrectButton {
+        background-color: $incorrect;
+    }
     ion-item #solutionsGivenItem {
         display: flex;
         flex-direction: column;

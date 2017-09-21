@@ -17,33 +17,33 @@
           + sessionStats.last10.incorrect}}
         </div>
         <div class="inner-table">
-          <h1><span *ngIf="this.dynamicQuiz" id="mapSize">
+          <h1><span id="mapSize" *ngIf="this.dynamicQuiz">
               {{this.dynamicQuiz.size}}
             </span></h1>
           remaining
         </div>
       </ion-card>
 
-      <ion-card color="item-background" id="quizCard">
-        <ion-item class="text quizQuestion" *ngIf="nextWord" color="item-background" id="quizAnswer">
+      <ion-card id="quizCard" color="item-background">
+        <ion-item id="quizAnswer" class="text quizQuestion" *ngIf="nextWord" color="item-background" >
           {{ nextWord.word }}
         </ion-item>
         <ion-item color="item-background">
           <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
         </ion-item>
-        <ion-item *ngIf="solutionsGiven" id="solutionsGivenItem">
+        <ion-item id="solutionsGivenItem" *ngIf="solutionsGiven">
           <span *ngFor="let item of solutionsGiven" class="solution">
             {{item}}
           </span>
         </ion-item>
         <ion-card id="buttonCard" class="outer-table">
           <div class="inner-table" >
-            <button ion-fab (click)="handleCorrect()" class="quizButtonItem button-align">
+            <button ion-fab id="correctButton" class="quizButtonItem button-align"  (click)="handleCorrect()">
                   <ion-icon name="checkmark"></ion-icon>
                 </button>
           </div>
           <div class="inner-table">
-            <button ion-fab (click)="handleIncorrect()" class="quizButtonItem button-align">
+            <button ion-fab id="incorrectButton" class="quizButtonItem button-align" (click)="handleIncorrect()">
               <ion-icon name="thumbs-down"></ion-icon>
               </button>
           </div>

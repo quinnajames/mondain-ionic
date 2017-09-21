@@ -17,6 +17,7 @@ $colors: (
   primary:    #595C93,
   secondary:  #DDDBDF,
   danger:     #f53d3d,
+  success:    #3DB2F5,
   light:      rgb(214, 214, 214),
   dark:       #7275A2,
   item-background: rgb(232,232,234),
@@ -31,6 +32,9 @@ $colors: (
 // To view all the possible Ionic variables, see:
 // http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
 $background-color: mix(map-get($colors, light), #eee, 15%);
+
+$correct: mix(map-get($colors, primary), map-get($colors, success), 45%);
+$incorrect: mix(map-get($colors, primary), map-get($colors, danger), 45%);
 $card-ios-background-color: map-get($colors, item-background);
 $card-md-background-color: map-get($colors, item-background);
 $card-wp-background-color: map-get($colors, item-background);
