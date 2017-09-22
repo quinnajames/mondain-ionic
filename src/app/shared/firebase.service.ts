@@ -85,6 +85,36 @@ export class FirebaseService {
         return Math.floor(Math.random() * minutes_max);
     }
 
+    /* Returns the time the word was rescheduled to. **/
+    rescheduleWord(alpha: string, new_time) {
+        let user = this.authProvider.getCurrentUser();   
+
+        if (user) {
+            firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction((trans) => {
+                console.log(trans);
+                if (trans) {
+                    let word_object = trans;
+                    word_object.next_scheduled = new_time;
+                    return word_object; // posts transaction
+                }
+            },
+                // onComplete function
+                function (Error, committed, snapshot) {
+                    if (Error) {
+                        console.log("Error trying to update word stats");
+                        // return null;
+                    }
+                    else if (!committed) {
+                        console.log("Not committed: perhaps this word isn't in the database");
+                    }
+                    else {
+                        console.log("successfully committed");
+                    }
+                }, false);
+        }
+        return new_time;
+    }
+
     addRemoteQuizWord(alpha: string, time, next_scheduled, correct?: boolean) {
         let user = this.authProvider.getCurrentUser();
         let right_answers = 0;

@@ -59,7 +59,7 @@
         <span *ngIf="lastQuizWord.last_correct">{{lastQuizWord.last_correct | date : 'yMMMdjms'}}</span>
         <span *ngIf="!lastQuizWord.last_correct">never</span>
         <br />
-        <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}}
+        <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}} <button ion-button (click)="reschedulePreviousWordToNow()">Set to Now</button>
       </ion-card>
 
 

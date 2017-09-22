@@ -295,6 +295,17 @@ export class QuizPage {
     }
   }
 
+  rescheduleWordToNow(alpha: string) {
+    this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
+  }
+
+  reschedulePreviousWordToNow() {
+    if (this.lastQuizAlpha && this.lastQuizWord) {
+      this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
+    }
+  }
+
+
   updateRescheduleObj() {
     this.rescheduleObj = this.rescheduleLogic(this.lastWasCorrect);
   }
