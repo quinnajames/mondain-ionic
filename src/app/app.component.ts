@@ -3,7 +3,7 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { HomePage, LoginPage, SignupPage, QuizPage } from '../pages/pages';
+import { HomePage, LoginPage, SignupPage, QuizPage, StatsPage } from '../pages/pages';
 
 import { LocalQuizService } from '../app/shared/shared';
 
@@ -34,7 +34,8 @@ export class MyApp {
       { title: 'Home', component: HomePage },
       { title: 'Login', component: LoginPage },
       { title: 'Signup', component: SignupPage },
-      { title: 'Quiz', component: QuizPage }
+      { title: 'Quiz', component: QuizPage },
+      { title: 'Stats', component: StatsPage}
     ];
 
   }

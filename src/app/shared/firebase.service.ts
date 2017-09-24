@@ -9,6 +9,89 @@ export class FirebaseService {
     constructor(private events: Events,
         private authProvider: AuthProvider) { }
 
+    updateStats(changes) {
+        const user = this.authProvider.getCurrentUser();
+        if (user) {
+            let statsRef = firebase.database().ref('/stats').child(user.uid);
+            statsRef.transaction((trans) => {
+                console.log(trans);
+                if (trans) {
+                    for (let x = 2; x <= 15; x++) {
+                        changes[x] += trans[x];
+                    }
+                    changes.total += trans.total;
+                }
+                return changes; // posts transaction
+
+            },
+                function onComplete (Error, committed, snapshot) {
+                    if (Error) {
+                        console.log("Error trying to update spaced rep stats");
+                    }
+                    else if (!committed) {
+                        console.log("No spaced rep stats update committed")
+                    }
+                    else {
+                        console.log("Spaced rep stats update committed");
+                    }
+                }, false);
+        }
+    }
+
+
+    getStats(getFullData = false) {
+        let user = this.authProvider.getCurrentUser();
+        if (user) {
+            let userProfileRef = firebase.database().ref('/userProfile').child(user.uid);
+            let statsRef = firebase.database().ref('/stats').child(user.uid);
+            let statsObject;
+            statsRef.once('value').then((data) => {
+                console.log(data);
+                if (!data.exists() || getFullData) {
+                    statsObject = {
+                        total: 0,
+                        2: 0,
+                        3: 0,
+                        4: 0,
+                        5: 0,
+                        6: 0,
+                        7: 0,
+                        8: 0,
+                        9: 0,
+                        10: 0,
+                        11: 0,
+                        12: 0,
+                        13: 0,
+                        14: 0,
+                        15: 0
+                    }
+                    userProfileRef.once('value').then((fulldata) => {
+                        //console.log(data.val());                    
+                        console.log("querying fulldata")
+                        statsObject.total = fulldata.numChildren() - 2;
+                        fulldata.forEach((childSnapshot) => {
+                            if (childSnapshot.key !== "quiz" && childSnapshot.key !== "email") {
+                                //console.log(childSnapshot.key + " " + (+statsObject[childSnapshot.key.length] + 1).toString());
+                                statsObject[childSnapshot.key.length]++;
+                            }
+                        })
+                        statsRef.set(statsObject);
+                        console.log(statsObject);
+                        return statsObject;
+                    }, (Error) => console.log(Error))
+
+                }
+                else {
+                    console.log(data.val());
+                    console.log("NOT querying fulldata")
+                    return data.val();
+                }
+            })
+
+            return statsObject;
+        }
+    }
+
     getAnagramListStatic(wordLength = 7, orderBy = 'avgplay', startPos = 1000, listSize = 10) {
         console.log("in getAnagramListStatic");
         let user = this.authProvider.getCurrentUser();
@@ -16,7 +99,7 @@ export class FirebaseService {
             console.log("user exists");
             let ref = firebase.database().ref('/alphagram_ranks/' + wordLength);
             ref.orderByChild(orderBy).startAt(startPos).endAt(startPos + listSize - 1).once('value').then((data) => {
-                console.log(data);
+                console.log(data.val());
             }, (Error) => { console.log(Error); });
         }
     }
@@ -59,11 +142,31 @@ export class FirebaseService {
     addDynamicWordList(list: string[]) {
         let user = this.authProvider.getCurrentUser();
         let word_objects = [];
+        let statsObject = {
+            total: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0,
+            12: 0,
+            13: 0,
+            14: 0,
+            15: 0
+        }
         if (user) {
             console.log(list);
             for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
                 word_objects.push(this.addRemoteQuizWord(list[x], null, parseInt(moment().format('x'), 10)));
+                statsObject[list[x].length]++;
+                statsObject.total++;
             }
+            this.updateStats(statsObject);
         };
         return word_objects;
     }
@@ -74,7 +177,7 @@ export class FirebaseService {
         const right_exponent = 1.7;
         const wrong_exponent = 1.5;
         let correctness = 1 + Math.floor(right_multiplier * Math.pow(right, right_exponent) -
-        wrong_multiplier * Math.pow(wrong, wrong_exponent));
+            wrong_multiplier * Math.pow(wrong, wrong_exponent));
         if (correctness < 0) correctness = 0;
         return correctness;
     }
@@ -155,7 +258,7 @@ export class FirebaseService {
                     }
                     console.log("correctness: " + correctness);
                     const MINS_IN_HALF_DAY = 720;
-                    word_object.next_scheduled = parseInt(moment().add(correctness*MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
+                    word_object.next_scheduled = parseInt(moment().add(correctness * MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
                 }
                 return word_object; // posts transaction
 
