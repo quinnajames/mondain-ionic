@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-navbar>
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Stats</ion-title>
+    </ion-navbar>
+  </ion-header>
+
+
+<ion-content padding>
+  <button ion-button (click)="getStats()">Get Stats</button>
+  <button ion-button (click)="getStatsForceReload()">Force Reload</button>
+<ion-card *ngIf="statsObject">
+  {{statsObject.total}}
+</ion-card>
+</ion-content>
