@@ -194,7 +194,10 @@ export class QuizPage {
         else if (percent > 80) {
           return base + '85';
         }
-        else if (percent > 60 && percent < 70) {
+        else if (percent > 70) {
+          return base + '80';
+        }
+        else if (percent > 60) {
           return base + '70';
         }
         else if (percent > 50) {
@@ -203,12 +206,9 @@ export class QuizPage {
         else if (percent > 20) {
           return base +  '50';
         }
-        else if (percent >= 0) {
-          return base + '0';
-        }
       }
     }
-    return base + '80';
+    return base + '0';
   }
 
   setNextWordDynamic(nextword) {
