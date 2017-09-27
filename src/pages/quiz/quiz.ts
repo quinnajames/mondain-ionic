@@ -167,7 +167,7 @@ export class QuizPage {
     //    this.quizListRef.off();
   }
 
-  initializeIterator() {
+  getIteratorFromEntries() {
     if (!this.dynamicQuizIterator) {
       this.dynamicQuizIterator = this.dynamicQuiz.entries();
     }
@@ -241,10 +241,10 @@ export class QuizPage {
 
   updateDynamicQuiz() {
     if (this.dynamicQuiz) {
-      this.initializeIterator();
+      this.getIteratorFromEntries();
       let nextword = this.dynamicQuizIterator.next();
       if (nextword.done) {
-        this.initializeIterator();
+        this.getIteratorFromEntries();
       }
       if (nextword) {
         this.setNextWordDynamic(nextword);
