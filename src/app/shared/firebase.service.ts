@@ -24,7 +24,7 @@ export class FirebaseService {
                 return changes; // posts transaction
 
             },
-                function onComplete (Error, committed, snapshot) {
+                function onComplete(Error, committed, snapshot) {
                     if (Error) {
                         console.log("Error trying to update spaced rep stats");
                     }
@@ -38,34 +38,46 @@ export class FirebaseService {
         }
     }
 
+    getStatsRef() {
+        let user = this.authProvider.getCurrentUser();
+        if (user) {
+            return firebase.database().ref('/stats').child(user.uid);
+        }
+        else {
+            return null;
+        }
+    }
 
     getStats(getFullData = false) {
         let user = this.authProvider.getCurrentUser();
         if (user) {
+            let statsObject;
             let userProfileRef = firebase.database().ref('/userProfile').child(user.uid);
             let statsRef = firebase.database().ref('/stats').child(user.uid);
-            let statsObject;
+
             statsRef.once('value').then((data) => {
-                console.log(data);
+
+                console.log(data.val());
                 if (!data.exists() || getFullData) {
-                    statsObject = {
-                        total: 0,
-                        2: 0,
-                        3: 0,
-                        4: 0,
-                        5: 0,
-                        6: 0,
-                        7: 0,
-                        8: 0,
-                        9: 0,
-                        10: 0,
-                        11: 0,
-                        12: 0,
-                        13: 0,
-                        14: 0,
-                        15: 0
-                    }
+
                     userProfileRef.once('value').then((fulldata) => {
+                        let statsObject = {
+                            total: 0,
+                            2: 0,
+                            3: 0,
+                            4: 0,
+                            5: 0,
+                            6: 0,
+                            7: 0,
+                            8: 0,
+                            9: 0,
+                            10: 0,
+                            11: 0,
+                            12: 0,
+                            13: 0,
+                            14: 0,
+                            15: 0
+                        }
                         //console.log(data.val());                    
                         console.log("querying fulldata")
                         statsObject.total = fulldata.numChildren() - 2;
@@ -87,9 +99,8 @@ export class FirebaseService {
                     return data.val();
                 }
             })
-
-            return statsObject;
         }
+        return null;
     }
 
     getAnagramListStatic(wordLength = 7, orderBy = 'avgplay', startPos = 1000, listSize = 10) {
@@ -190,7 +201,7 @@ export class FirebaseService {
 
     /* Returns the time the word was rescheduled to. **/
     rescheduleWord(alpha: string, new_time) {
-        let user = this.authProvider.getCurrentUser();   
+        let user = this.authProvider.getCurrentUser();
 
         if (user) {
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction((trans) => {

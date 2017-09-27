@@ -11,7 +11,7 @@
 <ion-content padding>
   <button ion-button (click)="getStats()">Get Stats</button>
   <button ion-button (click)="getStatsForceReload()">Force Reload</button>
-<ion-card *ngIf="statsObject">
-  {{statsObject.total}}
+<ion-card *ngIf="statsObjectLoaded">
+  {{statsObjectLoaded.total}}
 </ion-card>
 </ion-content>
