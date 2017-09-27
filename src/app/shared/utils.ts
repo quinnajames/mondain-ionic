@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class Utils {
-    LexiconSize : Map<Number, Number>;
+    LexiconSize : Map<number, number>;
     constructor() { 
         const LexiconSize = new Map([
             [2,     92], 
