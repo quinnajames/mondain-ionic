@@ -46,7 +46,6 @@ export class QuizPage {
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
   nextWordDynamic: string;
-  quizIsLoaded: boolean;
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -104,7 +103,6 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-    this.quizIsLoaded = false;
 
   }
 
@@ -248,11 +246,6 @@ export class QuizPage {
   startDynamicQuiz() {
     this.updateDynamicQuiz();
     this.loadNextWord();
-    if (this.dynamicQuiz) {
-      if (this.dynamicQuiz.size) {
-        this.quizIsLoaded = true;
-      }
-    }
   }
   updateDynamicQuiz() {
     if (this.dynamicQuiz) {
