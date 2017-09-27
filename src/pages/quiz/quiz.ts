@@ -46,6 +46,7 @@ export class QuizPage {
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
   nextWordDynamic: string;
+  quizIsLoaded: boolean;
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -103,7 +104,7 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-
+    this.quizIsLoaded = false;
 
   }
 
@@ -131,19 +132,24 @@ export class QuizPage {
         this.onChildRemoved(data);
       }, undefined, this);
     }).then(() => {
-      this.updateDynamicQuiz();
+      this.startDynamicQuiz();
+      _.debounce(() => {
+        this.startDynamicQuiz;
+      }, 300);
     }).then(() => {
-      this.loadNextWord();
       loader.dismiss();
-    });
+    })
   }
 
   onChildAdded(data) {
     if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
       this.dynamicQuiz.set(data.key, true);
       console.log("word became due: " + data.key);
+      this.startDynamicQuiz();
     }
   }
+
+
 
   onChildChanged(data) {
     console.log("word info changed: " + data.key);
@@ -204,7 +210,7 @@ export class QuizPage {
           return base + '60';
         }
         else if (percent > 20) {
-          return base +  '50';
+          return base + '50';
         }
       }
     }
@@ -239,6 +245,15 @@ export class QuizPage {
     }
   }
 
+  startDynamicQuiz() {
+    this.updateDynamicQuiz();
+    this.loadNextWord();
+    if (this.dynamicQuiz) {
+      if (this.dynamicQuiz.size) {
+        this.quizIsLoaded = true;
+      }
+    }
+  }
   updateDynamicQuiz() {
     if (this.dynamicQuiz) {
       this.getIteratorFromEntries();
