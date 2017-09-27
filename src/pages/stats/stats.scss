@@ -1,5 +1,8 @@
 page-stats {
-    ion-item:nth-of-type(2n+3) {
+    ion-item:nth-of-type(2n+4) {
         background-color: darken(map-get($colors, secondary),4%);
+    }
+    .total {
+        font-weight: 600;
     }
 }
