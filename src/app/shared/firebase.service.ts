@@ -256,6 +256,9 @@ export class FirebaseService {
                     if (trans.last_correct) {
                         word_object.last_correct = parseInt(trans.last_correct, 10);
                     }
+                    if (!trans.last_correct && correct) {
+                        word_object.last_correct = parseInt(moment().format('x'), 10);
+                    }
                     console.log("correctness: " + correctness);
                     const MINS_IN_HALF_DAY = 720;
                     word_object.next_scheduled = parseInt(moment().add(correctness * MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
