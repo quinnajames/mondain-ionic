@@ -9,34 +9,47 @@
 
 
 <ion-content padding>
-  <button ion-button (click)="getStatsForceReload()">Force Reload</button>
+
+  <ion-col>
   <ion-card *ngIf="statsObjectLoaded">
     <ion-list>
       <ion-item color="success">
-        <ion-col>
+        <ion-row>
+        <ion-col col-sm-2 col-md-3 col-lg-4>
           Length
         </ion-col>
         <ion-col>
           In Cardbox
         </ion-col>
+      </ion-row>
       </ion-item>
       <ion-item *ngFor="let item of wordLengths">
-        <ion-col>
+        
+          <ion-row class="item">
+        <ion-col col-sm-2 col-md-3 col-lg-4>
           {{item}}
         </ion-col>
         <ion-col>
           {{statsObjectLoaded[item]}}
         </ion-col>
+      </ion-row>
       </ion-item>
       <ion-item color="dark">
-        <ion-col>
+        <ion-row>
+          
+        <ion-col col-sm-2 col-md-3 col-lg-4>
           Total
         </ion-col>
         <ion-col>
-            {{statsObjectLoaded.total}}
+          {{statsObjectLoaded.total}}
         </ion-col>
+        
+      </ion-row>
       </ion-item>
     </ion-list>
-
   </ion-card>
+  
+</ion-col>
+<button ion-button (click)="getStatsForceReload()">Force Reload</button>
+
 </ion-content>
