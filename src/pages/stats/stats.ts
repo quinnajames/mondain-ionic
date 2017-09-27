@@ -19,14 +19,14 @@ export class StatsPage {
 
   statsObject: any;
   statsObjectLoaded: any;
-
+  wordLengths: any[];
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public firebaseService: FirebaseService,
     public loading: LoadingController) {
 
-
+    this.wordLengths = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   }
 
 
@@ -38,7 +38,10 @@ export class StatsPage {
         this.statsObject = data.val();
       }).then(() => { 
        console.log("ready");
+       if (this.statsObject)
+       {
         this.statsObjectLoaded = this.statsObject;
+       }
       })
     }
     console.log("");

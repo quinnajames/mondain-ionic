@@ -1,16 +1,42 @@
 <ion-header>
-    <ion-navbar>
-      <button ion-button menuToggle>
+  <ion-navbar>
+    <button ion-button menuToggle>
         <ion-icon name="menu"></ion-icon>
       </button>
-      <ion-title>Stats</ion-title>
-    </ion-navbar>
-  </ion-header>
+    <ion-title>Stats</ion-title>
+  </ion-navbar>
+</ion-header>
 
 
 <ion-content padding>
   <button ion-button (click)="getStatsForceReload()">Force Reload</button>
-<ion-card *ngIf="statsObjectLoaded">
-  {{statsObjectLoaded.total}}
-</ion-card>
+  <ion-card *ngIf="statsObjectLoaded">
+    <ion-list>
+      <ion-item color="success">
+        <ion-col>
+          Length
+        </ion-col>
+        <ion-col>
+          In Cardbox
+        </ion-col>
+      </ion-item>
+      <ion-item *ngFor="let item of wordLengths">
+        <ion-col>
+          {{item}}
+        </ion-col>
+        <ion-col>
+          {{statsObjectLoaded[item]}}
+        </ion-col>
+      </ion-item>
+      <ion-item color="dark">
+        <ion-col>
+          Total
+        </ion-col>
+        <ion-col>
+            {{statsObjectLoaded.total}}
+        </ion-col>
+      </ion-item>
+    </ion-list>
+
+  </ion-card>
 </ion-content>
