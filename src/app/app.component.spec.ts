@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthProvider } from '../providers/auth/auth';
 import { IonicStorageModule } from '@ionic/storage';
@@ -56,5 +56,19 @@ describe('MyApp', () => {
     it('should create a valid instance of MyApp', () => {
         expect(component instanceof MyApp).toBe(true);
     });
+    it('should have 5 pages in the page array', () => {
+        inject([MyApp], (myApp: MyApp) => {
+            expect(myApp.pages.length).toEqual(5);
+        })
+    });
+    it('should contain HomePage, LoginPage, SignupPage, QuizPage and StatsPage in the page array', () => {
+        inject([MyApp], (myApp: MyApp) => {
+            expect(myApp.pages).toContain('HomePage');
+            expect(myApp.pages).toContain('SignupPage');
+            expect(myApp.pages).toContain('LoginPage');
+            expect(myApp.pages).toContain('QuizPage');
+            expect(myApp.pages).toContain('StatsPage');
+        })
+    });  
 });
 
