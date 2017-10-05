@@ -14,7 +14,6 @@ import moment from 'moment';
 })
 export class QuizPage {
   quizList: Promise<any>;
-  quizListRef: firebase.database.Reference;
   dueRef: firebase.database.Query;
   input: { // encapsulate this in input to avoid an issue with Angular scopes
     answer: string;
@@ -168,7 +167,6 @@ export class QuizPage {
 
   ionViewWillLeave() {
     this.dueRef.off();
-    //    this.quizListRef.off();
   }
 
   getIteratorFromEntries() {
