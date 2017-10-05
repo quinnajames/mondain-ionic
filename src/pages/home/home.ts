@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 
@@ -7,6 +7,7 @@ import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
 import { LocalQuizService, FirebaseService, Utils } from '../../app/shared/shared';
 
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'

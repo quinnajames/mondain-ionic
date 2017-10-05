@@ -3,7 +3,7 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { HomePage, LoginPage, SignupPage, QuizPage, StatsPage } from '../pages/pages';
+import { LoginPage, SignupPage, QuizPage, StatsPage } from '../pages/pages';
 
 import { LocalQuizService } from '../app/shared/shared';
 
@@ -17,7 +17,7 @@ import { LocalQuizService } from '../app/shared/shared';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = HomePage;
+  rootPage: any = 'HomePage';
 
   pages: Array<{title: string, component: any}>;
 
@@ -31,7 +31,7 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Home', component: HomePage },
+      { title: 'Home', component: 'HomePage' },
       { title: 'Login', component: LoginPage },
       { title: 'Signup', component: SignupPage },
       { title: 'Quiz', component: QuizPage },
@@ -56,6 +56,6 @@ export class MyApp {
   }
 
   goHome() {
-    this.nav.push(HomePage);
+    this.nav.push('HomePage');
   }
 }

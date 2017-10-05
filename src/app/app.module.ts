@@ -7,7 +7,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 import { MyApp } from './app.component';
-import { HomePage, LoginPage, QuizPage, SignupPage, StatsPage } from '../pages/pages';
+import { LoginPage, QuizPage, SignupPage, StatsPage } from '../pages/pages';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -20,7 +20,6 @@ import { firebaseConfig } from './firebase.config';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
     LoginPage,
     QuizPage,
     SignupPage,
@@ -36,7 +35,6 @@ import { firebaseConfig } from './firebase.config';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
     LoginPage,
     QuizPage,
     SignupPage,
