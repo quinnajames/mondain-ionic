@@ -1,8 +1,8 @@
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
-import { AuthProvider } from './providers/auth/auth';
+import { AuthProvider } from '../providers/auth/auth';
 import { IonicStorageModule } from '@ionic/storage';
-import { MyApp } from './app/app.component';
+import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -12,7 +12,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { ErrorHandler } from '@angular/core';
 import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-import { LocalQuizService, FirebaseService, AngularFireService } from './app/shared/shared';
+import { LocalQuizService, FirebaseService, AngularFireService } from './shared/shared';
 
 describe('MyApp', () => {
     let fixture;
