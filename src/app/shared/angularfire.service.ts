@@ -6,12 +6,10 @@ export class AngularFireService {
     constructor(public db: AngularFireDatabase) { }
 
     getAnagrams(word) : FirebaseObjectObservable<any[]> {
-        let anagrams = this.db.object('/alphagrams/' + word);
-        return anagrams;
+        return this.db.object('/alphagrams/' + word);
     }
 
-    getHooks(word) {
-        let hooks = this.db.object('/hooks/' + word);
-        return hooks;
+    getHooks(word) : FirebaseObjectObservable<any[]> {
+        return this.db.object('/hooks/' + word);
     }
 }
