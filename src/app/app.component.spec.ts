@@ -53,6 +53,11 @@ describe('MyApp', () => {
         myAppInstance = fixture.componentInstance;
     });
 
+    afterEach(() => {
+        fixture.destroy();
+        myAppInstance = null;
+    })
+
     it('should create a valid instance of MyApp', () => {
         expect(myAppInstance instanceof MyApp).toBe(true);
     });
