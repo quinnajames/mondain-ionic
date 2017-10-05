@@ -3,6 +3,8 @@ import { MyApp } from '../../app/app.component';
 import { HomePage } from './home';
 import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { BrowserModule } from '@angular/platform-browser';
@@ -24,17 +26,22 @@ import { AngularFireService } from '../../app/shared/shared';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp } from 'ionic-angular';
 
+let fixture;
+let homePageInstance;
+const firebaseConfig = {
+    apiKey: "foo",
+    authDomain: "mondain-db.firebaseapp.com",
+    databaseURL: "https://mondain-db.firebaseio.com",
+    projectId: "mondain-db",
+    storageBucket: "mondain-db.appspot.com",
+    messagingSenderId: "1"
+};
+let de: DebugElement;
+let el: HTMLElement;
+
+
 describe('Home: HomePage', () => {
-    let fixture;
-    let homePageInstance;
-    const firebaseConfig = {
-        apiKey: "foo",
-        authDomain: "mondain-db.firebaseapp.com",
-        databaseURL: "https://mondain-db.firebaseio.com",
-        projectId: "mondain-db",
-        storageBucket: "mondain-db.appspot.com",
-        messagingSenderId: "1"
-    };
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [MyApp, HomePage],
@@ -54,7 +61,7 @@ describe('Home: HomePage', () => {
                 SplashScreen,
                 AuthProvider,
                 Utils,
-                {provide: ErrorHandler, useClass: IonicErrorHandler}
+                { provide: ErrorHandler, useClass: IonicErrorHandler }
             ]
         })
     }));
@@ -67,11 +74,35 @@ describe('Home: HomePage', () => {
     afterEach(() => {
         fixture.destroy();
         homePageInstance = null;
+        de = null;
+        el = null;
+    })
+    it('is created', () => {
+        expect(fixture).toBeTruthy();
+        expect(homePageInstance).toBeTruthy();
     })
 
     it('should create a valid instance of HomePage', () => {
-        expect( homePageInstance instanceof HomePage).toBe(true);
+        expect(homePageInstance instanceof HomePage).toBe(true);
     });
+
+    it('renders with Ionic toolbar title of Home', () => {
+
+        fixture.detectChanges();
+
+        de = fixture.debugElement.query(By.css('ion-title'));
+        el = de.nativeElement;
+        expect(el.textContent).toContain('Home');
+    })
+
+    it('renders Search Results header', () => {
+
+        fixture.detectChanges();
+        
+        de = fixture.debugElement.query(By.css('h1'));
+        el = de.nativeElement;
+        expect(el.textContent).toContain('Search Results');
+    })
 
 });
 
