@@ -3,8 +3,6 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { LoginPage, SignupPage, QuizPage, StatsPage } from '../pages/pages';
-
 import { LocalQuizService } from '../app/shared/shared';
 
 
@@ -32,10 +30,10 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: 'HomePage' },
-      { title: 'Login', component: LoginPage },
-      { title: 'Signup', component: SignupPage },
-      { title: 'Quiz', component: QuizPage },
-      { title: 'Stats', component: StatsPage}
+      { title: 'Login', component: 'LoginPage' },
+      { title: 'Signup', component: 'SignupPage' },
+      { title: 'Quiz', component: 'QuizPage' },
+      { title: 'Stats', component: 'StatsPage' }
     ];
 
   }
