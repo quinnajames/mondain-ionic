@@ -16,7 +16,7 @@ import { LocalQuizService, FirebaseService, AngularFireService } from './shared/
 
 describe('MyApp', () => {
     let fixture;
-    let component;
+    let myAppInstance;
     const firebaseConfig = {
         apiKey: "foo",
         authDomain: "mondain-db.firebaseapp.com",
@@ -50,25 +50,21 @@ describe('MyApp', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(MyApp);
-        component = fixture.componentInstance;
+        myAppInstance = fixture.componentInstance;
     });
 
     it('should create a valid instance of MyApp', () => {
-        expect(component instanceof MyApp).toBe(true);
+        expect(myAppInstance instanceof MyApp).toBe(true);
     });
     it('should have 5 pages in the page array', () => {
-        inject([MyApp], (myApp: MyApp) => {
-            expect(myApp.pages.length).toEqual(5);
-        })
+        expect(myAppInstance.pages.length).toEqual(5);
     });
-    it('should contain HomePage, LoginPage, SignupPage, QuizPage and StatsPage in the page array', () => {
-        inject([MyApp], (myApp: MyApp) => {
-            expect(myApp.pages).toContain('HomePage');
-            expect(myApp.pages).toContain('SignupPage');
-            expect(myApp.pages).toContain('LoginPage');
-            expect(myApp.pages).toContain('QuizPage');
-            expect(myApp.pages).toContain('StatsPage');
-        })
-    });  
+    it('should have the correct pages in the page array', () => {
+            expect(myAppInstance.pages).toContain({ title: 'Home', component: 'HomePage' });
+            expect(myAppInstance.pages).toContain({ title: 'Quiz', component: 'QuizPage' });
+            expect(myAppInstance.pages).toContain({ title: 'Stats', component: 'StatsPage' });
+            expect(myAppInstance.pages).toContain({ title: 'Signup', component: 'SignupPage' });
+            expect(myAppInstance.pages).toContain({ title: 'Login', component: 'LoginPage' });
+    }); 
 });
 
