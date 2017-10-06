@@ -16,9 +16,10 @@ import { LocalQuizService, FirebaseService, AngularFireService, Utils } from '..
 
 import { firebaseConfig } from './firebase.config';
 
+
 @NgModule({
   declarations: [
-    MyApp
+    MyApp,
   ],
   imports: [
     BrowserModule,
