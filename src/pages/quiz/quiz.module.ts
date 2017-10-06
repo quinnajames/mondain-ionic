@@ -3,17 +3,24 @@ import { IonicPageModule } from 'ionic-angular';
 import { QuizPage } from './quiz';
 
 // Sub-page components
-import { WordHistoryComponent, SessionStatsComponent, QuizButtonsComponent,
-         QuizInfoComponent, InputBoxComponent } from './components/components';
+import { InputBoxComponent,
+         QuizButtonsComponent,
+         QuizInfoComponent,
+         QuizQuestionComponent,
+         SessionStatsComponent,
+         SolutionsBoxComponent,
+         WordHistoryComponent } from './components/components';
 
 @NgModule({
   declarations: [
     QuizPage,
-    WordHistoryComponent,
-    SessionStatsComponent,
+    InputBoxComponent,
     QuizButtonsComponent,
     QuizInfoComponent,
-    InputBoxComponent
+    QuizQuestionComponent,
+    SessionStatsComponent,
+    SolutionsBoxComponent,
+    WordHistoryComponent
   ],
   imports: [
     IonicPageModule.forChild(QuizPage),
