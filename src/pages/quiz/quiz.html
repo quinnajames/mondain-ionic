@@ -11,11 +11,7 @@
   <ion-row>
     <ion-col col-12 col-md-5 col-lg-3>
       <ion-card class="outer-table translucent" padding>
-        <div class="inner-table translucent">
-          <h1 class="translucent"><b> {{sessionStats.overall.correct}} of {{sessionStats.overall.correct + sessionStats.overall.incorrect}}
-            ({{sessionStats.overall.percent}}%)</b></h1><b>Last 10:</b> {{sessionStats.last10.correct}} of {{sessionStats.last10.correct
-          + sessionStats.last10.incorrect}}
-        </div>
+        <session-stats [stats]="sessionStats"></session-stats>
         <div class="inner-table translucent">
           <h1><span id="mapSize" class="translucent" *ngIf="this.dynamicQuiz">
               {{this.dynamicQuiz.size}}
