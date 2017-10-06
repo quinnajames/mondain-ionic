@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from '../../app/shared/shared';
