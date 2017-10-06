@@ -16,6 +16,6 @@ import { Component, Input } from '@angular/core';
     `
 })
 export class WordHistoryComponent{
-    @Input() lastQuizWord:any;
-    @Input() lastQuizAlpha:any;
+    @Input('word') lastQuizWord:any;
+    @Input('alpha') lastQuizAlpha:any;
 }
