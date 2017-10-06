@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'word-history',
@@ -11,11 +11,19 @@ import { Component, Input } from '@angular/core';
     <span *ngIf="lastQuizWord.last_correct">{{lastQuizWord.last_correct | date : 'yMMMdjms'}}</span>
     <span *ngIf="!lastQuizWord.last_correct">never</span>
     <br />
-    <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}} <button ion-button (click)="reschedulePreviousWordToNow()">Set to Now</button>
+    <b>Next scheduled:</b> {{lastQuizWord.next_scheduled | date : 'yMMMdjms'}} <button ion-button (click)="reschedulePreviousWordToNow(true)">
+    Set to Now</button>
   </ion-card>
     `
 })
 export class WordHistoryComponent{
     @Input('word') lastQuizWord:any;
     @Input('alpha') lastQuizAlpha:any;
+
+    @Output() onReschedule = new EventEmitter<boolean>();
+    rescheduled = false;
+    reschedulePreviousWordToNow(rescheduled:boolean) {
+        this.onReschedule.emit(rescheduled);
+        this.rescheduled = true;
+    }
 }

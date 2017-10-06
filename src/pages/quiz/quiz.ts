@@ -305,7 +305,8 @@ export class QuizPage {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
-  reschedulePreviousWordToNow() {
+  reschedulePreviousWordToNow(event: boolean) {
+    console.log("in reschedulePreviousWord");
     if (this.lastQuizAlpha && this.lastQuizWord) {
       this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
     }
