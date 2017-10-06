@@ -38,7 +38,6 @@ const firebaseConfig = {
 };
 let de: DebugElement;
 let el: HTMLElement;
-let ef: DebugElement;
 
 
 describe('Home: HomePage', () => {
