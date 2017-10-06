@@ -34,11 +34,11 @@
         </ion-item>
       </ion-card>
       <ion-item>
-        <button ion-button *ngIf="!userQuizList" (click)="setEmptyCustomList()">Enter Custom List</button>
+        <button ion-button *ngIf="!displayCustomList" id="enterCustomListButton" (click)="setEmptyCustomList()">Enter Custom List</button>
       </ion-item>
-      <ion-card *ngIf="userQuizList">
+      <ion-card *ngIf="displayCustomList">
         <ion-textarea [(ngModel)]="userQuizList" placeholder="Enter a list of words here"></ion-textarea>
-        <button ion-button (click)="saveUserQuizList()">Save Custom List</button>
+        <button ion-button id="saveCustomListButton" (click)="saveUserQuizList()">Save Custom List</button>
       </ion-card>
     </ion-col>
     <ion-col col-14 col-md-10 col-lg-6>

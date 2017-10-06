@@ -14,7 +14,7 @@ import { LocalQuizService, FirebaseService, Utils } from '../../app/shared/share
 })
 export class HomePage {
 
-
+  
   items: FirebaseListObservable<any[]>;
   displayText: String;
   inputWordLength: number;
@@ -28,6 +28,7 @@ export class HomePage {
   userQuizList: any;
   userQuizListSplit: string[];
   dynamicQueryList: any[];
+  displayCustomList: boolean;
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
     this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
@@ -60,6 +61,7 @@ export class HomePage {
     this.quizList = [];
     this.dynamicQueryList = [];
     this.refreshQuery();
+    this.displayCustomList = false;
   }
 
 
@@ -130,6 +132,7 @@ export class HomePage {
   setEmptyCustomList() {
     this.userQuizList = [];
     this.userQuizListSplit = [];
+    this.displayCustomList = true;
   }
 
   saveUserQuizList() {
