@@ -12,21 +12,14 @@
     <ion-col col-12 col-md-5 col-lg-3>
       <ion-card class="outer-table translucent" padding>
         <session-stats [stats]="sessionStats"></session-stats>
-        <div class="inner-table translucent">
-          <h1><span id="mapSize" class="translucent" *ngIf="this.dynamicQuiz">
-              {{this.dynamicQuiz.size}}
-            </span></h1>
-          remaining
-        </div>
+        <quiz-info [quiz]="dynamicQuiz"></quiz-info>
       </ion-card>
 
       <ion-card id="quizCard" class="translucent">
         <ion-item id="quizAnswer" class="text quizQuestion translucent" *ngIf="nextWord">
           {{ nextWord.word }}
         </ion-item>
-        <ion-item class="translucent">
-          <input id="quizInput" type="text" [(ngModel)]="input.answer" (ngModelChange)="answerOnChange($event)" />
-        </ion-item>
+        <input-box [(answer)]="input.answer" [inputSubject]="inputSubject" (answerChanger)="answerOnChange($event)"></input-box>
         <ion-item id="solutionsGivenItem" *ngIf="solutionsGiven">
           <span *ngFor="let item of solutionsGiven" class="solution">
             {{item}}

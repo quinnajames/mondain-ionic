@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
+import { Subject } from 'rxjs/subject';
 import * as _ from 'lodash';
 import moment from 'moment';
 
@@ -71,6 +72,8 @@ export class QuizPage {
   wordStatSubscription: FirebaseObjectObservable<any>;
   hookSubscription: FirebaseObjectObservable<any>;
 
+  inputSubject:Subject<any>;
+
   constructor(
     public loading: LoadingController,
     private authProvider: AuthProvider,
@@ -83,6 +86,7 @@ export class QuizPage {
     // Initialize session variables
     this.quizIndex = 0;
     this.quizLength = 1;
+    this.inputSubject = new Subject();
     this.sessionStats = {
       overall: {
         correct: 0,
@@ -401,16 +405,23 @@ export class QuizPage {
   }
 
   answerOnChange(answer) {
+    console.log("parent answer: " + this.input.answer);
     let localanswer = answer.toUpperCase();
     if (localanswer.length == this.nextWord.word.length // No need to look at array if length is wrong
       && _.indexOf(this.nextWord.solutions, localanswer) > -1
       && _.indexOf(this.solutionsGiven, localanswer) == -1) {
+        console.log("solution given: " + this.input.answer);
       this.solutionsGiven.push(localanswer);
-      this.input.answer = ""; // Reset global answer
+      this.clearAnswer(); // Reset global answer
     }
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
       this.handleCorrect();
     }
+  }
+
+  clearAnswer() {
+    this.input.answer = "";
+    this.inputSubject.next("");
   }
 
 }
