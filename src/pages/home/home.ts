@@ -5,7 +5,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
-import { LocalQuizService, FirebaseService, Utils } from '../../app/shared/shared';
+import { FirebaseService, Utils } from '../../app/shared/shared';
 
 @IonicPage()
 @Component({
@@ -46,7 +46,6 @@ export class HomePage {
   constructor(public navCtrl: NavController,
     public db: AngularFireDatabase,
     public auth: AuthProvider,
-    private localQuizService: LocalQuizService,
     private firebaseService: FirebaseService,
     public utils: Utils) {
     // default values for display
@@ -125,7 +124,6 @@ export class HomePage {
       let quiz = JSON.parse(subscribeData.quiz);
       console.log("sync");
       console.log(quiz);
-      this.localQuizService.addListToLocalStorage(quiz);
     });
   }
 
@@ -140,8 +138,7 @@ export class HomePage {
      for (var x = 0; x < this.userQuizListSplit.length; x++) {
        this.userQuizListSplit[x] = this.utils.makeAlphagram(this.userQuizListSplit[x]);
      }
-    this.firebaseService.addDynamicWordList(this.userQuizListSplit);
-     this.localQuizService.addListToLocalStorage(this.userQuizListSplit);     
+    this.firebaseService.addDynamicWordList(this.userQuizListSplit);   
      this.setEmptyCustomList();
   }
 

@@ -169,6 +169,23 @@ export class QuizPage {
     this.dueRef.off();
   }
 
+
+  // Component handling
+  reschedulePreviousWordToNow(event: boolean) {
+    console.log("in reschedulePreviousWord");
+    if (this.lastQuizAlpha && this.lastQuizWord) {
+      this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
+    }
+  }
+
+  handleAnswer(correct: number) {
+    if (correct === 1) this.handleCorrect();
+    else if (correct === 0) this.handleIncorrect();
+  }
+
+
+  //Internal
+
   getIteratorFromEntries() {
     if (!this.dynamicQuizIterator) {
       this.dynamicQuizIterator = this.dynamicQuiz.entries();
@@ -305,12 +322,6 @@ export class QuizPage {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
-  reschedulePreviousWordToNow(event: boolean) {
-    console.log("in reschedulePreviousWord");
-    if (this.lastQuizAlpha && this.lastQuizWord) {
-      this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
-    }
-  }
 
 
   updateRescheduleObj() {

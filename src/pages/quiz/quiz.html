@@ -32,24 +32,11 @@
             {{item}}
           </span>
         </ion-item>
-        <ion-card id="buttonCard" class="outer-table">
-          <div class="inner-table" >
-            <button ion-fab id="correctButton" class="quizButtonItem button-align"  (click)="handleCorrect()">
-                  <ion-icon name="checkmark"></ion-icon>
-                </button>
-          </div>
-          <div class="inner-table">
-            <button ion-fab id="incorrectButton" class="quizButtonItem button-align" (click)="handleIncorrect()">
-              <ion-icon name="thumbs-down"></ion-icon>
-              </button>
-          </div>
-        </ion-card>
+        <quiz-buttons (onAnswer)="handleAnswer($event)"></quiz-buttons>
       </ion-card>
     </ion-col>
     <ion-col col-12 col-md-5 col-lg-3>
-<word-history [word]="lastQuizWord" [alpha]="lastQuizAlpha" (onReschedule)="reschedulePreviousWordToNow($event)"></word-history>
-
-
+    <word-history [word]="lastQuizWord" [alpha]="lastQuizAlpha" (onReschedule)="reschedulePreviousWordToNow($event)"></word-history>
     </ion-col>
   </ion-row>
 
