@@ -25,6 +25,7 @@ import { AngularFireService } from '../../app/shared/shared';
 
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp } from 'ionic-angular';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 let fixture;
 let homePageInstance;
@@ -62,7 +63,8 @@ describe('Home: HomePage', () => {
                 AuthProvider,
                 Utils,
                 { provide: ErrorHandler, useClass: IonicErrorHandler }
-            ]
+            ],
+            schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
         })
     }));
 
