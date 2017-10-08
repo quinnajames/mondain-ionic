@@ -86,8 +86,16 @@ export class HomePage {
         let inputStartPos = -(-v.startPos);
         let inputWordLength = -(-v.wordLength);
         this.items = this.getAnagramList(this.db, inputWordLength, this.inputOrderBy, inputStartPos, inputListSize);
+        console.log(this.items);
         this.dynamicQueryList = this.firebaseService.getWordHistoryList(inputWordLength, this.inputOrderBy, inputStartPos, inputListSize);
-        this.refreshQuery();
+        this.quizList = [];
+        this.items.subscribe(snapshots => {
+          //console.log(snapshots);
+          snapshots.forEach(snapshot => {
+            this.quizList.push(snapshot.$key);
+            //console.log(snapshot.$key);
+          });
+        });
       }
     );
     this.searchParamsSubject.next(this.searchParams);
@@ -109,7 +117,7 @@ export class HomePage {
         console.log(snapshot.key);
       });
     });
-    this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
+    //this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
   }
 
 
