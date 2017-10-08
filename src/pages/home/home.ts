@@ -12,15 +12,18 @@ import { FirebaseService, Utils } from '../../app/shared/shared';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
+
 export class HomePage {
 
-  
+
   items: FirebaseListObservable<any[]>;
   displayText: String;
   inputWordLength: number;
-  inputOrderBy: String;
+  inputOrderBy: string;
   inputStartPos: number;
   inputListSize: number;
+
+
   requery: FirebaseListObservable<any[]>;
   quizList: any[];
   userIdent: any;
@@ -52,9 +55,9 @@ export class HomePage {
     this.inputListSize = 25;
     this.inputWordLength = 7;
     this.inputStartPos = 1;
+    this.inputOrderBy = 'avgplay';
+    this.items = this.getAnagramList(db, this.inputWordLength, this.inputOrderBy, this.inputStartPos, this.inputListSize);
 
-    this.items = this.getAnagramList(db, this.inputWordLength, undefined, this.inputStartPos, this.inputListSize);
-    
     this.userIdent = auth.getCurrentUserIdent();
     this.loggedIn = auth.isLoggedIn();
     this.quizList = [];
@@ -67,12 +70,12 @@ export class HomePage {
   refreshLogin() {
     console.log("refreshLogin()");
     this.userIdent = this.auth.getCurrentUserIdent();
-    this.loggedIn = this.auth.isLoggedIn();  
-    console.log(this.auth.getCurrentUserIdent()); 
+    this.loggedIn = this.auth.isLoggedIn();
+    console.log(this.auth.getCurrentUserIdent());
   }
 
   refreshQuery() {
-    this.requery = this.getAnagramList(this.db, this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize), true);
+    this.requery = this.getAnagramList(this.db, this.inputWordLength, this.inputOrderBy, -(-this.inputStartPos), -(-this.inputListSize), true);
     this.quizList = [];
     this.requery.subscribe(snapshots => {
       snapshots.forEach(snapshot => {
@@ -88,14 +91,21 @@ export class HomePage {
     console.log('ionViewDidLoad QuizPage');
   }
 
-
-
-  refreshList() {
-    let inputListSize = -(-this.inputListSize); // coerce to a number so the calc inside function works
-    let inputStartPos = -(-this.inputStartPos);
-    this.items = this.getAnagramList(this.db, this.inputWordLength, undefined, inputStartPos, inputListSize);
-    
-    this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
+  refreshList(inputObj?: { listSize: number, startPos: number, wordLength: number }) {
+    let inputListSize, inputStartPos, inputWordLength;
+    if (inputObj) {
+      inputListSize = -(-inputObj.listSize); // coerce to a number so the calc inside function works
+      inputStartPos = -(-inputObj.startPos);
+      inputWordLength = inputObj.wordLength;
+      this.dynamicQueryList = this.firebaseService.getWordHistoryList(inputWordLength, undefined, inputStartPos, inputListSize);
+    }
+    else {
+      inputListSize = -(-this.inputListSize); // coerce to a number so the calc inside function works
+      inputStartPos = -(-this.inputStartPos);
+      inputWordLength = this.inputWordLength;
+      this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
+    }
+    this.items = this.getAnagramList(this.db, inputWordLength, undefined, inputStartPos, inputListSize);
     this.refreshQuery();
   }
 
@@ -115,7 +125,7 @@ export class HomePage {
       console.log(element);
     });
     this.firebaseService.addWordList(studyList);
-    
+
     console.log(this.firebaseService.addDynamicWordList(studyList));
 
     let user = this.auth.getCurrentUser().uid;
@@ -134,12 +144,12 @@ export class HomePage {
   }
 
   saveUserQuizList() {
-     this.userQuizListSplit = this.userQuizList.split(/\r?\n/);
-     for (var x = 0; x < this.userQuizListSplit.length; x++) {
-       this.userQuizListSplit[x] = this.utils.makeAlphagram(this.userQuizListSplit[x]);
-     }
-    this.firebaseService.addDynamicWordList(this.userQuizListSplit);   
-     this.setEmptyCustomList();
+    this.userQuizListSplit = this.userQuizList.split(/\r?\n/);
+    for (var x = 0; x < this.userQuizListSplit.length; x++) {
+      this.userQuizListSplit[x] = this.utils.makeAlphagram(this.userQuizListSplit[x]);
+    }
+    this.firebaseService.addDynamicWordList(this.userQuizListSplit);
+    this.setEmptyCustomList();
   }
 
 }
