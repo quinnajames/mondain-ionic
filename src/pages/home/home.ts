@@ -100,7 +100,7 @@ export class HomePage {
   }
 
   refreshQuery() {
-    this.requery = this.getAnagramList(this.db, this.inputWordLength, this.inputOrderBy, -(-this.inputStartPos), -(-this.inputListSize), true);
+    this.requery = this.items;
     this.quizList = [];
     this.requery.subscribe(snapshots => {
       snapshots.forEach(snapshot => {
