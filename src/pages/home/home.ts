@@ -6,12 +6,19 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
 import { FirebaseService, Utils } from '../../app/shared/shared';
+import { Subject } from 'rxjs/subject';
+import { SearchParams } from './search-params.class'
 
 @IonicPage()
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers: [SearchParams]
 })
+
+
+
+
 
 export class HomePage {
 
@@ -23,6 +30,8 @@ export class HomePage {
   inputStartPos: number;
   inputListSize: number;
 
+  searchParams: SearchParams;
+  searchParamsSubject: Subject<any>;
 
   requery: FirebaseListObservable<any[]>;
   quizList: any[];
@@ -64,8 +73,24 @@ export class HomePage {
     this.dynamicQueryList = [];
     this.refreshQuery();
     this.displayCustomList = false;
+    this.searchParams = new SearchParams(25, 7, 1);
+    this.searchParamsSubject = new Subject<SearchParams>();
   }
 
+  ngOnInit() {
+    this.searchParamsSubject.subscribe(
+      (v) => {
+        console.log(v);
+        console.log("in the subscription");
+        let inputListSize = -(-v.listSize);
+        let inputStartPos = -(-v.startPos);
+        this.items = this.getAnagramList(this.db, v.wordLength, this.inputOrderBy, inputStartPos, inputListSize);
+        this.dynamicQueryList = this.firebaseService.getWordHistoryList(v.wordLength, this.inputOrderBy, inputStartPos, inputListSize);
+        this.refreshQuery();
+      }
+    );
+    this.searchParamsSubject.next(this.searchParams);
+  }
 
   refreshLogin() {
     console.log("refreshLogin()");
@@ -91,22 +116,12 @@ export class HomePage {
     console.log('ionViewDidLoad QuizPage');
   }
 
+
+
   refreshList(inputObj?: { listSize: number, startPos: number, wordLength: number }) {
-    let inputListSize, inputStartPos, inputWordLength;
-    if (inputObj) {
-      inputListSize = -(-inputObj.listSize); // coerce to a number so the calc inside function works
-      inputStartPos = -(-inputObj.startPos);
-      inputWordLength = inputObj.wordLength;
-      this.dynamicQueryList = this.firebaseService.getWordHistoryList(inputWordLength, undefined, inputStartPos, inputListSize);
-    }
-    else {
-      inputListSize = -(-this.inputListSize); // coerce to a number so the calc inside function works
-      inputStartPos = -(-this.inputStartPos);
-      inputWordLength = this.inputWordLength;
-      this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
-    }
-    this.items = this.getAnagramList(this.db, inputWordLength, undefined, inputStartPos, inputListSize);
-    this.refreshQuery();
+    console.log("in refreshList");
+    console.log(this.searchParamsSubject)
+    this.searchParamsSubject.next(new SearchParams(-(-this.inputListSize), -(-this.inputStartPos), this.inputWordLength)); 
   }
 
   goToQuiz() {
