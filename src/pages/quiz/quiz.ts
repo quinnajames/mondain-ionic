@@ -46,6 +46,7 @@ export class QuizPage {
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
   loader: any;
+  rescheduleMoment: moment.Moment;
   nextWordDynamic: string;
   lastQuizWord: {
     right: number,
@@ -102,6 +103,7 @@ export class QuizPage {
       }
     };
     this.lastWasCorrect = null;
+    this.rescheduleMoment = moment();
     this.rescheduleObj = {
       unixtime: null,
       rescheduletime: null
@@ -116,6 +118,10 @@ export class QuizPage {
 
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
+  }
+
+  getUnixTimestampFromMoment(input: moment.Moment): number {
+    return parseInt(input.format('x'), 10);   
   }
 
   ionViewDidLoad() {
@@ -141,6 +147,10 @@ export class QuizPage {
     }).then(() => {
       this.loader.dismiss();
     })
+  }
+
+  refreshQuiz(timestamp) {
+    this.dueRef = this.firebaseService.getWordsDueListener(timestamp);
   }
 
   onChildAdded(data) {
@@ -253,11 +263,21 @@ export class QuizPage {
         }
         else {
           console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
-          this.setDefaultNextWord();
+          if (this.dynamicQuiz.size === 0)
+          {
+            this.dynamicQuiz = new Map<string, boolean>()
+            this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
+            this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
+          }
         }
       }
       else {
-        this.setDefaultNextWord();
+        if (this.dynamicQuiz.size === 0)
+        {
+          this.dynamicQuiz = new Map<string, boolean>()
+          this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
+          this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
+        }
       }
       console.log("I think this means the quiz is done");
     }
@@ -269,6 +289,7 @@ export class QuizPage {
   }
   updateDynamicQuiz() {
     if (this.dynamicQuiz) {
+
       this.getIteratorFromEntries();
       let nextword = this.dynamicQuizIterator.next();
       if (nextword.done) {
