@@ -5,7 +5,8 @@ import { Subject } from 'rxjs/subject';
     selector: 'input-box',
     template: `
     <ion-item class="translucent">
-      <input id="quizInput" type="text" [(ngModel)]="answer" (ngModelChange)="answerOnChange($event)" />
+      <input id="quizInput" type="text" [(ngModel)]="answer" 
+      (ngModelChange)="answerOnChange($event)" (keyup.enter)="onEnter($event)" />
     </ion-item>`
 })
 export class InputBoxComponent {
@@ -17,9 +18,20 @@ export class InputBoxComponent {
         })
     }
     @Output() answerChanger = new EventEmitter();
+    @Output() isBlankEnter = new EventEmitter();
     answerOnChange(newval) {
         this.answer = newval;
         this.answerChanger.emit(newval);
+    }
+    onEnter(val) {
+        console.log("enter")
+        console.log(this.answer)
+        if (this.answer === "")
+        {
+            
+        console.log("strict equality")
+            this.isBlankEnter.emit();
+        }
     }
     ngOnDestroy() {
         this.inputSubject.unsubscribe();

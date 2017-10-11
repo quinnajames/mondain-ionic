@@ -333,6 +333,7 @@ export class QuizPage {
   }
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
+    console.log("handle correctOrIncorrect " + lastCorrect)
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
     this.updateRescheduleObj;
