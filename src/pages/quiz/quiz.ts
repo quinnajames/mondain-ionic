@@ -45,6 +45,7 @@ export class QuizPage {
   solutionsGiven: string[];
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
+  loader: any;
   nextWordDynamic: string;
   lastQuizWord: {
     right: number,
@@ -118,10 +119,10 @@ export class QuizPage {
   }
 
   ionViewDidLoad() {
-    let loader = this.loading.create({
+    this.loader = this.loading.create({
       content: 'Getting quiz entries...',
     });
-    loader.present().then(() => {
+    this.loader.present().then(() => {
       this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
       this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
         this.onChildAdded(data);
@@ -138,7 +139,7 @@ export class QuizPage {
         this.startDynamicQuiz;
       }, 300);
     }).then(() => {
-      loader.dismiss();
+      this.loader.dismiss();
     })
   }
 
