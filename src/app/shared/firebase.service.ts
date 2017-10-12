@@ -65,6 +65,20 @@ export class FirebaseService {
         }
     }
 
+    getCountPerDay(date) {
+        const user = this.authProvider.getCurrentUser();
+        if (user) {
+            let logRef = firebase.database().ref('/log').child(user.uid).child(date).child('count');
+            logRef.once('value').then((count) => {
+                return count || 0;
+            })
+        }
+        else {
+            return null;
+        }
+
+    }
+
     getStatsRef() {
         let user = this.authProvider.getCurrentUser();
         if (user) {

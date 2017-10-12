@@ -116,6 +116,10 @@ export class QuizPage {
     return moment();
   }
 
+  getCurrentDate() {
+    return moment().format('YY-MM-DD');
+  }
+
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
   }
@@ -125,7 +129,7 @@ export class QuizPage {
   }
 
   ionViewDidLoad() {
-    console.log(moment().format('YY-MM-DD'));
+    console.log(this.getCurrentDate());
     this.loader = this.loading.create({
       content: 'Getting quiz entries...',
     });
@@ -186,6 +190,9 @@ export class QuizPage {
   }
 
 
+  getLog() {
+    return this.firebaseService.getCountPerDay(this.getCurrentDate());
+  }
   // Component handling
   reschedulePreviousWordToNow(event: boolean) {
     console.log("in reschedulePreviousWord");
@@ -359,7 +366,7 @@ export class QuizPage {
     console.log("handle correctOrIncorrect " + lastCorrect)
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
-    this.firebaseService.incrementLog(moment().format('YY-MM-DD'));
+    this.firebaseService.incrementLog(this.getCurrentDate());
     this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
