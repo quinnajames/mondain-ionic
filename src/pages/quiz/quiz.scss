@@ -53,11 +53,34 @@ page-quiz {
         font-size: 5rem;
     }
     .quizNine {
-        font-size: 2rem;
-        color: blue;
+        font-size: 4rem;
     }
     .quizTwelve {
-        font-size: 2rem;
-        color: orange;
+        font-size: 3rem;
     }
+    
+    @media(max-width:400px) {
+        .quizQuestion {
+            font-size: 4rem;
+        }
+        .quizNine {
+            font-size: 2.8rem;
+        }
+        .quizTwelve {
+            font-size: 2.1rem;
+        }
+    }
+    
+    @media(max-width:299px) {
+        .quizQuestion {
+            font-size: 3rem;
+        }
+        .quizNine {
+            font-size: 2.1rem;
+        }
+        .quizTwelve {
+            font-size: 1.6rem;
+        }
+    }
+
 }
