@@ -4,11 +4,18 @@ import { Input, Component } from '@angular/core';
     template: `<div class="translucent">
               <h1><span id="mapSize" class="translucent" *ngIf="quiz">
               {{quiz.size}}
-              </span></h1>
-              remaining
+              </span>
+              /
+              <span id="logCount" class="translucent" *ngIf="log">
+              {{log}}
+              </span>
+              
+              </h1>
+              </div><div class="translucent">
+              remaining / today
               </div>`
 })
 export class QuizInfoComponent {
     @Input() quiz:Map<string, boolean>;
-    
+    @Input() log:number;
 }

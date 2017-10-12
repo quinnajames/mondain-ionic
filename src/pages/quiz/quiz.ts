@@ -68,6 +68,7 @@ export class QuizPage {
     front: FirebaseObjectObservable<any[]>,
     back: FirebaseObjectObservable<any[]>
   }
+  logCount: number;
 
   // subscriptions
   subscription: FirebaseObjectObservable<any>;
@@ -109,7 +110,6 @@ export class QuizPage {
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
-
   }
 
   getCurrentMoment() {
@@ -117,6 +117,7 @@ export class QuizPage {
   }
 
   getCurrentDate() {
+    console.log(moment().format('YY-MM-DD'));
     return moment().format('YY-MM-DD');
   }
 
@@ -189,9 +190,22 @@ export class QuizPage {
     this.dueRef.off();
   }
 
+  getCountPerDay(date) {
+    const user = this.authProvider.getCurrentUser();
+    if (user) {
+        let logRef = this.firebaseService.getLogRefListener(date);
+        logRef.once('value').then((data) => {
+            console.log(data.val());  
+            this.logCount = data.val().count;
+        })
+    }
+    else {
+        return null;
+    }
+}
 
-  getLog() {
-    return this.firebaseService.getCountPerDay(this.getCurrentDate());
+ setLogCount() {
+      this.getCountPerDay(this.getCurrentDate());
   }
   // Component handling
   reschedulePreviousWordToNow(event: boolean) {
@@ -367,6 +381,8 @@ export class QuizPage {
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
     this.firebaseService.incrementLog(this.getCurrentDate());
+    this.setLogCount();
+    console.log(this.logCount);
     this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)

@@ -39,44 +39,42 @@ export class FirebaseService {
     }
 
     incrementLog(date) {
-        
+        let count = null;
         const user = this.authProvider.getCurrentUser();
         if (user) {
             let logRef = firebase.database().ref('/log').child(user.uid).child(date).child('count');
             logRef.transaction((trans) => {
                 console.log(trans);
+                count = trans + 1;
                 return trans + 1;
             },
             function (Error, committed, snapshot) {
                 if (Error) {
                     console.log("Error trying to increment study log");
-                    // return null;
                 }
                 else if (!committed) {
                     console.log("not committed")
                     firebase.database().ref('/log').child(user.uid).child(date).set({
                         'count': 1
                     });
+                    return 1;
                 }
                 else {
                     console.log("successfully committed");
                 }
             }, true);
         }
+        return count;
     }
 
-    getCountPerDay(date) {
+    getLogRefListener(date) {
         const user = this.authProvider.getCurrentUser();
         if (user) {
-            let logRef = firebase.database().ref('/log').child(user.uid).child(date).child('count');
-            logRef.once('value').then((count) => {
-                return count || 0;
-            })
+        return firebase.database().ref('/log').child(user.uid).child(date);
         }
         else {
             return null;
         }
-
     }
 
     getStatsRef() {
