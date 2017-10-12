@@ -38,6 +38,33 @@ export class FirebaseService {
         }
     }
 
+    incrementLog(date) {
+        
+        const user = this.authProvider.getCurrentUser();
+        if (user) {
+            let logRef = firebase.database().ref('/log').child(user.uid).child(date).child('count');
+            logRef.transaction((trans) => {
+                console.log(trans);
+                return trans + 1;
+            },
+            function (Error, committed, snapshot) {
+                if (Error) {
+                    console.log("Error trying to increment study log");
+                    // return null;
+                }
+                else if (!committed) {
+                    console.log("not committed")
+                    firebase.database().ref('/log').child(user.uid).child(date).set({
+                        'count': 1
+                    });
+                }
+                else {
+                    console.log("successfully committed");
+                }
+            }, true);
+        }
+    }
+
     getStatsRef() {
         let user = this.authProvider.getCurrentUser();
         if (user) {

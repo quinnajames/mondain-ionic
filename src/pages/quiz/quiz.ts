@@ -125,6 +125,7 @@ export class QuizPage {
   }
 
   ionViewDidLoad() {
+    console.log(moment().format('YY-MM-DD'));
     this.loader = this.loading.create({
       content: 'Getting quiz entries...',
     });
@@ -358,6 +359,7 @@ export class QuizPage {
     console.log("handle correctOrIncorrect " + lastCorrect)
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
+    this.firebaseService.incrementLog(moment().format('YY-MM-DD'));
     this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
