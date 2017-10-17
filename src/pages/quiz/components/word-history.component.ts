@@ -5,7 +5,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     template: `
     <ion-card padding *ngIf="lastQuizWord">
     <h1>Word History</h1>
-    <h2>for <b>{{lastQuizAlpha.alpha}}</b>: {{lastQuizAlpha.solutionsStringRep}}</h2><br /> {{lastQuizWord.right}} of {{lastQuizWord.right
+    <h2>for {{lastQuizAlpha.alpha}}: <span class="solutions">{{lastQuizAlpha.solutionsStringRep}}</span></h2><br /> {{lastQuizWord.right}} of {{lastQuizWord.right
     + lastQuizWord.wrong}}<br />
     <b>Last correct: </b>
     <span *ngIf="lastQuizWord.last_correct">{{lastQuizWord.last_correct | date : 'yMMMdjms'}}</span>

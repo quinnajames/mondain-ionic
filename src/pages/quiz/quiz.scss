@@ -6,6 +6,13 @@ page-quiz {
     .mapSize, h1 {
         font-size: 2.5rem;
     }
+    h2 {
+        font-size: 1.8rem;
+    }
+    .solutions {
+        font-size: 120%;
+        font-weight: bold;
+    }
     #quizAnswer, .centered {
         text-align: center;
     }
