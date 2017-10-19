@@ -87,6 +87,16 @@ export class FirebaseService {
         }
     }
 
+    getLogRef() {
+        let user = this.authProvider.getCurrentUser();
+        if (user) {
+            return firebase.database().ref('/log').child(user.uid);
+        }
+        else {
+            return null;
+        }        
+    }
+
     getStats(getFullData = false) {
         let user = this.authProvider.getCurrentUser();
         if (user) {
