@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
     selector: 'log',
     template: `
     
-  <ion-card *ngIf="statsObjectLoaded">
+  <ion-card *ngIf="logObject">
   <ion-list>
     <ion-item color="success">
       <ion-row>
@@ -17,10 +17,10 @@ import { Component, Input } from '@angular/core';
       
         <ion-row class="item">
       <ion-col col-sm-2 col-md-3 col-lg-4>
-        {{item.date}}
+        {{item[0]}}
       </ion-col>
       <ion-col>
-        {{item.count}}
+        {{item[1]}}
       </ion-col>
     </ion-row>
     </ion-item>

@@ -20,6 +20,8 @@ export class StatsPage {
   statsObject: any;
   statsObjectLoaded: any;
   wordLengths: any[];
+  logObject: any;
+  logObjectLoaded: any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -30,7 +32,26 @@ export class StatsPage {
   }
 
 
-
+  getLog() {
+    let logObject;
+    console.log("run getLog")
+    this.firebaseService.getLogRef().once('value').then((data) => {
+      logObject = data.val();
+      let logObjectLoaded = [];
+      console.log(logObject);
+      console.log(Object.keys(logObject));
+      Object.keys(logObject).forEach(element => {
+        logObjectLoaded.push([element, logObject[element].count]);
+      })
+      this.logObjectLoaded = logObjectLoaded;
+    }).then(() => { 
+     console.log("ready");
+     if (this.logObjectLoaded)
+     {
+      console.log(this.logObjectLoaded);
+     }
+    })
+  }
   getStats() {
     console.log("run getStats")
     if (!this.statsObject) {
@@ -58,6 +79,7 @@ export class StatsPage {
       
     this.getStats();
       _.debounce(this.getStats, 250);
+      this.getLog();
     }).then(() => {
       loader.dismiss();
     });
