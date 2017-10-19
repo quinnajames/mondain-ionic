@@ -20,8 +20,7 @@ export class StatsPage {
   statsObject: any;
   statsObjectLoaded: any;
   wordLengths: any[];
-  logObject: any;
-  logObjectLoaded: any;
+  logArray: any;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -37,18 +36,18 @@ export class StatsPage {
     console.log("run getLog")
     this.firebaseService.getLogRef().once('value').then((data) => {
       logObject = data.val();
-      let logObjectLoaded = [];
+      let logArray = [];
       console.log(logObject);
       console.log(Object.keys(logObject));
       Object.keys(logObject).forEach(element => {
-        logObjectLoaded.push([element, logObject[element].count]);
+        logArray.push([element, logObject[element].count]);
       })
-      this.logObjectLoaded = logObjectLoaded;
+      this.logArray = logArray;
     }).then(() => { 
      console.log("ready");
-     if (this.logObjectLoaded)
+     if (this.logArray)
      {
-      console.log(this.logObjectLoaded);
+      console.log(this.logArray);
      }
     })
   }
