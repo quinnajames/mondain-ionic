@@ -9,7 +9,7 @@ import { async, TestBed, ComponentFixture } from '@angular/core/testing';
     {{quiz.size}}
     </span>
     /
-    <span id="logCount" class="translucent" *ngIf="log">
+    <span id="logCount" class="translucent" *ngIf="log || log === 0">
     {{log}}
     </span>
     
@@ -46,9 +46,16 @@ describe('QuizInfoComponent', () => {
     })
 
     it('should show a quiz size of 2', () => {
-        console.log(testHostFixture.nativeElement.querySelector('#mapSize').innerHTML.trim())
         expect(testHostFixture.nativeElement.querySelector(
             '#mapSize').innerHTML.trim()).toEqual('2');
+    })
+
+    it('should show a log size of 0', () => {
+        
+        console.log(testHostFixture.nativeElement.querySelector(
+            '#logCount'));
+        expect(testHostFixture.nativeElement.querySelector(
+            '#logCount').innerHTML.trim()).toEqual('0');
     })
 
 })
