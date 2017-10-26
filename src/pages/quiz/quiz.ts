@@ -53,7 +53,6 @@ export class QuizPage {
     last_correct: any,
     next_scheduled: any
   }
-  lastWasCorrect: boolean // eventually to be made redundant with the stats queue
   rescheduleObj: {
     unixtime: number
     rescheduletime: number
@@ -102,7 +101,6 @@ export class QuizPage {
         queue: []
       }
     };
-    this.lastWasCorrect = null;
     this.rescheduleMoment = moment();
     this.rescheduleObj = {
       unixtime: null,
@@ -340,7 +338,6 @@ export class QuizPage {
     })
     ss.recent.percent = Math.round(ss.recent.correct / (ss.recent.correct + ss.recent.incorrect) * 100);
     this.sessionStats = ss;
-    this.lastWasCorrect = ss.recent.queue[-1] || null;
   }
 
 
@@ -367,7 +364,7 @@ export class QuizPage {
   }
 
   updateRescheduleObj() {
-    this.rescheduleObj = this.rescheduleLogic(this.lastWasCorrect);
+    this.rescheduleObj = this.rescheduleLogic(this.sessionStats.recent.queue[-1] || null); // was last question correct?
   }
 
   //aliases
