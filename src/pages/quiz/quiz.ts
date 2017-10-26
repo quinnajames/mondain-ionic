@@ -368,10 +368,18 @@ export class QuizPage {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
-
-
   updateRescheduleObj() {
     this.rescheduleObj = this.rescheduleLogic(this.lastWasCorrect);
+  }
+
+  //aliases
+
+  handleCorrect() {
+    this.handleCorrectOrIncorrect(true);
+  }
+
+  handleIncorrect() {
+    this.handleCorrectOrIncorrect(false);
   }
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
@@ -381,7 +389,6 @@ export class QuizPage {
     this.updateBackground();
     this.firebaseService.incrementLog(this.getCurrentDate());
     this.setLogCount();
-    console.log(this.logCount);
     this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
@@ -406,7 +413,6 @@ export class QuizPage {
         catch (Exception) { console.log(Exception) };
       }
       else {
-        //console.log("Quiz done - looping back.");
         this.jumpToIndexAndLoad(0);
       }
     })
@@ -434,16 +440,6 @@ export class QuizPage {
     })
   }
 
-
-  //aliases
-
-  handleCorrect() {
-    this.handleCorrectOrIncorrect(true);
-  }
-
-  handleIncorrect() {
-    this.handleCorrectOrIncorrect(false);
-  }
 
   jumpToIndexAndLoad(index) {
     this.quizIndex = index;
