@@ -71,9 +71,9 @@ export class QuizPage {
   logCount: number;
 
   // subscriptions
-  subscription: FirebaseObjectObservable<any>;
   wordStatSubscription: FirebaseObjectObservable<any>;
   hookSubscription: FirebaseObjectObservable<any>;
+  anagramSubscription: FirebaseObjectObservable<any>;
 
   inputSubject:Subject<any>;
   pageBackground:string;
@@ -394,7 +394,11 @@ export class QuizPage {
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
     // get solutions
-    this.subscription.subscribe(subscribeData => {
+      this.updateLastQuizAlphaAndMoveToNext();
+  }
+
+  updateLastQuizAlphaAndMoveToNext() {
+    this.anagramSubscription.subscribe(subscribeData => {
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
         solutionString = solutionString += subscribeData.solutions[x] + " ";
@@ -418,6 +422,7 @@ export class QuizPage {
     })
   }
 
+
   loadNextWord() {
     this.solutionsGiven = [];
     let nextQuizWord;
@@ -427,8 +432,8 @@ export class QuizPage {
     else {
       nextQuizWord = "AA";
     }
-    this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
-    this.subscription.subscribe(subscribeData => {
+    this.anagramSubscription = this.angularFireService.getAnagrams(nextQuizWord);
+    this.anagramSubscription.subscribe(subscribeData => {
       let nextsolutions = subscribeData.solutions;
       this.nextWord = {
         word: nextQuizWord,
