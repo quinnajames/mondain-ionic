@@ -335,7 +335,7 @@ export class QuizPage {
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
     // todo: optimize recent algorithms after first run
     ss.recent.queue.push(wasCorrect);
-    if (ss.recent.queue.length > 10) { ss.recent.queue.shift() };
+    if (ss.recent.queue.length > 30) { ss.recent.queue.shift() };
     ss.recent.correct = ss.recent.incorrect = 0;
     ss.recent.queue.forEach(el => {
       if (el === true) { ss.recent.correct += 1; } else { ss.recent.incorrect += 1; }
