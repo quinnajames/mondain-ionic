@@ -40,7 +40,6 @@ export class QuizPage {
       queue: boolean[];
     }
   };
-  quizIndex: any;
   quizLength: any;
   solutionsGiven: string[];
   dynamicQuiz: Map<string, boolean>;
@@ -88,7 +87,6 @@ export class QuizPage {
       answer: ""
     }
     // Initialize session variables
-    this.quizIndex = 0;
     this.quizLength = 1;
     this.inputSubject = new Subject();
     this.sessionStats = {
@@ -411,14 +409,8 @@ export class QuizPage {
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-      if (this.quizIndex < this.quizLength - 1) {
-        this.quizIndex++;
         try { this.loadNextWord() }
         catch (Exception) { console.log(Exception) };
-      }
-      else {
-        this.jumpToIndexAndLoad(0);
-      }
     })
   }
 
@@ -443,13 +435,6 @@ export class QuizPage {
         nextScheduled: null
       };
     })
-  }
-
-
-  jumpToIndexAndLoad(index) {
-    this.quizIndex = index;
-    try { this.loadNextWord() }
-    catch (Exception) { console.log(Exception) };
   }
 
   answerOnChange(answer) {
