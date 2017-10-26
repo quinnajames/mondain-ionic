@@ -6,7 +6,7 @@ import { Input, Component } from '@angular/core';
               {{quiz.size}}
               </span>
               /
-              <span id="logCount" class="translucent" *ngIf="log">
+              <span id="logCount" class="translucent" *ngIf="log || log === 0">
               {{log}}
               </span>
               
