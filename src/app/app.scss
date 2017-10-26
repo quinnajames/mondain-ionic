@@ -28,31 +28,3 @@
 ion-navbar {
     color: color($colors, item-background)
 }
-
-.color-100 {
-  background-color: lighten(mix(#595C93, #3DB2F5, 70%),35%)
-}
-.color-95 {
-  background-color: lighten(mix(#595C93, #3DB2F5, 50%),35%)
-}
-.color-90 {
-  background-color: lighten(mix(#595C93, #3DB2F5, 30%),35%)
-}
-.color-85 {
-  background-color: lighten(mix(#595C93, #3DB2F5, 15%),35%)
-}
-.color-80 {
-  background-color: lighten(#595C93,35%)
-}
-.color-70 {
-  background-color: lighten(mix(#595C93, #f53d3d, 20%),35%)
-}
-.color-60 {
-  background-color: lighten(mix(#595C93, #f53d3d, 35%),35%)
-}
-.color-50 {
-  background-color:  lighten(mix(#595C93, #f53d3d, 50%),35%)
-}
-.color-0 {
-  background-color: lighten(mix(#595C93, #f53d3d, 70%),35%)
-}

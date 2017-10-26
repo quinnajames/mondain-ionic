@@ -33,14 +33,13 @@ export class QuizPage {
       incorrect: number;
       percent: number;
     }
-    last10: {
+    recent: {
       correct: number;
       incorrect: number;
       percent: number;
       queue: boolean[];
     }
   };
-  quizIndex: any;
   quizLength: any;
   solutionsGiven: string[];
   dynamicQuiz: Map<string, boolean>;
@@ -54,7 +53,6 @@ export class QuizPage {
     last_correct: any,
     next_scheduled: any
   }
-  lastWasCorrect: boolean // eventually to be made redundant with the stats queue
   rescheduleObj: {
     unixtime: number
     rescheduletime: number
@@ -71,11 +69,12 @@ export class QuizPage {
   logCount: number;
 
   // subscriptions
-  subscription: FirebaseObjectObservable<any>;
   wordStatSubscription: FirebaseObjectObservable<any>;
   hookSubscription: FirebaseObjectObservable<any>;
+  anagramSubscription: FirebaseObjectObservable<any>;
 
   inputSubject:Subject<any>;
+  pageBackground:string;
 
   constructor(
     public loading: LoadingController,
@@ -87,7 +86,6 @@ export class QuizPage {
       answer: ""
     }
     // Initialize session variables
-    this.quizIndex = 0;
     this.quizLength = 1;
     this.inputSubject = new Subject();
     this.sessionStats = {
@@ -96,20 +94,48 @@ export class QuizPage {
         incorrect: 0,
         percent: 0.0
       },
-      last10: {
+      recent: {
         correct: 0,
         incorrect: 0,
         percent: 0.0,
         queue: []
       }
     };
-    this.lastWasCorrect = null;
     this.rescheduleMoment = moment();
     this.rescheduleObj = {
       unixtime: null,
       rescheduletime: null
     }
     this.dynamicQuiz = new Map<string, boolean>();
+    this.pageBackground = '#c4c5db';
+  }
+
+  updateBackground() {
+    let percent = this.sessionStats.recent.percent;
+
+    let base = [0xC4, 0xC5, 0xDB];
+    let dark = [0x6B, 0x6E, 0xA0];
+    let light = [0xFD, 0xFD, 0xFD];
+
+    function adjustHex(diffMultiplier, changeArr, i) {
+              return Math.floor(((changeArr[i] - base[i]) * diff / diffMultiplier) + base[i]);
+    }
+
+    let hex = base;
+    let diff = percent - 80;
+    if (diff > 0.1) {
+      for (let x = 0; x < 3; x++) {
+        hex[x] = adjustHex(20, light, x);
+      }
+    }
+    else if (diff < 0.1) {
+      for (let x = 0; x < 3; x++) {
+        hex[x] = adjustHex(-80, dark, x);
+      }     
+    }
+    console.log(hex);
+    this.pageBackground = '#'+ hex.map((c) => c.toString(16)).join("");
+
   }
 
   getCurrentMoment() {
@@ -233,39 +259,6 @@ export class QuizPage {
     this.nextWordDynamic = "AA";
   }
 
-  getBackground() {
-    let base = 'color-';
-    if (this.sessionStats) {
-      if (this.sessionStats.overall.percent) {
-        let percent = Math.floor(this.sessionStats.overall.percent);
-        if (percent > 95) {
-          return base + '100';
-        }
-        else if (percent > 90) {
-          return base + '95';
-        }
-        else if (percent > 85) {
-          return base + '90';
-        }
-        else if (percent > 80) {
-          return base + '85';
-        }
-        else if (percent > 70) {
-          return base + '80';
-        }
-        else if (percent > 60) {
-          return base + '70';
-        }
-        else if (percent > 50) {
-          return base + '60';
-        }
-        else if (percent > 20) {
-          return base + '50';
-        }
-      }
-    }
-    return base + '0';
-  }
 
   setNextWordDynamic(nextword) {
     while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
@@ -330,21 +323,21 @@ export class QuizPage {
     }
   }
 
-  /** Update function, has side effects on this.sessionStats */
+  /** Update function, has side effects on this.sessionStats. */
+  /** Note that percent is an integer up to 100. */
   updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
 
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
-    // todo: optimize last10 algorithms after first run
-    ss.last10.queue.push(wasCorrect);
-    if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
-    ss.last10.correct = ss.last10.incorrect = 0;
-    ss.last10.queue.forEach(el => {
-      if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
+    // todo: optimize recent algorithms after first run
+    ss.recent.queue.push(wasCorrect);
+    if (ss.recent.queue.length > 30) { ss.recent.queue.shift() };
+    ss.recent.correct = ss.recent.incorrect = 0;
+    ss.recent.queue.forEach(el => {
+      if (el === true) { ss.recent.correct += 1; } else { ss.recent.incorrect += 1; }
     })
-    ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
+    ss.recent.percent = Math.round(ss.recent.correct / (ss.recent.correct + ss.recent.incorrect) * 100);
     this.sessionStats = ss;
-    this.lastWasCorrect = ss.last10.queue[-1] || null;
   }
 
 
@@ -370,25 +363,37 @@ export class QuizPage {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
-
-
   updateRescheduleObj() {
-    this.rescheduleObj = this.rescheduleLogic(this.lastWasCorrect);
+    this.rescheduleObj = this.rescheduleLogic(this.sessionStats.recent.queue[-1] || null); // was last question correct?
+  }
+
+  //aliases
+
+  handleCorrect() {
+    this.handleCorrectOrIncorrect(true);
+  }
+
+  handleIncorrect() {
+    this.handleCorrectOrIncorrect(false);
   }
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
     console.log("handle correctOrIncorrect " + lastCorrect)
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
+    this.updateBackground();
     this.firebaseService.incrementLog(this.getCurrentDate());
     this.setLogCount();
-    console.log(this.logCount);
     this.updateRescheduleObj;
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
     // get solutions
-    this.subscription.subscribe(subscribeData => {
+      this.updateLastQuizAlphaAndMoveToNext();
+  }
+
+  updateLastQuizAlphaAndMoveToNext() {
+    this.anagramSubscription.subscribe(subscribeData => {
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
         solutionString = solutionString += subscribeData.solutions[x] + " ";
@@ -401,17 +406,11 @@ export class QuizPage {
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-      if (this.quizIndex < this.quizLength - 1) {
-        this.quizIndex++;
         try { this.loadNextWord() }
         catch (Exception) { console.log(Exception) };
-      }
-      else {
-        //console.log("Quiz done - looping back.");
-        this.jumpToIndexAndLoad(0);
-      }
     })
   }
+
 
   loadNextWord() {
     this.solutionsGiven = [];
@@ -422,8 +421,8 @@ export class QuizPage {
     else {
       nextQuizWord = "AA";
     }
-    this.subscription = this.angularFireService.getAnagrams(nextQuizWord);
-    this.subscription.subscribe(subscribeData => {
+    this.anagramSubscription = this.angularFireService.getAnagrams(nextQuizWord);
+    this.anagramSubscription.subscribe(subscribeData => {
       let nextsolutions = subscribeData.solutions;
       this.nextWord = {
         word: nextQuizWord,
@@ -433,23 +432,6 @@ export class QuizPage {
         nextScheduled: null
       };
     })
-  }
-
-
-  //aliases
-
-  handleCorrect() {
-    this.handleCorrectOrIncorrect(true);
-  }
-
-  handleIncorrect() {
-    this.handleCorrectOrIncorrect(false);
-  }
-
-  jumpToIndexAndLoad(index) {
-    this.quizIndex = index;
-    try { this.loadNextWord() }
-    catch (Exception) { console.log(Exception) };
   }
 
   answerOnChange(answer) {
