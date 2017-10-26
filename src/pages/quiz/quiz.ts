@@ -138,7 +138,7 @@ export class QuizPage {
       }     
     }
     console.log(hex);
-    this.pageBackground = hex.map((c) => c.toString(16)).join("");
+    this.pageBackground = '#'+ hex.map((c) => c.toString(16)).join("");
 
   }
 
@@ -378,6 +378,7 @@ export class QuizPage {
     console.log("handle correctOrIncorrect " + lastCorrect)
     this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
+    this.updateBackground();
     this.firebaseService.incrementLog(this.getCurrentDate());
     this.setLogCount();
     console.log(this.logCount);
