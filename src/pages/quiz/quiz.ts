@@ -33,7 +33,7 @@ export class QuizPage {
       incorrect: number;
       percent: number;
     }
-    last10: {
+    recent: {
       correct: number;
       incorrect: number;
       percent: number;
@@ -97,7 +97,7 @@ export class QuizPage {
         incorrect: 0,
         percent: 0.0
       },
-      last10: {
+      recent: {
         correct: 0,
         incorrect: 0,
         percent: 0.0,
@@ -115,7 +115,7 @@ export class QuizPage {
   }
 
   updateBackground() {
-    let percent = this.sessionStats.last10.percent;
+    let percent = this.sessionStats.recent.percent;
 
     let base = [0xC4, 0xC5, 0xDB];
     let dark = [0x6B, 0x6E, 0xA0];
@@ -333,16 +333,16 @@ export class QuizPage {
 
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
-    // todo: optimize last10 algorithms after first run
-    ss.last10.queue.push(wasCorrect);
-    if (ss.last10.queue.length > 10) { ss.last10.queue.shift() };
-    ss.last10.correct = ss.last10.incorrect = 0;
-    ss.last10.queue.forEach(el => {
-      if (el === true) { ss.last10.correct += 1; } else { ss.last10.incorrect += 1; }
+    // todo: optimize recent algorithms after first run
+    ss.recent.queue.push(wasCorrect);
+    if (ss.recent.queue.length > 10) { ss.recent.queue.shift() };
+    ss.recent.correct = ss.recent.incorrect = 0;
+    ss.recent.queue.forEach(el => {
+      if (el === true) { ss.recent.correct += 1; } else { ss.recent.incorrect += 1; }
     })
-    ss.last10.percent = Math.round(ss.last10.correct / (ss.last10.correct + ss.last10.incorrect) * 100);
+    ss.recent.percent = Math.round(ss.recent.correct / (ss.recent.correct + ss.recent.incorrect) * 100);
     this.sessionStats = ss;
-    this.lastWasCorrect = ss.last10.queue[-1] || null;
+    this.lastWasCorrect = ss.recent.queue[-1] || null;
   }
 
 
