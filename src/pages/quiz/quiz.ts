@@ -198,7 +198,6 @@ export class QuizPage {
     if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
       this.dynamicQuiz.set(data.key, true);
       console.log("word became due: " + data.key);
-      this.updateDynamicQuiz();
       this.childAdded$.next(data.key);
     }
   }
