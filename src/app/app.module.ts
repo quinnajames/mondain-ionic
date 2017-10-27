@@ -16,6 +16,8 @@ import { LocalQuizService, FirebaseService, AngularFireService, Utils } from '..
 
 import { firebaseConfig } from './firebase.config';
 
+// rx operators go here
+
 
 @NgModule({
   declarations: [
