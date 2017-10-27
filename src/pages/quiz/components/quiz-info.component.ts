@@ -4,8 +4,8 @@ import { Input, Component } from '@angular/core';
     template: `<div class="translucent">
               <table>
               <tr>
-              <td class="info-cell">Today</td>
-              <td class="info-cell">Left</td>
+              <td class="info-cell caption" *ngIf="log || log === 0">Today</td>
+              <td class="info-cell caption" *ngIf="log || log === 0">Left</td>
               </tr>
               <tr>
                 <td class="info-cell headline">
@@ -14,7 +14,7 @@ import { Input, Component } from '@angular/core';
                     </span>
                 </td>
                 <td class="info-cell headline">
-                    <span id="mapSize" class="translucent" *ngIf="quiz">
+                    <span id="mapSize" class="translucent" *ngIf="quiz && log || log === 0">
                     {{quiz.size}}
                     </span>
                 </td>
