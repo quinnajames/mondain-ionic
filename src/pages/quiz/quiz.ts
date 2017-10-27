@@ -14,19 +14,16 @@ import moment from 'moment';
   templateUrl: 'quiz.html',
 })
 export class QuizPage {
-  quizList: Promise<any>;
-  dueRef: firebase.database.Query;
-  input: { // encapsulate this in input to avoid an issue with Angular scopes
+
+  // page
+  input: {
     answer: string;
   }
-  nextWord: {
-    word: string,
-    solutions: FirebaseObjectObservable<any[]>,
-    solutionCount: number;
-    lastCorrect: number;
-    nextScheduled: number;
-    // nextDue
-  };
+  pageBackground: string;
+  loader: any;
+
+  // stats
+  logCount: number;
   sessionStats: {
     overall: {
       correct: number;
@@ -40,22 +37,37 @@ export class QuizPage {
       queue: boolean[];
     }
   };
+  // quiz
+  quizList: Promise<any>;
   quizLength: any;
-  solutionsGiven: string[];
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
-  loader: any;
+
+  // rescheduling
+  rescheduleObj: {
+    unixtime: number
+    rescheduletime: number
+  }
   rescheduleMoment: moment.Moment;
+  
+  // solutions
+  nextWord: {
+    word: string,
+    solutions: FirebaseObjectObservable<any[]>,
+    solutionCount: number;
+    lastCorrect: number;
+    nextScheduled: number;
+  };
+  solutionsGiven: string[];
+  
+  // words
   nextWordDynamic: string;
+  
   lastQuizWord: {
     right: number,
     wrong: number,
     last_correct: any,
     next_scheduled: any
-  }
-  rescheduleObj: {
-    unixtime: number
-    rescheduletime: number
   }
   lastQuizAlpha: {
     alpha: string,
@@ -66,15 +78,16 @@ export class QuizPage {
     front: FirebaseObjectObservable<any[]>,
     back: FirebaseObjectObservable<any[]>
   }
-  logCount: number;
+
+  // firebase
+  dueRef: firebase.database.Query;
 
   // subscriptions
   wordStatSubscription: FirebaseObjectObservable<any>;
   hookSubscription: FirebaseObjectObservable<any>;
   anagramSubscription: FirebaseObjectObservable<any>;
-
-  inputSubject:Subject<any>;
-  pageBackground:string;
+  // subjects
+  inputSubject: Subject<any>;
 
   constructor(
     public loading: LoadingController,
@@ -118,7 +131,7 @@ export class QuizPage {
     let light = [0xFD, 0xFD, 0xFD];
 
     function adjustHex(diffMultiplier, changeArr, i) {
-              return Math.floor(((changeArr[i] - base[i]) * diff / diffMultiplier) + base[i]);
+      return Math.floor(((changeArr[i] - base[i]) * diff / diffMultiplier) + base[i]);
     }
 
     let hex = base;
@@ -131,10 +144,10 @@ export class QuizPage {
     else if (diff < 0.1) {
       for (let x = 0; x < 3; x++) {
         hex[x] = adjustHex(-80, dark, x);
-      }     
+      }
     }
     console.log(hex);
-    this.pageBackground = '#'+ hex.map((c) => c.toString(16)).join("");
+    this.pageBackground = '#' + hex.map((c) => c.toString(16)).join("");
 
   }
 
@@ -152,7 +165,7 @@ export class QuizPage {
   }
 
   getUnixTimestampFromMoment(input: moment.Moment): number {
-    return parseInt(input.format('x'), 10);   
+    return parseInt(input.format('x'), 10);
   }
 
   ionViewDidLoad() {
@@ -193,8 +206,6 @@ export class QuizPage {
     }
   }
 
-
-
   onChildChanged(data) {
     console.log("word info changed: " + data.key);
     if (data.child("next_scheduled")) {
@@ -219,19 +230,19 @@ export class QuizPage {
   getCountPerDay(date) {
     const user = this.authProvider.getCurrentUser();
     if (user) {
-        let logRef = this.firebaseService.getLogRefListener(date);
-        logRef.once('value').then((data) => {
-            console.log(data.val());  
-            this.logCount = data.val().count;
-        })
+      let logRef = this.firebaseService.getLogRefListener(date);
+      logRef.once('value').then((data) => {
+        console.log(data.val());
+        this.logCount = data.val().count;
+      })
     }
     else {
-        return null;
+      return null;
     }
-}
+  }
 
- setLogCount() {
-      this.getCountPerDay(this.getCurrentDate());
+  setLogCount() {
+    this.getCountPerDay(this.getCurrentDate());
   }
   // Component handling
   reschedulePreviousWordToNow(event: boolean) {
@@ -246,7 +257,6 @@ export class QuizPage {
     else if (correct === 0) this.handleIncorrect();
   }
 
-
   //Internal
 
   getIteratorFromEntries() {
@@ -258,7 +268,6 @@ export class QuizPage {
   setDefaultNextWord() {
     this.nextWordDynamic = "AA";
   }
-
 
   setNextWordDynamic(nextword) {
     while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
@@ -278,8 +287,7 @@ export class QuizPage {
         }
         else {
           console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
-          if (this.dynamicQuiz.size === 0)
-          {
+          if (this.dynamicQuiz.size === 0) {
             this.dynamicQuiz = new Map<string, boolean>()
             this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
             this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
@@ -287,8 +295,7 @@ export class QuizPage {
         }
       }
       else {
-        if (this.dynamicQuiz.size === 0)
-        {
+        if (this.dynamicQuiz.size === 0) {
           this.dynamicQuiz = new Map<string, boolean>()
           this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
           this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
@@ -389,7 +396,7 @@ export class QuizPage {
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
     // get solutions
-      this.updateLastQuizAlphaAndMoveToNext();
+    this.updateLastQuizAlphaAndMoveToNext();
   }
 
   updateLastQuizAlphaAndMoveToNext() {
@@ -406,11 +413,10 @@ export class QuizPage {
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-        try { this.loadNextWord() }
-        catch (Exception) { console.log(Exception) };
+      try { this.loadNextWord() }
+      catch (Exception) { console.log(Exception) };
     })
   }
-
 
   loadNextWord() {
     this.solutionsGiven = [];
@@ -440,7 +446,7 @@ export class QuizPage {
     if (localanswer.length == this.nextWord.word.length // No need to look at array if length is wrong
       && _.indexOf(this.nextWord.solutions, localanswer) > -1
       && _.indexOf(this.solutionsGiven, localanswer) == -1) {
-        console.log("solution given: " + this.input.answer);
+      console.log("solution given: " + this.input.answer);
       this.solutionsGiven.push(localanswer);
       this.clearAnswer(); // Reset global answer
     }
