@@ -17,7 +17,7 @@
 
       <ion-card id="quizCard" class="translucent">
         <quiz-question *ngIf="nextWord" [question]="nextWord.word"></quiz-question>
-        <input-box [(answer)]="input.answer" [inputSubject]="inputSubject" (answerChanger)="answerOnChange($event)" (isBlankEnter)="handleIncorrect()"></input-box>
+        <input-box [(answer)]="input.answer" [inputSubject]="input$" (answerChanger)="answerOnChange($event)" (isBlankEnter)="handleIncorrect()"></input-box>
         <solutions-box [solutions]="solutionsGiven"></solutions-box>
         <quiz-buttons (onAnswer)="handleAnswer($event)"></quiz-buttons>
       </ion-card>

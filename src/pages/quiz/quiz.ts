@@ -83,11 +83,11 @@ export class QuizPage {
   dueRef: firebase.database.Query;
 
   // subscriptions
-  wordStatSubscription: FirebaseObjectObservable<any>;
-  hookSubscription: FirebaseObjectObservable<any>;
-  anagramSubscription: FirebaseObjectObservable<any>;
+  wordStat$: FirebaseObjectObservable<any>;
+  hook$: FirebaseObjectObservable<any>;
+  anagram$: FirebaseObjectObservable<any>;
   // subjects
-  inputSubject: Subject<any>;
+  input$: Subject<any>;
 
   constructor(
     public loading: LoadingController,
@@ -100,7 +100,7 @@ export class QuizPage {
     }
     // Initialize session variables
     this.quizLength = 1;
-    this.inputSubject = new Subject();
+    this.input$ = new Subject();
     this.sessionStats = {
       overall: {
         correct: 0,
@@ -400,7 +400,7 @@ export class QuizPage {
   }
 
   updateLastQuizAlphaAndMoveToNext() {
-    this.anagramSubscription.subscribe(subscribeData => {
+    this.anagram$.subscribe(subscribeData => {
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
         solutionString = solutionString += subscribeData.solutions[x] + " ";
@@ -427,8 +427,8 @@ export class QuizPage {
     else {
       nextQuizWord = "AA";
     }
-    this.anagramSubscription = this.angularFireService.getAnagrams(nextQuizWord);
-    this.anagramSubscription.subscribe(subscribeData => {
+    this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
+    this.anagram$.subscribe(subscribeData => {
       let nextsolutions = subscribeData.solutions;
       this.nextWord = {
         word: nextQuizWord,
@@ -457,7 +457,7 @@ export class QuizPage {
 
   clearAnswer() {
     this.input.answer = "";
-    this.inputSubject.next("");
+    this.input$.next("");
   }
 
 }
