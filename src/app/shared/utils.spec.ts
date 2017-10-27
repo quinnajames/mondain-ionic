@@ -1,7 +1,4 @@
-import {
-    inject, fakeAsync, tick, TestBed
-} from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { Utils } from '../../app/shared/shared';
 
 describe('Utils', () => {
