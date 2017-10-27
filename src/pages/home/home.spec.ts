@@ -1,31 +1,17 @@
+import { DebugElement, ErrorHandler, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
-import { MyApp } from '../../app/app.component';
-import { HomePage } from './home';
-import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
-
-import { IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
-
+import { BrowserModule, By } from '@angular/platform-browser';
+import { IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { QuizPage } from '../pages';
-import { AuthProvider } from '../../providers/auth/auth';
-import { LocalQuizService, FirebaseService, Utils } from '../../app/shared/shared';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
-import { AngularFireService } from '../../app/shared/shared';
-
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp } from 'ionic-angular';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HomePage } from './home';
+import { MyApp } from '../../app/app.component';
+import { AuthProvider } from '../../providers/auth/auth';
+import { LocalQuizService, FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
 
 let fixture;
 let homePageInstance;
