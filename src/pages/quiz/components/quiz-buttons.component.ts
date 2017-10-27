@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
     'selector': 'quiz-buttons',
-    'template': `        <ion-card id="buttonCard" class="outer-table">
+    'template': `<ion-card id="buttonCard" class="outer-table">
     <div class="inner-table" >
       <button ion-fab id="correctButton" class="quizButtonItem button-align"  (click)="handleClick(1)">
             <ion-icon name="checkmark"></ion-icon>

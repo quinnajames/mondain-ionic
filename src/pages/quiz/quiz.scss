@@ -3,8 +3,11 @@ page-quiz {
         font-size: 10px;
         font-size-adjust: 0.58;
     }
-    .mapSize, h1 {
+    .mapSize, h1, .headline {
         font-size: 2.5rem;
+    }
+    span#logCount {
+        font-weight: 600;
     }
     h2 {
         font-size: 1.8rem;
@@ -52,6 +55,11 @@ page-quiz {
         vertical-align: middle;
         padding: 5px;
     }
+    td.info-cell {
+        display: table-cell;
+        vertical-align: middle;
+        padding: 0px 5px 0px 5px; /*t, r, b, l */
+    }
     .button-align {
         margin: auto;
     }
@@ -65,6 +73,8 @@ page-quiz {
     .quizTwelve {
         font-size: 3rem;
     }
+
+
     
     @media(max-width:400px) {
         .quizQuestion {
