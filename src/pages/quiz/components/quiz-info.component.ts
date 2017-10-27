@@ -4,10 +4,6 @@ import { Input, Component } from '@angular/core';
     template: `<div class="translucent">
               <table>
               <tr>
-              <td class="info-cell caption" *ngIf="log || log === 0">Today</td>
-              <td class="info-cell caption" *ngIf="log || log === 0">Left</td>
-              </tr>
-              <tr>
                 <td class="info-cell headline">
                     <span id="logCount" class="translucent" *ngIf="log || log === 0">
                     {{log}}
@@ -18,6 +14,10 @@ import { Input, Component } from '@angular/core';
                     {{quiz.size}}
                     </span>
                 </td>
+              </tr>
+              <tr>
+              <td class="info-cell" *ngIf="log || log === 0"><span class="caption">TODAY</span></td>
+              <td class="info-cell" *ngIf="log || log === 0"><span class="caption">QUEUE</span></td>
               </tr>
               </table>
               </div>`
