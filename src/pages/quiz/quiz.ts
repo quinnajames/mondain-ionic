@@ -8,6 +8,7 @@ import { Subject } from 'rxjs/subject';
 import * as _ from 'lodash';
 import moment from 'moment';
 
+
 @IonicPage()
 @Component({
   selector: 'page-quiz',
@@ -39,7 +40,6 @@ export class QuizPage {
   };
   // quiz
   quizList: Promise<any>;
-  quizLength: any;
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
 
@@ -74,20 +74,16 @@ export class QuizPage {
     solutions: string[],
     solutionsStringRep: string
   }
-  lastQuizWordHooks: {
-    front: FirebaseObjectObservable<any[]>,
-    back: FirebaseObjectObservable<any[]>
-  }
 
   // firebase
   dueRef: firebase.database.Query;
 
   // subscriptions
   wordStat$: FirebaseObjectObservable<any>;
-  hook$: FirebaseObjectObservable<any>;
   anagram$: FirebaseObjectObservable<any>;
   // subjects
   input$: Subject<any>;
+  childAdded$: Subject<any>;
 
   constructor(
     public loading: LoadingController,
@@ -99,7 +95,6 @@ export class QuizPage {
       answer: ""
     }
     // Initialize session variables
-    this.quizLength = 1;
     this.input$ = new Subject();
     this.sessionStats = {
       overall: {
@@ -174,6 +169,7 @@ export class QuizPage {
       content: 'Getting quiz entries...',
     });
     this.loader.present().then(() => {
+      this.childAdded$ = new Subject();
       this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
       this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
         this.onChildAdded(data);
@@ -185,10 +181,10 @@ export class QuizPage {
         this.onChildRemoved(data);
       }, undefined, this);
     }).then(() => {
-      this.startDynamicQuiz();
-      _.debounce(() => {
-        this.startDynamicQuiz;
-      }, 300);
+      let done$ = this.childAdded$.debounceTime(500);
+      done$.subscribe(() => this.startDynamicQuiz());
+
+
     }).then(() => {
       this.loader.dismiss();
     })
@@ -202,7 +198,8 @@ export class QuizPage {
     if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
       this.dynamicQuiz.set(data.key, true);
       console.log("word became due: " + data.key);
-      this.startDynamicQuiz();
+      this.updateDynamicQuiz();
+      this.childAdded$.next(data.key);
     }
   }
 
@@ -270,6 +267,7 @@ export class QuizPage {
   }
 
   setNextWordDynamic(nextword) {
+    console.log("setNextWordDynamic()")
     while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
       console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
       nextword = this.dynamicQuizIterator.next();
@@ -301,15 +299,16 @@ export class QuizPage {
           this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
         }
       }
-      console.log("I think this means the quiz is done");
     }
   }
 
   startDynamicQuiz() {
+    console.log("startDynamicQuiz()")
     this.updateDynamicQuiz();
     this.loadNextWord();
   }
   updateDynamicQuiz() {
+    console.log("updateDynamicQuiz()")
     if (this.dynamicQuiz) {
 
       this.getIteratorFromEntries();
@@ -328,6 +327,29 @@ export class QuizPage {
     else {
       console.log("Quiz not initialized");
     }
+  }
+
+  loadNextWord() {
+    console.log("loadNextWord()")
+    this.solutionsGiven = [];
+    let nextQuizWord;
+    if (this.nextWordDynamic) {
+      nextQuizWord = this.nextWordDynamic;
+    }
+    else {
+      nextQuizWord = "AA";
+    }
+    this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
+    this.anagram$.subscribe(subscribeData => {
+      let nextsolutions = subscribeData.solutions;
+      this.nextWord = {
+        word: nextQuizWord,
+        solutions: nextsolutions,
+        solutionCount: nextsolutions.length,
+        lastCorrect: null,
+        nextScheduled: null
+      };
+    })
   }
 
   /** Update function, has side effects on this.sessionStats. */
@@ -415,28 +437,6 @@ export class QuizPage {
       };
       try { this.loadNextWord() }
       catch (Exception) { console.log(Exception) };
-    })
-  }
-
-  loadNextWord() {
-    this.solutionsGiven = [];
-    let nextQuizWord;
-    if (this.nextWordDynamic) {
-      nextQuizWord = this.nextWordDynamic;
-    }
-    else {
-      nextQuizWord = "AA";
-    }
-    this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
-    this.anagram$.subscribe(subscribeData => {
-      let nextsolutions = subscribeData.solutions;
-      this.nextWord = {
-        word: nextQuizWord,
-        solutions: nextsolutions,
-        solutionCount: nextsolutions.length,
-        lastCorrect: null,
-        nextScheduled: null
-      };
     })
   }
 

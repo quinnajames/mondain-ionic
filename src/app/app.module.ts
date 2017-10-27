@@ -18,6 +18,7 @@ import { firebaseConfig } from './firebase.config';
 
 // rx operators go here
 
+import 'rxjs/add/operator/debounceTime';
 
 @NgModule({
   declarations: [
