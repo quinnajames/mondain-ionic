@@ -100,7 +100,6 @@ export class FirebaseService {
     getStats(getFullData = false) {
         let user = this.authProvider.getCurrentUser();
         if (user) {
-            let statsObject;
             let userProfileRef = firebase.database().ref('/userProfile').child(user.uid);
             let statsRef = firebase.database().ref('/stats').child(user.uid);
 
