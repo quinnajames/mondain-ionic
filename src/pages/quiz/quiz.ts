@@ -353,7 +353,7 @@ export class QuizPage {
 
   /** Update function, used for this.sessionStats. */
   /** Note that percent is an integer up to 100. */
-  updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
+  updateStats(wasCorrect: boolean, ss: any) { // note that I can't use 'this.sessionStats.recent.queue[-1] || null' here
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
     // todo: optimize recent algorithms after first run
@@ -390,6 +390,7 @@ export class QuizPage {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
+  /* Post refactoring, can only be called AFTER stats are updated. */
   updateRescheduleObj() {
     this.rescheduleObj = this.rescheduleLogic(this.sessionStats.recent.queue[-1] || null); // was last question correct?
   }
