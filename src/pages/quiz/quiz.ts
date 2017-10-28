@@ -351,10 +351,9 @@ export class QuizPage {
     })
   }
 
-  /** Update function, has side effects on this.sessionStats. */
+  /** Update function, used for this.sessionStats. */
   /** Note that percent is an integer up to 100. */
   updateStats(wasCorrect: boolean, ss: any) { // consider moving all these lastCorrect or whatever into a global variable
-
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
     // todo: optimize recent algorithms after first run
@@ -365,7 +364,7 @@ export class QuizPage {
       if (el === true) { ss.recent.correct += 1; } else { ss.recent.incorrect += 1; }
     })
     ss.recent.percent = Math.round(ss.recent.correct / (ss.recent.correct + ss.recent.incorrect) * 100);
-    this.sessionStats = ss;
+    return ss;
   }
 
 
@@ -407,7 +406,7 @@ export class QuizPage {
 
   handleCorrectOrIncorrect(lastCorrect: boolean) {
     console.log("handle correctOrIncorrect " + lastCorrect)
-    this.updateStats(lastCorrect, this.sessionStats);
+    this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
     this.updateDynamicQuiz();
     this.updateBackground();
     this.firebaseService.incrementLog(this.getCurrentDate());
