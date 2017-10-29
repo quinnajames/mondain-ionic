@@ -83,6 +83,8 @@ export class HomePage {
         console.log(v);
         console.log("in the subscription");
         let inputListSize = -(-v.listSize);
+        if (inputListSize > 50) inputListSize = 50;
+        if (inputListSize < 1 || isNaN(inputListSize)) inputListSize = 1;
         let inputStartPos = -(-v.startPos);
         let inputWordLength = -(-v.wordLength);
         this.items = this.getAnagramList(this.db, inputWordLength, this.inputOrderBy, inputStartPos, inputListSize);
@@ -117,7 +119,6 @@ export class HomePage {
         console.log(snapshot.key);
       });
     });
-    //this.dynamicQueryList = this.firebaseService.getWordHistoryList(this.inputWordLength, undefined, -(-this.inputStartPos), -(-this.inputListSize));
   }
 
 
@@ -130,7 +131,10 @@ export class HomePage {
   refreshList(inputObj?: { listSize: number, startPos: number, wordLength: number }) {
     console.log("in refreshList");
     console.log(this.searchParamsSubject)
-    this.searchParamsSubject.next(new SearchParams(-(-this.inputListSize), -(-this.inputStartPos), -(-this.inputWordLength))); 
+    let inputListSize = -(-this.inputListSize);
+    if (inputListSize > 50) inputListSize = 50;
+    if (inputListSize < 1 || isNaN(inputListSize)) inputListSize = 1;
+    this.searchParamsSubject.next(new SearchParams(inputListSize, -(-this.inputStartPos), -(-this.inputWordLength))); 
   }
 
   goToQuiz() {
