@@ -13,7 +13,7 @@ import { ErrorHandler } from '@angular/core';
 import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { FirebaseService, AngularFireService } from './shared/shared';
-
+import { AngularFireAuth } from 'angularfire2/auth';
 
 describe('MyApp', () => {
     let fixture;
@@ -42,6 +42,7 @@ describe('MyApp', () => {
                 StatusBar,
                 SplashScreen,
                 AuthProvider,
+                AngularFireAuth,
                 {provide: ErrorHandler, useClass: IonicErrorHandler}
             ]
         })

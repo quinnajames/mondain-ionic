@@ -12,6 +12,7 @@ import { HomePage } from './home';
 import { MyApp } from '../../app/app.component';
 import { AuthProvider } from '../../app/shared/providers/auth';
 import { FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 let fixture;
 let homePageInstance;
@@ -43,6 +44,7 @@ describe('Home: HomePage', () => {
                 NavController,
                 FirebaseService,
                 AngularFireService,
+                AngularFireAuth,
                 StatusBar,
                 SplashScreen,
                 AuthProvider,
