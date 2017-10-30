@@ -30,30 +30,26 @@ export class AuthProvider {
     }
 
     isLoggedIn() {
-        this.afAuth.authState.subscribe(auth => {
-            console.log(!!auth);
-            return !!auth;
-        })
+        return !!this.afAuth.auth.currentUser;
     }
 
     getAuthSub() {
         return this.afAuth.authState;
     }
 
-    // TODO: refactoring target
     getCurrentUserIdent() {
-        this.afAuth.authState.subscribe(auth => {
-            console.log(auth);
-            if (auth) return auth.email;
-            else return "No user";
-        })
+        let user = this.afAuth.auth.currentUser;
+        if (user) {
+            return user.email;
+        }
+        else return null;
     }
     getCurrentUser() {
-        this.afAuth.authState.subscribe(auth => {
-            console.log("getCurrentUser()");
-            console.log(auth);
-            return auth;
-        })
+        let user = this.afAuth.auth.currentUser;
+        if (user) {
+            return user;
+        }
+        else return null;
     }
 
 
