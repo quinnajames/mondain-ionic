@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { AuthProvider } from '../../providers/auth/auth';
+import { AuthProvider } from '../../app/shared/providers/auth';
 import firebase from 'firebase';
 import moment from 'moment';
 

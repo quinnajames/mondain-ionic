@@ -10,7 +10,7 @@ import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { AuthProvider } from '../providers/auth/auth';
+import { AuthProvider } from '../app/shared/providers/auth';
 
 import { LocalQuizService, FirebaseService, AngularFireService, Utils } from '../app/shared/shared';
 

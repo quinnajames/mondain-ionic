@@ -7,7 +7,7 @@ import {
   AlertController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HomePage } from '../home/home';
-import { AuthProvider } from '../../providers/auth/auth';
+import { AuthProvider } from '../../app/shared/providers/auth';
 import { EmailValidator } from '../../validators/email';
 
 @IonicPage()

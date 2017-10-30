@@ -1,6 +1,6 @@
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
-import { AuthProvider } from '../providers/auth/auth';
+import { AuthProvider } from '../app/shared/providers/auth';
 import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 

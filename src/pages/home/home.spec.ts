@@ -10,7 +10,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 import { HomePage } from './home';
 import { MyApp } from '../../app/app.component';
-import { AuthProvider } from '../../providers/auth/auth';
+import { AuthProvider } from '../../app/shared/providers/auth';
 import { LocalQuizService, FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
 
 let fixture;

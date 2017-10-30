@@ -4,7 +4,7 @@ import { IonicPage, NavController } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 
 import { QuizPage } from '../pages';
-import { AuthProvider } from '../../providers/auth/auth';
+import { AuthProvider } from '../../app/shared/providers/auth';
 import { FirebaseService, Utils } from '../../app/shared/shared';
 import { Subject } from 'rxjs/Subject';
 import { SearchParams } from './search-params.class'
