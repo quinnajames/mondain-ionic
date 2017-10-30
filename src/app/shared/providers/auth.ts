@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import firebase from 'firebase';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { Observable } from 'rxjs/Observable';
+
 
 @Injectable()
 
 export class AuthProvider {
-    constructor() { }
+    constructor(public afAuth: AngularFireAuth) { }
 
     loginUser(email: string, password: string): firebase.Promise<any> {
-        return firebase.auth().signInWithEmailAndPassword(email, password);
+        return this.afAuth.auth.signInWithEmailAndPassword(email, password);
     }
 
     signupUser(email: string, password: string): firebase.Promise<any> {
-        return firebase.auth().createUserWithEmailAndPassword(email, password).then((newUser) => {
+        return this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((newUser) => {
             firebase.database().ref('/userProfile').child(newUser.uid).set({
                 email: email
             });
@@ -19,34 +22,38 @@ export class AuthProvider {
     }
 
     resetPassword(email: string): firebase.Promise<any> {
-        return firebase.auth().sendPasswordResetEmail(email);
+        return this.afAuth.auth.sendPasswordResetEmail(email);
     }
 
     logoutUser(): firebase.Promise<any> {
-        return firebase.auth().signOut();
+        return this.afAuth.auth.signOut();
     }
 
     isLoggedIn() {
-        return !!firebase.auth().currentUser;
+        this.afAuth.authState.subscribe(auth => {
+            console.log(!!auth);
+            return !!auth;
+        })
     }
+
+    getAuthSub() {
+        return this.afAuth.authState;
+    }
+
     // TODO: refactoring target
     getCurrentUserIdent() {
-        var user = firebase.auth().currentUser;
-        if (user) {
-            return user.email;
-        }
-        else {
-            return "No user";
-        }
+        this.afAuth.authState.subscribe(auth => {
+            console.log(auth);
+            if (auth) return auth.email;
+            else return "No user";
+        })
     }
     getCurrentUser() {
-        var user = firebase.auth().currentUser;
-        if (user) {
-            return user;
-        }
-        else {
-            return null;
-        }
+        this.afAuth.authState.subscribe(auth => {
+            console.log("getCurrentUser()");
+            console.log(auth);
+            return auth;
+        })
     }
 
 

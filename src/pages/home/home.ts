@@ -6,6 +6,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../app/shared/providers/auth';
 import { FirebaseService, Utils } from '../../app/shared/shared';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { SearchParams } from './search-params.class'
 
@@ -36,11 +37,14 @@ export class HomePage {
   requery: FirebaseListObservable<any[]>;
   quizList: any[];
   userIdent: any;
-  loggedIn: boolean;
   userQuizList: any;
   userQuizListSplit: string[];
   dynamicQueryList: any[];
   displayCustomList: boolean;
+
+  
+  auth$: Observable<firebase.User>;
+  loggedIn: boolean;
 
   getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
     this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
@@ -68,16 +72,21 @@ export class HomePage {
     this.items = this.getAnagramList(db, this.inputWordLength, this.inputOrderBy, this.inputStartPos, this.inputListSize);
 
     this.userIdent = auth.getCurrentUserIdent();
-    this.loggedIn = auth.isLoggedIn();
     this.quizList = [];
     this.dynamicQueryList = [];
     this.refreshQuery();
     this.displayCustomList = false;
     this.searchParams = new SearchParams(25, 7, 1);
     this.searchParamsSubject = new Subject<SearchParams>();
+    this.auth$ = this.auth.getAuthSub();
   }
 
   ngOnInit() {
+    this.auth$.subscribe(
+      auth => {
+        console.log(auth);
+      }
+    )
     this.searchParamsSubject.subscribe(
       (v) => {
         console.log(v);

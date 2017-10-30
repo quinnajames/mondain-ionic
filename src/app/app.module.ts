@@ -5,6 +5,7 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 import { MyApp } from './app.component';
 
@@ -41,6 +42,7 @@ import 'rxjs/add/operator/debounceTime';
     AngularFireService,
     StatusBar,
     SplashScreen,
+    AngularFireAuth,
     AuthProvider,
     Utils,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
