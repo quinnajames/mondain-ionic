@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
     selector: 'log',
     template: `
     
-  <ion-card *ngIf="logObject">
+  <ion-card *ngIf="logArray">
   <ion-list>
     <ion-item color="success">
       <ion-row>
@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
     </ion-row>
     </ion-item>
 
-    <ion-item *ngFor="let item of logObject">
+    <ion-item *ngFor="let item of logArray">
       
         <ion-row class="item">
       <ion-col col-sm-2 col-md-3 col-lg-4>
@@ -30,5 +30,5 @@ import { Component, Input } from '@angular/core';
     `
 })
 export class LogComponent{
-    @Input('logObject') logObject:any;
+    @Input('logArray') logArray:any;
 }
