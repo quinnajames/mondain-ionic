@@ -70,7 +70,7 @@ export class HomePage {
     this.inputStartPos = 1;
     this.inputOrderBy = 'avgplay';
     this.items = this.getAnagramList(db, this.inputWordLength, this.inputOrderBy, this.inputStartPos, this.inputListSize);
-
+    this.loggedIn = false;
     this.userIdent = auth.getCurrentUserIdent();
     this.quizList = [];
     this.dynamicQueryList = [];
@@ -85,6 +85,9 @@ export class HomePage {
     this.auth$.subscribe(
       auth => {
         console.log(auth);
+        this.loggedIn = !!auth;
+        if (auth) this.userIdent = auth.email;
+        else this.userIdent = "No user";
       }
     )
     this.searchParamsSubject.subscribe(
@@ -135,7 +138,9 @@ export class HomePage {
     console.log('ionViewDidLoad QuizPage');
   }
 
-
+  goToLogin() {
+    this.navCtrl.push('LoginPage');
+  }
 
   refreshList(inputObj?: { listSize: number, startPos: number, wordLength: number }) {
     console.log("in refreshList");
