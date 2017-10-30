@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
     </ion-row>
     </ion-item>
 
-    <ion-item *ngFor="let item of logArray">
+    <ion-item *ngFor="let item of logArray | reverse">
       
         <ion-row class="item">
       <ion-col col-sm-2 col-md-3 col-lg-4>
@@ -31,4 +31,6 @@ import { Component, Input } from '@angular/core';
 })
 export class LogComponent{
     @Input('logArray') logArray:any;
+    constructor() {
+    }
 }
