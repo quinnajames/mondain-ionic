@@ -1,0 +1,7 @@
+{
+    "name": "Mondain",
+    "description": "An Ionic app for word studying and unscrambling",
+    "repository": "https://github.com/quinnajames/mondain-ionic",
+    "logo": "http://www.quinnjames.net/mondain/icon.png",
+    "keywords": ["ionic3", "heroku", "mondain"]
+}
