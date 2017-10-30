@@ -3,13 +3,10 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { LocalQuizService } from '../app/shared/shared';
-
 
 @Component({
   templateUrl: 'app.html',
   providers: [
-    LocalQuizService
   ]
 })
 export class MyApp {
@@ -23,7 +20,6 @@ export class MyApp {
               public statusBar: StatusBar, 
               public splashScreen: SplashScreen,
               public events: Events,
-              public LocalQuizService: LocalQuizService
               ) {
     this.initializeApp();
 

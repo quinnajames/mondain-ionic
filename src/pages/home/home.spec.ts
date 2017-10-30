@@ -11,7 +11,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { HomePage } from './home';
 import { MyApp } from '../../app/app.component';
 import { AuthProvider } from '../../app/shared/providers/auth';
-import { LocalQuizService, FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
+import { FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
 
 let fixture;
 let homePageInstance;
@@ -41,7 +41,6 @@ describe('Home: HomePage', () => {
             ],
             providers: [
                 NavController,
-                LocalQuizService,
                 FirebaseService,
                 AngularFireService,
                 StatusBar,

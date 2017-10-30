@@ -12,7 +12,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { ErrorHandler } from '@angular/core';
 import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-import { LocalQuizService, FirebaseService, AngularFireService } from './shared/shared';
+import { FirebaseService, AngularFireService } from './shared/shared';
 
 
 describe('MyApp', () => {
@@ -37,8 +37,6 @@ describe('MyApp', () => {
                 IonicStorageModule.forRoot()
             ],
             providers: [
-
-                LocalQuizService,
                 FirebaseService,
                 AngularFireService,
                 StatusBar,

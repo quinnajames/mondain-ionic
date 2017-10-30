@@ -13,7 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthProvider } from '../app/shared/providers/auth';
 
-import { LocalQuizService, FirebaseService, AngularFireService, Utils } from '../app/shared/shared';
+import { FirebaseService, AngularFireService, Utils } from '../app/shared/shared';
 
 import { firebaseConfig } from './firebase.config';
 
@@ -37,7 +37,6 @@ import 'rxjs/add/operator/debounceTime';
     MyApp
   ],
   providers: [
-    LocalQuizService,
     FirebaseService,
     AngularFireService,
     StatusBar,
