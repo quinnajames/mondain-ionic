@@ -6,7 +6,7 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../providers/auth/auth';
 import { FirebaseService, Utils } from '../../app/shared/shared';
-import { Subject } from 'rxjs/subject';
+import { Subject } from 'rxjs/Subject';
 import { SearchParams } from './search-params.class'
 
 @IonicPage()

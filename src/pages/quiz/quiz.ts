@@ -4,7 +4,7 @@ import { LoadingController } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 import { AuthProvider } from '../../providers/auth/auth';
-import { Subject } from 'rxjs/subject';
+import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
 import moment from 'moment';
 
