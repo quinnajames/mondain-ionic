@@ -58,6 +58,7 @@ describe('Home: HomePage', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(HomePage);
         homePageInstance = fixture.componentInstance;
+        homePageInstance.loggedIn = true;
     });
 
     afterEach(() => {
