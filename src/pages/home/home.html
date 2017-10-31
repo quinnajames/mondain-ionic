@@ -28,15 +28,15 @@
         <h2>Search For Words</h2>
         <ion-item color="item-background" class="searchInput">
           <ion-label>Word length</ion-label>
-          <ion-input type="number" min="2" max="15" [(ngModel)]="inputWordLength" (input)="refreshList()" (focus)="refreshList()"></ion-input>
+          <ion-input type="number" min="2" max="15" [(ngModel)]="inputWordLength" (focus)="refreshList()" (change)="refreshList()"></ion-input>
         </ion-item>
         <ion-item color="item-background" class="searchInput">
           <ion-label>List length</ion-label>
-          <ion-input type="number" min="1" max="50" [(ngModel)]="inputListSize" (input)="refreshList()" (focus)="refreshList()"></ion-input>
+          <ion-input type="number" min="1" max="50" [(ngModel)]="inputListSize" (focus)="refreshList()" (change)="refreshList()"></ion-input>
         </ion-item>
         <ion-item color="item-background" class="searchInput">
           <ion-label>Start Position</ion-label>
-          <ion-input type="number" min="1" max="40000" [step]="inputListSize" [(ngModel)]="inputStartPos" (input)="refreshList()" (focus)="refreshList()"></ion-input>
+          <ion-input type="number" min="1" max="40000" [step]="inputListSize" [(ngModel)]="inputStartPos" (focus)="refreshList()" (change)="refreshList()"></ion-input>
         </ion-item>
       </ion-card>
       <ion-item>
