@@ -24,7 +24,8 @@
       </ion-col>
 
     <ion-col col-14 col-md-8 col-lg-4 *ngIf="loggedIn">
-      <ion-card>
+      <ion-card padding>
+        <h2>Search For Words</h2>
         <ion-item color="item-background" class="searchInput">
           <ion-label>Word length</ion-label>
           <ion-input type="number" min="2" max="15" [(ngModel)]="inputWordLength" (input)="refreshList()" (focus)="refreshList()"></ion-input>
