@@ -13,6 +13,7 @@
         "lint": "ionic-app-scripts lint",
         "ionic:build": "ionic-app-scripts build",
         "ionic:serve": "ionic-app-scripts serve",
+        "prod": "cross-env NODE_ENV=production npm start",
         "test": "karma start ./test-config/karma.conf.js",
         "test-ci": "karma start ./test-config/karma.conf.js --single-run",
         "e2e": "webdriver-manager update --standalone false --gecko false; protractor ./test-config/protractor.conf.js",
