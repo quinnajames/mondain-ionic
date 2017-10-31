@@ -58,6 +58,9 @@
         Add to Study List
       </button>
         </ion-item>
+        <p padding ng-if="!(dynamicQueryList && dynamicQueryList.length)">
+          When you search for words, they'll automatically appear here.
+        </p>
          <ion-item class="text" *ngFor="let item of dynamicQueryList" color="item-background" [ngClass]="{'green': item.hasHistory}">
             {{item.rank}} {{item.alphagram}}
         </ion-item>
