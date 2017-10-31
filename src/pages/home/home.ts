@@ -62,7 +62,6 @@ export class HomePage {
     this.userIdent = auth.getCurrentUserIdent();
     this.quizList = [];
     this.dynamicQueryList = [];
-    this.refreshQuery();
     this.displayCustomList = false;
     this.searchParams = new SearchParams(25, 7, 1);
     this.searchParamsSubject = new Subject<SearchParams>();
