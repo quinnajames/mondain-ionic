@@ -114,7 +114,7 @@ export class HomePage {
       preserveSnapshot: getSnapshot
     });
   }
-  
+
   refreshLogin() {
     console.log("refreshLogin()");
     this.userIdent = this.auth.getCurrentUserIdent();
@@ -179,6 +179,10 @@ export class HomePage {
 
       this.loading = this.loadingCtrl.create();
       this.loading.present();
+  }
+
+  signup() {
+    this.navCtrl.push('SignupPage');
   }
 
   isLoggedIn() {
