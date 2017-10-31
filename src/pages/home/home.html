@@ -1,12 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button ion-button menuToggle *ngIf="loggedIn">
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Home</ion-title>
   </ion-navbar>
 
-<login-bar [userIdent]="userIdent" [loggedIn]="loggedIn" (clickLogin)="goToLogin()"></login-bar>
+<login-bar [userIdent]="userIdent" [loggedIn]="loggedIn" (clickLogin)="goToLogin()" (clickLogout)="logout()"></login-bar>
 
 </ion-header>
 
@@ -14,7 +14,7 @@
   <ion-row>
 
 
-    <ion-col col-14 col-md-8 col-lg-4>
+    <ion-col col-14 col-md-8 col-lg-4 *ngIf="loggedIn">
       <ion-card>
         <ion-item color="item-background" class="searchInput">
           <ion-label>Word length</ion-label>
@@ -39,7 +39,7 @@
     </ion-col>
     <ion-col col-14 col-md-10 col-lg-6>
       
-      <ion-card color="item-background">
+      <ion-card color="item-background" *ngIf="loggedIn">
         <ion-item>
           <h1>Search Results</h1>
         </ion-item>

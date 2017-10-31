@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
-
+import { IonicPage, NavController, Loading, LoadingController, AlertController } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
-
 import { QuizPage } from '../pages';
 import { AuthProvider } from '../../app/shared/providers/auth';
 import { FirebaseService, Utils } from '../../app/shared/shared';
@@ -16,10 +14,6 @@ import { SearchParams } from './search-params.class'
   templateUrl: 'home.html',
   providers: [SearchParams]
 })
-
-
-
-
 
 export class HomePage {
 
@@ -46,24 +40,18 @@ export class HomePage {
   auth$: Observable<firebase.User>;
   loggedIn: boolean;
 
-  getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
-    this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
-    return db.list('/alphagram_ranks/' + wordLength, {
-      query: {
-        orderByChild: orderBy,
-        startAt: startPos,
-        endAt: startPos + listSize - 1
-      },
-      preserveSnapshot: getSnapshot
-    });
-  }
 
+  public loading:Loading;
 
   constructor(public navCtrl: NavController,
     public db: AngularFireDatabase,
     public auth: AuthProvider,
     private firebaseService: FirebaseService,
-    public utils: Utils) {
+    public utils: Utils,
+    public loadingCtrl: LoadingController,
+    public alertCtrl: AlertController) {
+      
+  
     // default values for display
     this.inputListSize = 25;
     this.inputWordLength = 7;
@@ -115,6 +103,18 @@ export class HomePage {
     this.searchParamsSubject.next(this.searchParams);
   }
 
+  getAnagramList(db: AngularFireDatabase, wordLength = 7, orderBy = 'avgplay', startPos = 2000, listSize = 20, getSnapshot = false) {
+    this.firebaseService.getAnagramListStatic(wordLength, orderBy, startPos, listSize);
+    return db.list('/alphagram_ranks/' + wordLength, {
+      query: {
+        orderByChild: orderBy,
+        startAt: startPos,
+        endAt: startPos + listSize - 1
+      },
+      preserveSnapshot: getSnapshot
+    });
+  }
+  
   refreshLogin() {
     console.log("refreshLogin()");
     this.userIdent = this.auth.getCurrentUserIdent();
@@ -153,6 +153,32 @@ export class HomePage {
 
   goToQuiz() {
     this.navCtrl.push(QuizPage, this.quizList);
+  }
+
+  logout() {
+
+      this.auth.logoutUser()
+      .then( authData => {
+        this.loading.dismiss().then( () => {
+          this.navCtrl.setRoot(HomePage);
+        });
+      }, error => {
+        this.loading.dismiss().then( () => {
+          let alert = this.alertCtrl.create({
+            message: error.message,
+            buttons: [
+              {
+                text: "OK",
+                role: 'cancel'
+              }
+            ]
+          });
+          alert.present();          
+        });
+      });
+
+      this.loading = this.loadingCtrl.create();
+      this.loading.present();
   }
 
   isLoggedIn() {
