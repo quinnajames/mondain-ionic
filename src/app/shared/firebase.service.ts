@@ -172,14 +172,17 @@ export class FirebaseService {
             ref.on('child_added', (dataSnapshot) => { // I do child_added so it calls once per child
                 let quizStatsRef = firebase.database().ref('/userProfile').child(user.uid).child(dataSnapshot.key);
                 let hasHistory = false;
+                let displayTag = "not studied";
                 quizStatsRef.once('value').then((val) => {
                     if (val && val.val() && val.val().next_scheduled) {
                         hasHistory = true;
+                        displayTag = "studied";
                     }
                     wordList.push({
                         alphagram: dataSnapshot.key,
                         rank: dataSnapshot.val().avgplay,
-                        hasHistory: hasHistory
+                        hasHistory: hasHistory,
+                        displayTag: displayTag
                     })
                 }, (Error) => { console.log(Error); })
 

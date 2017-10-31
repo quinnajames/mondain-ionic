@@ -62,7 +62,7 @@
           When you search for words, they'll automatically appear here.
         </p>
          <ion-item class="text" *ngFor="let item of dynamicQueryList" color="item-background" [ngClass]="{'green': item.hasHistory}">
-            {{item.rank}} {{item.alphagram}}
+            {{item.rank}} {{item.alphagram}} -- {{item.displayTag}}
         </ion-item>
       </ion-card>
       

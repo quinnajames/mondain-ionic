@@ -88,7 +88,11 @@ export class HomePage {
         let inputWordLength = -(-v.wordLength);
         this.items = this.getAnagramList(this.db, inputWordLength, this.inputOrderBy, inputStartPos, inputListSize);
         console.log(this.items);
-        this.dynamicQueryList = this.firebaseService.getWordHistoryList(inputWordLength, this.inputOrderBy, inputStartPos, inputListSize);
+        this.dynamicQueryList = this.firebaseService.getWordHistoryList(
+          inputWordLength,
+          this.inputOrderBy,
+          inputStartPos,
+          inputListSize);
         this.quizList = [];
         this.items.subscribe(snapshots => {
           //console.log(snapshots);
