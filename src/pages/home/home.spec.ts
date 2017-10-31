@@ -105,7 +105,7 @@ describe('Home: HomePage', () => {
 
         de = fixture.debugElement.query(By.css('#enterCustomListButton'));
         el = de.nativeElement;
-        expect(el.textContent).toContain('Enter Custom List');
+        expect(el.textContent).toContain('Custom List...');
     });
     it('starts NOT showing the Save Custom List button', () => {
 
