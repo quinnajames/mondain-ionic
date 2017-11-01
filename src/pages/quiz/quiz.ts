@@ -43,6 +43,7 @@ export class QuizPage {
   quizList: Promise<any>;
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
+  quizDone: boolean;
 
   // rescheduling
   rescheduleObj: {
@@ -168,6 +169,8 @@ export class QuizPage {
     console.log(this.getCurrentDate());
     this.loader = this.loading.create({
       content: 'Getting quiz entries...',
+      duration: 10000,
+      dismissOnPageChange: true
     });
     this.loader.present().then(() => {
       this.childAdded$ = new Subject();
@@ -287,6 +290,7 @@ export class QuizPage {
           else {
             console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
             if (this.dynamicQuiz.size === 0) {
+              this.quizDone = true;
               this.dynamicQuiz = new Map<string, boolean>()
               this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
               this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
@@ -295,6 +299,7 @@ export class QuizPage {
         }
         else {
           if (this.dynamicQuiz.size === 0) {
+            this.quizDone = true;
             this.dynamicQuiz = new Map<string, boolean>()
             this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
             this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
