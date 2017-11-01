@@ -77,7 +77,7 @@ export class HomePage {
         else this.userIdent = "No user";
       }
     )
-    this.searchParamsSubject.subscribe(
+    this.searchParamsSubject.debounceTime(1000).subscribe(
       (v) => {
         console.log(v);
         console.log("in the subscription");
