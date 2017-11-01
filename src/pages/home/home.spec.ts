@@ -14,6 +14,8 @@ import { AuthProvider } from '../../app/shared/providers/auth';
 import { FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
 import { AngularFireAuth } from 'angularfire2/auth';
 
+import 'rxjs/add/operator/debounceTime';
+
 let fixture;
 let homePageInstance;
 const firebaseConfig = {
