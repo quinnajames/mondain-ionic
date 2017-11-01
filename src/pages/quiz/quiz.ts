@@ -7,6 +7,7 @@ import { AuthProvider } from '../../app/shared/providers/auth';
 import { Subject } from 'rxjs/Subject';
 import * as _ from 'lodash';
 import moment from 'moment';
+import { EventEmitter } from '@angular/core';
 
 
 @IonicPage()
@@ -182,11 +183,10 @@ export class QuizPage {
       }, undefined, this);
     }).then(() => {
       let done$ = this.childAdded$.debounceTime(500);
-      done$.subscribe(() => this.startDynamicQuiz());
-
-
-    }).then(() => {
-      this.loader.dismiss();
+      done$.subscribe(() => {
+        this.updateDynamicQuiz().then(() => this.loadNextWord().then(() => this.loader.dismiss()));
+        }
+      )
     })
   }
 
@@ -266,24 +266,34 @@ export class QuizPage {
   }
 
   setNextWordDynamic(nextword) {
-    console.log("setNextWordDynamic()")
-    while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
-      console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
-      nextword = this.dynamicQuizIterator.next();
-    }
-    if (!nextword.done) {
-      this.nextWordDynamic = nextword.value[0];
-      console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
-    }
-    else {
-      this.dynamicQuizIterator = this.dynamicQuiz.entries();
-      if (this.dynamicQuiz.size > 0) {
+    return new Promise((resolve) => {
+
+      console.log("setNextWordDynamic()")
+      while (nextword && nextword.value && !nextword.value[1] && !nextword.done) { // skip over FALSE-set elements in map
+        console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
         nextword = this.dynamicQuizIterator.next();
-        if (nextword.value[1]) {
-          this.nextWordDynamic = nextword.value[0];
+      }
+      if (!nextword.done) {
+        this.nextWordDynamic = nextword.value[0];
+        console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
+      }
+      else {
+        this.dynamicQuizIterator = this.dynamicQuiz.entries();
+        if (this.dynamicQuiz.size > 0) {
+          nextword = this.dynamicQuizIterator.next();
+          if (nextword.value[1]) {
+            this.nextWordDynamic = nextword.value[0];
+          }
+          else {
+            console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
+            if (this.dynamicQuiz.size === 0) {
+              this.dynamicQuiz = new Map<string, boolean>()
+              this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
+              this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
+            }
+          }
         }
         else {
-          console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`);
           if (this.dynamicQuiz.size === 0) {
             this.dynamicQuiz = new Map<string, boolean>()
             this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
@@ -291,14 +301,8 @@ export class QuizPage {
           }
         }
       }
-      else {
-        if (this.dynamicQuiz.size === 0) {
-          this.dynamicQuiz = new Map<string, boolean>()
-          this.rescheduleMoment = this.rescheduleMoment.add('30', 'minutes');
-          this.refreshQuiz(this.getUnixTimestampFromMoment(this.rescheduleMoment));
-        }
-      }
-    }
+      resolve(true);
+    })
   }
 
   startDynamicQuiz() {
@@ -307,47 +311,55 @@ export class QuizPage {
     this.loadNextWord();
   }
   updateDynamicQuiz() {
-    console.log("updateDynamicQuiz()")
-    if (this.dynamicQuiz) {
+    return new Promise((resolve) => {
 
-      this.getIteratorFromEntries();
-      let nextword = this.dynamicQuizIterator.next();
-      if (nextword.done) {
+      console.log("updateDynamicQuiz()")
+      if (this.dynamicQuiz) {
+  
         this.getIteratorFromEntries();
+        let nextword = this.dynamicQuizIterator.next();
+        if (nextword.done) {
+          this.getIteratorFromEntries();
+        }
+        if (nextword) {
+          this.setNextWordDynamic(nextword).then(() => resolve(true));
+        }
+        else {
+          console.log("Iterator not initialized");
+          resolve(true);
+        }
       }
-      if (nextword) {
-        this.setNextWordDynamic(nextword);
-      }
-
       else {
-        console.log("Iterator not initialized");
+        console.log("Quiz not initialized");
+        resolve(true);
       }
-    }
-    else {
-      console.log("Quiz not initialized");
-    }
+    });
   }
 
   loadNextWord() {
-    console.log("loadNextWord()")
-    this.solutionsGiven = [];
-    let nextQuizWord;
-    if (this.nextWordDynamic) {
-      nextQuizWord = this.nextWordDynamic;
-    }
-    else {
-      nextQuizWord = "AA";
-    }
-    this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
-    this.anagram$.subscribe(subscribeData => {
-      let nextsolutions = subscribeData.solutions;
-      this.nextWord = {
-        word: nextQuizWord,
-        solutions: nextsolutions,
-        solutionCount: nextsolutions.length,
-        lastCorrect: null,
-        nextScheduled: null
-      };
+    return new Promise((resolve) => {
+
+      console.log("loadNextWord()")
+      this.solutionsGiven = [];
+      let nextQuizWord;
+      if (this.nextWordDynamic) {
+        nextQuizWord = this.nextWordDynamic;
+      }
+      else {
+        nextQuizWord = "AA";
+      }
+      this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
+      this.anagram$.subscribe(subscribeData => {
+        let nextsolutions = subscribeData.solutions;
+        this.nextWord = {
+          word: nextQuizWord,
+          solutions: nextsolutions,
+          solutionCount: nextsolutions.length,
+          lastCorrect: null,
+          nextScheduled: null
+        };
+        resolve(true);
+      })
     })
   }
 
