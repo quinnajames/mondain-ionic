@@ -136,8 +136,8 @@ export class QuizPage {
 
 
   /* ionViewDidLoad fires when the page is created.
-      If the page is cached, it won't fire again.
-      I put the loader and Firebase quiz setup here. **/
+  If the page is cached, it won't fire again.
+  I put the loader and Firebase quiz setup here. **/
   ionViewDidLoad() {
     this.loader = this.loading.create({
       content: 'Getting quiz entries...',
@@ -166,7 +166,7 @@ export class QuizPage {
   }
 
   /* ionViewWillLeave fires when the page is about to leave.
-      So I don't need to know which words are due anymore. **/
+  So I don't need to know which words are due anymore. **/
   ionViewWillLeave() {
       this.dueRef.off();
   }
@@ -174,10 +174,10 @@ export class QuizPage {
   /* dueRef reaction functions **/
 
   /* onChildAdded fires whenever a new child is added in the
-      dueRef query. On the initial run of the query, this
-      function also runs for each child actually retrieved.
-      I send the results of this function to the childAdded$
-      subscription to be passed on to the page quiz. **/
+  dueRef query. On the initial run of the query, this
+  function also runs for each child actually retrieved.
+  I send the results of this function to the childAdded$
+  subscription to be passed on to the page quiz. **/
   onChildAdded(data) {
     if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
       this.dynamicQuiz.set(data.key, true);
@@ -188,7 +188,7 @@ export class QuizPage {
 
 
   /* onChildChanged runs whenever the data at a child
-      location changes. **/
+  location changes. **/
   onChildChanged(data) {
     console.log("word info changed: " + data.key);
     if (data.child("next_scheduled")) {
@@ -200,8 +200,8 @@ export class QuizPage {
   }
 
   /* onChildRemoved runs whenever the data at a child
-      location is removed. In the case of the dueRef query,
-      a word no longer being due should trigger this. **/
+  location is removed. In the case of the dueRef query,
+  a word no longer being due should trigger this. **/
   onChildRemoved(data) {
     console.log("word no longer due: " + data.key);
     if (this && this.dynamicQuiz) {
@@ -214,11 +214,11 @@ export class QuizPage {
   /* Page functions **/
 
   /* updateBackground uses sessionStats to calculate what
-      color the page's background should be.
-      It does this by interpolating between the 'base'
-      color, and either 'dark' or 'light' colors,
-      depending on how far away recent stats are
-      from a baseline of 80 percent. **/
+  color the page's background should be.
+  It does this by interpolating between the 'base'
+  color, and either 'dark' or 'light' colors,
+  depending on how far away recent stats are
+  from a baseline of 80 percent. **/
   updateBackground() {
     const percent = this.sessionStats.recent.percent;
 
@@ -247,43 +247,43 @@ export class QuizPage {
 
   }
 
-  /* A more self-explanatory alias for the moment.js
-      library's moment(). **/
+  /* getCurrentMoment is a more self-explanatory alias for
+  the moment.js library's moment(). **/
   getCurrentMoment() {
     return moment();
   }
 
-  /* Returns the date when called.
-      Uses YY-MM-DD (eg 17-12-31)
-      This is currently the preferred format for stats logging.**/
+  /* getCurrentDate returns the date when called.
+  Uses YY-MM-DD (eg 17-12-31)
+  This is currently the preferred format for stats logging.**/
   getCurrentDate() {
     return moment().format('YY-MM-DD');
   }
 
-  /* Returns the current Unix timestamp.
-      This is most immediately useful to determine which words
-      are due, but can also be used for the 'last correct' field. **/
+  /* getCurrentUnixTimestamp returns the current Unix timestamp.
+  This is most immediately useful to determine which words
+  are due, but can also be used for the 'last correct' field. **/
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
   }
 
-  /* Generates a Unix timestamp from a moment.js moment.
-      This could be used for a rescheduling due date. **/
+  /* getUnixTimestampFromMoment generates a Unix timestamp
+  from a moment.js moment. Used for a rescheduling due date. **/
   getUnixTimestampFromMoment(input: moment.Moment): number {
     return parseInt(input.format('x'), 10);
   }
 
 
-  /* (Re)sets the Firebase words-due listener from a timestamp. **/
+  /* refreshQuiz (re)sets the Firebase words-due query from a timestamp. **/
   //Current use of this function needs some attention.
   refreshQuiz(timestamp) {
     this.dueRef = this.firebaseService.getWordsDueListener(timestamp);
   }
 
 
-  /* Determine the number of quiz questions done on a given day.
-      This can be used to set the log count, or retrieve a running
-      cont of questions done for display on the page.**/
+  /* getCountPerDay determines the number of quiz questions done on
+  a given day. This is used to set the log count, or retrieve a running
+  cont of questions done for display on the page.**/
   // Some attention needs to go to the question of whether this
   // function will ever be called with a date other than the
   // current date.
@@ -301,34 +301,43 @@ export class QuizPage {
     }
   }
 
-  /* Determine quiz questions done today, specifically. **/
+  /* setLogCount determines quiz questions done today, specifically,
+  using getCountPerDay. **/
   setLogCount() {
     this.getCountPerDay(this.getCurrentDate());
   }
 
-
-  reschedulePreviousWordToNow(event: boolean) {
-    console.log("in reschedulePreviousWord");
-    if (this.lastQuizAlpha && this.lastQuizWord) {
-      this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
-    }
-  }
-
-  handleAnswer(correct: number) {
-    if (correct === 1) this.handleCorrect();
-    else if (correct === 0) this.handleIncorrect();
-  }
-
+  /* getIteratorFromEntries initializes an iterator from the
+  dynamicQuiz variable, which is a Map. It does so by calling the
+  Map prototype's entries function, which uses insertion order
+  (most recent? first). So, quiz entries are served in that
+  order, which is originally derived from the dueRef Firebase
+  query. **/
   getIteratorFromEntries() {
     if (!this.dynamicQuizIterator) {
       this.dynamicQuizIterator = this.dynamicQuiz.entries();
     }
   }
 
+  /* setDefaultNextWord sets the next word to the 'default' value
+  of the first word in the dictionary. If something goes wrong
+  with retrieving the next word, this should happen rather
+  than the whole app crashing. But, this ought to be accompanied
+  by an error message. **/
   setDefaultNextWord() {
     this.nextWordDynamic = "AA";
   }
 
+  /* setNextWordDynamic retrieves the next item from the
+  dynamicQuizIterator. If it fails to do so, it tries
+  to regenerate the dynamicQuizIterator. If the quiz
+  is done, it does this regeneration 30 minutes into
+  the future. When done running, it resolves a Promise,
+  so that it can be chained with other functions. **/
+  // 30 minutes into the future often produces no words.
+  // The time could be set higher, or it could keep trying
+  // until it finds at least one word due in the future.
+  // Depending on the step size, that could take a while.
   setNextWordDynamic(nextword) {
     return new Promise((resolve) => {
 
@@ -371,12 +380,19 @@ export class QuizPage {
     })
   }
 
+  /* startDynamicQuiz updates the dynamic quiz, and then loads the
+  next word. **/
+  // This function is no longer used and must be deleted.
   startDynamicQuiz() {
     console.log("startDynamicQuiz()")
     this.updateDynamicQuiz();
     this.loadNextWord();
   }
 
+  /* updateDynamicQuiz creates the iterator from its entries,
+  tries again if that fails, sets the next word, then
+  resolves. **/
+  // Needs some proper error handling, I wager.
   updateDynamicQuiz() {
     return new Promise((resolve) => {
 
@@ -386,6 +402,7 @@ export class QuizPage {
         this.getIteratorFromEntries();
         let nextword = this.dynamicQuizIterator.next();
         if (nextword.done) {
+          // Perhaps try to move the due date first in this case.
           this.getIteratorFromEntries();
         }
         if (nextword) {
@@ -403,6 +420,10 @@ export class QuizPage {
     });
   }
 
+  /* Actually loads the next word for display and quizzing,
+  retrieving the set of solutions against which the user
+  will be quizzed. It returns a promise when the next
+  word is retrieved. **/
   loadNextWord() {
     return new Promise((resolve) => {
 
@@ -430,8 +451,10 @@ export class QuizPage {
     })
   }
 
-  /** Update function, used for this.sessionStats. */
-  /** Note that percent is an integer up to 100. */
+  /**updateStats is an update function, used for
+      this.sessionStats.
+      Percent here is an integer up to 100,
+      not a decimal between 0-1. */
   updateStats(wasCorrect: boolean, ss: any) { // note that I can't use 'this.sessionStats.recent.queue[-1] || null' here
     if (wasCorrect) { ss.overall.correct += 1; } else { ss.overall.incorrect += 1; }
     ss.overall.percent = Math.round(ss.overall.correct / (ss.overall.correct + ss.overall.incorrect) * 100);
@@ -447,6 +470,10 @@ export class QuizPage {
   }
 
 
+  /** rescheduleLogic determines how to reschedule an answered word.
+      Takes a wasCorrect parameter, asking whether the last word was
+      answered correctly. Parameter can be derived from
+      this.sessionStats, but this function is uncoupled from it. */
   rescheduleLogic(wasCorrect: boolean): any {
     if (wasCorrect) { console.log("Correct: +1") } else { console.log("Incorrect: +1") };
     let wordMoment = this.getCurrentMoment();
@@ -465,25 +492,47 @@ export class QuizPage {
     }
   }
 
+  /** rescheduleWordtoNow is shorthand for calling rescheduleWord
+      with the current word and the result of getting the current
+      time with getCurrentUnixTimestamp.*/
   rescheduleWordToNow(alpha: string) {
     this.firebaseService.rescheduleWord(alpha, this.getCurrentUnixTimestamp());
   }
 
-  /* Post refactoring, can only be called AFTER stats are updated. */
+  /* updateRescheduleObj parses sessionStats to determine if the
+  previous answer was correct, passing that information on to
+  the rescheduleLogic function. Therefore, it should be called
+  AFTER stats are updated. */
   updateRescheduleObj() {
     this.rescheduleObj = this.rescheduleLogic(this.sessionStats.recent.queue[-1] || null); // was last question correct?
   }
 
   //aliases
 
+
+  /* handleCorrect is shorthand for calling handleCorrectOrIncorrect
+  with a 'true' parameter. **/
   handleCorrect() {
     this.handleCorrectOrIncorrect(true);
   }
 
+  /* handleIncorrect is shorthand for calling handleCorrectOrIncorrect
+  with a 'false' parameter. **/
   handleIncorrect() {
     this.handleCorrectOrIncorrect(false);
   }
 
+  /* handleCorrectOrIncorrect takes care of a variety of tasks
+  that must be performed once a question has finished being
+  answered. It:
+  - updates the session stats,
+  - progresses in the quiz,
+  - updates the background changer,
+  - increments the day's log,
+  - updates the rescheduler,
+  - updates the word's remote stats, and
+  - gets solutions for the next quiz word.
+  These specific tasks are all farmed out to other functions. **/
   handleCorrectOrIncorrect(lastCorrect: boolean) {
     console.log("handle correctOrIncorrect " + lastCorrect)
     this.sessionStats = this.updateStats(lastCorrect, this.sessionStats);
@@ -491,14 +540,21 @@ export class QuizPage {
     this.updateBackground();
     this.firebaseService.incrementLog(this.getCurrentDate());
     this.setLogCount();
-    this.updateRescheduleObj;
+    this.updateRescheduleObj; //updateRescheduleObj isn't being called,
+    // but rescheduling still happens, a fact which needs attention.
     this.lastQuizWord = this.firebaseService.addRemoteQuizWord(this.nextWord.word,
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
+    //addRemoteQuizWord may not be the best name for this function.
 
     // get solutions
     this.updateLastQuizAlphaAndMoveToNext();
   }
 
+
+  /** updateLastQuizAlphaAndMoveToNext makes the current word the
+  previous word, and tries to load the next word. It stringifies the
+  solution set for the previous word so that it can be displayed
+  in the WordHistoryComponent. */
   updateLastQuizAlphaAndMoveToNext() {
     this.anagram$.subscribe(subscribeData => {
       let solutionString = "";
@@ -518,6 +574,13 @@ export class QuizPage {
     })
   }
 
+  /** answerOnChange is called whenever the answer changes. It
+  evaluates whether the current answer is a solution, and if
+  so, adds that to the user-provided solutions set and
+  clears the answer box. If the user has gotten all solutions
+  entered, the function marks the question correct. */
+  // I don't think the toUpperCase needs to happen before
+  // the word length test passes, either.
   answerOnChange(answer) {
     console.log("parent answer: " + this.input.answer);
     let localanswer = answer.toUpperCase();
@@ -533,9 +596,33 @@ export class QuizPage {
     }
   }
 
+  /** clearsAnswer clears the answer box. */
   clearAnswer() {
     this.input.answer = "";
     this.input$.next("");
   }
+
+
+   //Input handlers
+
+    /* reschedulePreviousWordToNow reschedules a word to be due at
+    the current time. This is used by the SetToNow button
+    in the WordHistoryComponent. **/
+
+    reschedulePreviousWordToNow(event: boolean) {
+      console.log("in reschedulePreviousWord");
+      if (this.lastQuizAlpha && this.lastQuizWord) {
+        this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
+      }
+    }
+
+      /* handleAnswer determines whether to call handleCorrect()
+      or handleIncorrect based on a parameter.
+      This is used by the buttons in the quizButtons component.**/
+
+      handleAnswer(correct: number) {
+        if (correct === 1) this.handleCorrect();
+        else if (correct === 0) this.handleIncorrect();
+      }
 
 }
