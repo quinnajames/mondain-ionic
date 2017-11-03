@@ -17,14 +17,14 @@ import { EventEmitter } from '@angular/core';
 })
 export class QuizPage {
 
-  // page
+  /** Page variables */
   input: {
     answer: string;
   }
   pageBackground: string;
   loader: any;
 
-  // stats
+  /** Stats variables */
   logCount: number;
   sessionStats: {
     overall: {
@@ -39,20 +39,21 @@ export class QuizPage {
       queue: boolean[];
     }
   };
-  // quiz
+
+  /** Quiz related variables */
   quizList: Promise<any>;
   dynamicQuiz: Map<string, boolean>;
   dynamicQuizIterator: any;
   quizDone: boolean;
 
-  // rescheduling
+  /** Rescheduling related variables */
   rescheduleObj: {
     unixtime: number
     rescheduletime: number
   }
   rescheduleMoment: moment.Moment;
 
-  // solutions
+  /** Solutions related variables */
   nextWord: {
     word: string,
     solutions: FirebaseObjectObservable<any[]>,
@@ -62,7 +63,7 @@ export class QuizPage {
   };
   solutionsGiven: string[];
 
-  // words
+  /** Word related variables */
   nextWordDynamic: string;
 
   lastQuizWord: {
@@ -77,13 +78,14 @@ export class QuizPage {
     solutionsStringRep: string
   }
 
-  // firebase
+  /** Firebase references */
   dueRef: firebase.database.Query;
 
-  // subscriptions
+  /** Rx subscriptions */
   wordStat$: FirebaseObjectObservable<any>;
   anagram$: FirebaseObjectObservable<any>;
-  // subjects
+
+  /** Rx subjects */
   input$: Subject<any>;
   childAdded$: Subject<any>;
 
@@ -96,8 +98,13 @@ export class QuizPage {
     this.input = {
       answer: ""
     }
-    // Initialize session variables
-    this.input$ = new Subject();
+    /** Initialize session variables */
+
+
+   // Page
+    this.pageBackground = '#c4c5db';
+
+    // Stats
     this.sessionStats = {
       overall: {
         correct: 0,
@@ -111,20 +118,30 @@ export class QuizPage {
         queue: []
       }
     };
+
+    // Rescheduling
+
     this.rescheduleMoment = moment();
     this.rescheduleObj = {
       unixtime: null,
       rescheduletime: null
     }
+
+    // Quiz
     this.dynamicQuiz = new Map<string, boolean>();
-    this.pageBackground = '#c4c5db';
+
+    // Rx
+    this.input$ = new Subject();
+
   }
 
-// Ionic state functions
+  /*Ionic 3 life-cycle hooks **/
 
 
+  /* ionViewDidLoad fires when the page is created.
+      If the page is cached, it won't fire again.
+      I put the loader and Firebase quiz setup here. **/
   ionViewDidLoad() {
-    console.log(this.getCurrentDate());
     this.loader = this.loading.create({
       content: 'Getting quiz entries...',
       duration: 10000,
@@ -132,8 +149,8 @@ export class QuizPage {
     });
     this.loader.present().then(() => {
       this.childAdded$ = new Subject();
-      this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
-      this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
+      this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp());
+      this.dueRef.on('child_added', (data) => {
         this.onChildAdded(data);
       }, undefined, this);
       this.dueRef.on('child_changed', (data) => {
@@ -151,16 +168,62 @@ export class QuizPage {
     })
   }
 
-
+  /* ionViewWillLeave fires when the page is about to leave.
+      So I don't need to know which words are due anymore. **/
   ionViewWillLeave() {
       this.dueRef.off();
   }
 
-// User functions
+  /* dueRef reaction functions **/
+
+  /* onChildAdded fires whenever a new child is added in the
+      dueRef query. On the initial run of the query, this
+      function also runs for each child actually retrieved.
+      I send the results of this function to the childAdded$
+      subscription to be passed on to the page quiz. **/
+  onChildAdded(data) {
+    if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
+      this.dynamicQuiz.set(data.key, true);
+      console.log("word became due: " + data.key);
+      this.childAdded$.next(data.key);
+    }
+  }
 
 
+  /* onChildChanged runs whenever the data at a child
+      location changes. **/
+  onChildChanged(data) {
+    console.log("word info changed: " + data.key);
+    if (data.child("next_scheduled")) {
+      console.log(data.val().next_scheduled);
+      if (data.val().next_scheduled > this.getCurrentUnixTimestamp()) {
+        this.dynamicQuiz.delete(data.key);
+      }
+    }
+  }
+
+  /* onChildRemoved runs whenever the data at a child
+      location is removed. In the case of the dueRef query,
+      a word no longer being due should trigger this. **/
+  onChildRemoved(data) {
+    console.log("word no longer due: " + data.key);
+    if (this && this.dynamicQuiz) {
+      this.dynamicQuiz.delete(data.key);
+    }
+  }
+
+
+
+  /* Page functions **/
+
+  /* updateBackground uses sessionStats to calculate what
+      color the page's background should be.
+      It does this by interpolating between the 'base'
+      color, and either 'dark' or 'light' colors,
+      depending on how far away recent stats are
+      from a baseline of 80 percent. **/
   updateBackground() {
-    let percent = this.sessionStats.recent.percent;
+    const percent = this.sessionStats.recent.percent;
 
     let base = [0xC4, 0xC5, 0xDB];
     let dark = [0x6B, 0x6E, 0xA0];
@@ -187,54 +250,46 @@ export class QuizPage {
 
   }
 
+  /* A more self-explanatory alias for the moment.js
+      library's moment(). **/
   getCurrentMoment() {
     return moment();
   }
 
+  /* Returns the date when called.
+      Uses YY-MM-DD (eg 17-12-31)
+      This is currently the preferred format for stats logging.**/
   getCurrentDate() {
-    console.log(moment().format('YY-MM-DD'));
     return moment().format('YY-MM-DD');
   }
 
+  /* Returns the current Unix timestamp.
+      This is most immediately useful to determine which words
+      are due, but can also be used for the 'last correct' field. **/
   getCurrentUnixTimestamp(): number {
     return parseInt(moment().format('x'), 10);
   }
 
+  /* Generates a Unix timestamp from a moment.js moment.
+      This could be used for a rescheduling due date. **/
   getUnixTimestampFromMoment(input: moment.Moment): number {
     return parseInt(input.format('x'), 10);
   }
 
 
+  /* (Re)sets the Firebase words-due listener from a timestamp. **/
+  //Current use of this function needs some attention.
   refreshQuiz(timestamp) {
     this.dueRef = this.firebaseService.getWordsDueListener(timestamp);
   }
 
-  onChildAdded(data) {
-    if (data.val().next_scheduled && !this.dynamicQuiz.has(data.key)) {
-      this.dynamicQuiz.set(data.key, true);
-      console.log("word became due: " + data.key);
-      this.childAdded$.next(data.key);
-    }
-  }
 
-  onChildChanged(data) {
-    console.log("word info changed: " + data.key);
-    if (data.child("next_scheduled")) {
-      console.log(data.val().next_scheduled);
-      if (data.val().next_scheduled > this.getCurrentUnixTimestamp()) {
-        this.dynamicQuiz.delete(data.key);
-      }
-    }
-  }
-
-  onChildRemoved(data) {
-    console.log("word no longer due: " + data.key);
-    if (this && this.dynamicQuiz) {
-      this.dynamicQuiz.delete(data.key);
-    }
-  }
-
-
+  /* Determine the number of quiz questions done on a given day.
+      This can be used to set the log count, or retrieve a running
+      cont of questions done for display on the page.**/
+  // Some attention needs to go to the question of whether this
+  // function will ever be called with a date other than the
+  // current date.
   getCountPerDay(date) {
     const user = this.authProvider.getCurrentUser();
     if (user) {
@@ -249,10 +304,12 @@ export class QuizPage {
     }
   }
 
+  /* Determine quiz questions done today, specifically. **/
   setLogCount() {
     this.getCountPerDay(this.getCurrentDate());
   }
-  // Component handling
+
+
   reschedulePreviousWordToNow(event: boolean) {
     console.log("in reschedulePreviousWord");
     if (this.lastQuizAlpha && this.lastQuizWord) {
@@ -264,8 +321,6 @@ export class QuizPage {
     if (correct === 1) this.handleCorrect();
     else if (correct === 0) this.handleIncorrect();
   }
-
-  //Internal
 
   getIteratorFromEntries() {
     if (!this.dynamicQuizIterator) {
