@@ -1,14 +1,11 @@
-import { Component } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
-import { LoadingController } from 'ionic-angular';
-import { FirebaseService, AngularFireService } from '../../app/shared/shared';
+import { Component, EventEmitter } from '@angular/core';
+import { IonicPage, LoadingController } from 'ionic-angular';
 import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
-import { AuthProvider } from '../../app/shared/providers/auth';
-import { Subject } from 'rxjs/Subject';
-import * as _ from 'lodash';
+import * as _ from 'lodash'; // currently only using this for indexOf
 import moment from 'moment';
-import { EventEmitter } from '@angular/core';
-
+import { Subject } from 'rxjs/Subject';
+import { FirebaseService, AngularFireService } from '../../app/shared/shared';
+import { AuthProvider } from '../../app/shared/providers/auth';
 
 @IonicPage()
 @Component({
