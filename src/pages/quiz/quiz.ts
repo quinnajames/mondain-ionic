@@ -51,7 +51,7 @@ export class QuizPage {
     rescheduletime: number
   }
   rescheduleMoment: moment.Moment;
-  
+
   // solutions
   nextWord: {
     word: string,
@@ -61,10 +61,10 @@ export class QuizPage {
     nextScheduled: number;
   };
   solutionsGiven: string[];
-  
+
   // words
   nextWordDynamic: string;
-  
+
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -120,6 +120,45 @@ export class QuizPage {
     this.pageBackground = '#c4c5db';
   }
 
+// Ionic state functions
+
+
+  ionViewDidLoad() {
+    console.log(this.getCurrentDate());
+    this.loader = this.loading.create({
+      content: 'Getting quiz entries...',
+      duration: 10000,
+      dismissOnPageChange: true
+    });
+    this.loader.present().then(() => {
+      this.childAdded$ = new Subject();
+      this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
+      this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
+        this.onChildAdded(data);
+      }, undefined, this);
+      this.dueRef.on('child_changed', (data) => {
+        this.onChildChanged(data);
+      });
+      this.dueRef.on('child_removed', (data) => {
+        this.onChildRemoved(data);
+      }, undefined, this);
+    }).then(() => {
+      let done$ = this.childAdded$.debounceTime(500);
+      done$.subscribe(() => {
+        this.updateDynamicQuiz().then(() => this.loadNextWord().then(() => this.loader.dismiss()));
+        }
+      )
+    })
+  }
+
+
+  ionViewWillLeave() {
+      this.dueRef.off();
+  }
+
+// User functions
+
+
   updateBackground() {
     let percent = this.sessionStats.recent.percent;
 
@@ -165,33 +204,6 @@ export class QuizPage {
     return parseInt(input.format('x'), 10);
   }
 
-  ionViewDidLoad() {
-    console.log(this.getCurrentDate());
-    this.loader = this.loading.create({
-      content: 'Getting quiz entries...',
-      duration: 10000,
-      dismissOnPageChange: true
-    });
-    this.loader.present().then(() => {
-      this.childAdded$ = new Subject();
-      this.dueRef = this.firebaseService.getWordsDueListener(this.getCurrentUnixTimestamp()); // sending it current time
-      this.dueRef.on('child_added', (data) => { // Arrow function lets you use context
-        this.onChildAdded(data);
-      }, undefined, this);
-      this.dueRef.on('child_changed', (data) => {
-        this.onChildChanged(data);
-      });
-      this.dueRef.on('child_removed', (data) => {
-        this.onChildRemoved(data);
-      }, undefined, this);
-    }).then(() => {
-      let done$ = this.childAdded$.debounceTime(500);
-      done$.subscribe(() => {
-        this.updateDynamicQuiz().then(() => this.loadNextWord().then(() => this.loader.dismiss()));
-        }
-      )
-    })
-  }
 
   refreshQuiz(timestamp) {
     this.dueRef = this.firebaseService.getWordsDueListener(timestamp);
@@ -222,9 +234,6 @@ export class QuizPage {
     }
   }
 
-  ionViewWillLeave() {
-    this.dueRef.off();
-  }
 
   getCountPerDay(date) {
     const user = this.authProvider.getCurrentUser();
@@ -315,12 +324,13 @@ export class QuizPage {
     this.updateDynamicQuiz();
     this.loadNextWord();
   }
+
   updateDynamicQuiz() {
     return new Promise((resolve) => {
 
       console.log("updateDynamicQuiz()")
       if (this.dynamicQuiz) {
-  
+
         this.getIteratorFromEntries();
         let nextword = this.dynamicQuizIterator.next();
         if (nextword.done) {
