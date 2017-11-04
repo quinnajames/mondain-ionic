@@ -15,6 +15,8 @@ import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from './shared/shared';
 import { AngularFireAuth } from 'angularfire2/auth';
 
+import 'jasmine';
+
 describe('MyApp', () => {
     let fixture;
     let myAppInstance;
@@ -70,10 +72,9 @@ describe('MyApp', () => {
             expect(myAppInstance.pages).toContain({ title: 'Stats', component: 'StatsPage' });
             expect(myAppInstance.pages).toContain({ title: 'Signup', component: 'SignupPage' });
             expect(myAppInstance.pages).toContain({ title: 'Login', component: 'LoginPage' });
-    }); 
+    });
     it('should have the correct home page declared', () => {
         expect(myAppInstance['rootPage']).toBe('HomePage');
     });
 
 });
-

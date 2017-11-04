@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { QuizInfoComponent } from './components';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
-
+import 'jasmine';
 
 @Component({
     template:`<div class="translucent">
@@ -12,7 +12,7 @@ import { async, TestBed, ComponentFixture } from '@angular/core/testing';
     <span id="logCount" class="translucent" *ngIf="log || log === 0">
     {{log}}
     </span>
-    
+
     </h1>
     </div><div class="translucent">
     remaining / today
@@ -22,7 +22,7 @@ class TestHostComponent {
     quiz: Map<string, boolean>
     log: number
     constructor() {
-        this.quiz = new Map<string, boolean>([["AAU", true], ["AEINRST", false]]);        
+        this.quiz = new Map<string, boolean>([["AAU", true], ["AEINRST", false]]);
         this.log = 0;
     }
 }
@@ -51,7 +51,7 @@ describe('QuizInfoComponent', () => {
     })
 
     it('should show a log size of 0', () => {
-        
+
         console.log(testHostFixture.nativeElement.querySelector(
             '#logCount'));
         expect(testHostFixture.nativeElement.querySelector(

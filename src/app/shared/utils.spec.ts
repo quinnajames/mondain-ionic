@@ -1,5 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Utils } from '../../app/shared/shared';
+import 'jasmine';
 
 describe('Utils', () => {
     beforeEach(() => {
@@ -24,4 +25,3 @@ describe('Utils', () => {
         }));
     });
 });
-
