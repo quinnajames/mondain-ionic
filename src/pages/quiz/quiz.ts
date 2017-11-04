@@ -222,9 +222,9 @@ export class QuizPage {
   updateBackground() {
     const percent = this.sessionStats.recent.percent;
 
-    let base = [0xC4, 0xC5, 0xDB];
-    let dark = [0x6B, 0x6E, 0xA0];
-    let light = [0xFD, 0xFD, 0xFD];
+    const base = [0xC4, 0xC5, 0xDB];
+    const dark = [0x6B, 0x6E, 0xA0];
+    const light = [0xFD, 0xFD, 0xFD];
 
     function adjustHex(diffMultiplier, changeArr, i) {
       return Math.floor(((changeArr[i] - base[i]) * diff / diffMultiplier) + base[i]);
