@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { QuizInfoComponent } from './components';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
-import 'jasmine';
 
 @Component({
     template:`<div class="translucent">

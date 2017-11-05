@@ -15,7 +15,6 @@ import { FirebaseService, Utils, AngularFireService } from '../../app/shared/sha
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import 'rxjs/add/operator/debounceTime';
-import 'jasmine';
 
 let fixture;
 let homePageInstance;

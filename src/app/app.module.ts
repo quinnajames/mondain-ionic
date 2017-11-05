@@ -15,7 +15,7 @@ import { AuthProvider } from '../app/shared/providers/auth';
 
 import { FirebaseService, AngularFireService, Utils } from '../app/shared/shared';
 
-import { firebaseConfig } from './firebase.config';
+import { firebaseConfig } from '../../../mondain-untracked/firebase.config';
 
 // rx operators go here
 

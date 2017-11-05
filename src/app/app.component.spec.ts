@@ -15,8 +15,6 @@ import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { FirebaseService, AngularFireService } from './shared/shared';
 import { AngularFireAuth } from 'angularfire2/auth';
 
-import 'jasmine';
-
 describe('MyApp', () => {
     let fixture;
     let myAppInstance;
