@@ -385,8 +385,7 @@ export class QuizPage {
   // This function is no longer used and must be deleted.
   startDynamicQuiz() {
     console.log("startDynamicQuiz()")
-    this.updateDynamicQuiz();
-    this.loadNextWord();
+    this.updateDynamicQuiz().then(() => this.loadNextWord());
   }
 
   /* updateDynamicQuiz creates the iterator from its entries,
@@ -439,6 +438,11 @@ export class QuizPage {
       this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
       this.anagram$.subscribe(subscribeData => {
         let nextsolutions = subscribeData.solutions;
+        if (!nextsolutions)
+        {
+          console.log("Bugged word:" + nextQuizWord);
+          nextsolutions = [];
+        }
         this.nextWord = {
           word: nextQuizWord,
           solutions: nextsolutions,
