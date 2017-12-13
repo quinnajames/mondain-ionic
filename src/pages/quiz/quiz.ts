@@ -437,22 +437,27 @@ export class QuizPage {
       }
       this.anagram$ = this.angularFireService.getAnagrams(nextQuizWord);
       this.anagram$.subscribe(subscribeData => {
-        let nextsolutions = subscribeData.solutions;
-        if (!nextsolutions)
-        {
-          console.log("Bugged word:" + nextQuizWord);
-          nextsolutions = [];
-        }
-        this.nextWord = {
-          word: nextQuizWord,
-          solutions: nextsolutions,
-          solutionCount: nextsolutions.length,
-          lastCorrect: null,
-          nextScheduled: null
-        };
-        resolve(true);
-      })
-    })
+            let nextsolutions = subscribeData.solutions;
+            if (!nextsolutions) {
+              console.log("Bugged word:" + nextQuizWord);
+              nextsolutions = [];
+            }
+            else {
+              nextsolutions.forEach((s) => {
+                console.log(`${s} hooks: `);
+                console.log(this.firebaseService.getWordHooks(s));
+              })
+            }
+            this.nextWord = {
+              word: nextQuizWord,
+              solutions: nextsolutions,
+              solutionCount: nextsolutions.length,
+              lastCorrect: null,
+              nextScheduled: null
+            };
+            resolve(true);
+          })
+        })
   }
 
   /**updateStats is an update function, used for
@@ -561,6 +566,7 @@ export class QuizPage {
   in the WordHistoryComponent. */
   updateLastQuizAlphaAndMoveToNext() {
     this.anagram$.subscribe(subscribeData => {
+
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
         solutionString = solutionString += subscribeData.solutions[x] + " ";

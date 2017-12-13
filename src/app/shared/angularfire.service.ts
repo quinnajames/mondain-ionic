@@ -12,4 +12,5 @@ export class AngularFireService {
     getHooks(word) : FirebaseObjectObservable<any[]> {
         return this.db.object('/hooks/' + word);
     }
+
 }

@@ -94,7 +94,7 @@ export class FirebaseService {
         }
         else {
             return null;
-        }        
+        }
     }
 
     getStats(getFullData = false) {
@@ -126,7 +126,7 @@ export class FirebaseService {
                             14: 0,
                             15: 0
                         }
-                        //console.log(data.val());                    
+                        //console.log(data.val());
                         console.log("querying fulldata")
                         statsObject.total = fulldata.numChildren() - 2;
                         fulldata.forEach((childSnapshot) => {
@@ -355,18 +355,30 @@ export class FirebaseService {
         return null;
     }
 
+    getWordHooksRef(word) {
+      return firebase.database().ref('/hooks').child(word).once('value');
+    }
+
+
     getWordHooks(word) {
         // to use
-        let hooks = {
+        if (word) {
+            firebase.database().ref('/hooks').child(word).once('value').then(
+              (snapshot) => {
+                console.log(`hook snapshot for ${word}`)
+                console.log(snapshot.val());
+                console.log(snapshot.numChildren());
+                return {
+                    front: snapshot.val().front_hooks,
+                    back: snapshot.val().back_hooks
+                  }
+            });
+        }
+        else {
+          return {
             front: null,
             back: null
-        }
-        if (word) {
-            firebase.database().ref('/hooks').child(word).once('value').then(function (snapshot) {
-                hooks.front = snapshot.front;
-                hooks.back = snapshot.back;
-            });
-            return hooks;
+          };
         }
     }
 }
