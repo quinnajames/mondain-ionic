@@ -20,6 +20,7 @@ export class QuizPage {
   }
   pageBackground: string;
   loader: any;
+  minimal: boolean;
 
   /** Stats variables */
   logCount: number;
@@ -96,7 +97,7 @@ export class QuizPage {
       answer: ""
     }
     /** Initialize session variables */
-
+    this.minimal = true;
 
    // Page
     this.pageBackground = '#c4c5db';

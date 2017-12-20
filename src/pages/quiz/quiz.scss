@@ -13,6 +13,9 @@ page-quiz {
         font-size: 1.2rem;
         opacity: 0.6;
     }
+    h2.minimalSolutions {
+      font-size: 2.2rem;
+    }
     h2 {
         font-size: 1.8rem;
     }
@@ -68,7 +71,7 @@ page-quiz {
     .button-align {
         margin: auto;
     }
-    
+
     .quizQuestion {
         font-size: 5rem;
     }
@@ -80,7 +83,7 @@ page-quiz {
     }
 
 
-    
+
     @media(max-width:400px) {
         .quizQuestion {
             font-size: 4rem;
@@ -92,7 +95,7 @@ page-quiz {
             font-size: 2.1rem;
         }
     }
-    
+
     @media(max-width:299px) {
         .quizQuestion {
             font-size: 3rem;
