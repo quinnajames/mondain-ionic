@@ -627,6 +627,7 @@ export class QuizPage {
         // Ultimately I should be getting correct data back from the server here,
         // but it isn't a priority because all that really matters is reflecting that I changed something
         // and that it's more or less reset the due date.
+        this.lastQuizWord.right = 0; // New, cruel reset function.
       }
     }
 
