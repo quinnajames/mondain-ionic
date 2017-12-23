@@ -233,6 +233,101 @@ export class FirebaseService {
         return word_objects;
     }
 
+    addDynamicWordListReset(list: string[]) {
+        let user = this.authProvider.getCurrentUser();
+        let word_objects = [];
+        let statsObject = {
+            total: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0,
+            12: 0,
+            13: 0,
+            14: 0,
+            15: 0
+        }
+        if (user) {
+            console.log(list);
+            for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
+                word_objects.push(this.addRemoteQuizWordReset(list[x], null, parseInt(moment().format('x'), 10)));
+                statsObject[list[x].length]++;
+                statsObject.total++;
+            }
+            this.updateStats(statsObject);
+        };
+        return word_objects;
+    }
+
+    addRemoteQuizWordReset(alpha: string, time, next_scheduled, correct?: boolean) {
+        let user = this.authProvider.getCurrentUser();
+        let right_answers = 0;
+        let wrong_answers = 0;
+        if (correct === true) {
+            right_answers = 1;
+        }
+        if (correct === false) {
+            wrong_answers = 1;
+        }
+        // null is neither so stays at 0
+        var word_object = {
+            last_correct: time,
+            next_scheduled: next_scheduled,
+            right: right_answers,
+            wrong: wrong_answers
+        };
+        console.log(word_object);
+        if (user) {
+            firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction((trans) => {
+                console.log(trans);
+                if (trans) {
+                    let correctness = -1; // reset
+                    if (trans.right) {
+                        word_object.right += trans.right;
+                    }
+                    if (trans.wrong) {
+                        word_object.wrong += trans.wrong;
+                    }
+                    console.log(word_object.right); 
+                    console.log(word_object.wrong);
+                    if (trans.last_correct) {
+                        word_object.last_correct = parseInt(trans.last_correct, 10);
+                    }
+                    if (!trans.last_correct && correct) {
+                        word_object.last_correct = parseInt(moment().format('x'), 10);
+                    }
+                    console.log("correctness: " + correctness);
+                    const MINS_IN_HALF_DAY = 720;
+                    word_object.next_scheduled = parseInt(moment().add(correctness * MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
+                }
+                return word_object; // posts transaction
+
+            },
+                // onComplete function
+                function (Error, committed, snapshot) {
+                    if (Error) {
+                        console.log("Error trying to update word stats");
+                        // return null;
+                    }
+                    else if (!committed) {
+                        firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
+                        console.log(word_object);
+                    }
+                    else {
+                        console.log("successfully committed");
+                    }
+                }, false);
+        }
+        return word_object; // returns to function caller
+    }
+
+
     correctnessCalc(right, wrong) {
         const right_multiplier = 1.4;
         const wrong_multiplier = 2;
