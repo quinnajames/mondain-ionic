@@ -44,7 +44,8 @@
       </ion-item>
       <ion-card *ngIf="displayCustomList">
         <ion-textarea [(ngModel)]="userQuizList" placeholder="Enter one word (or alphagram) per line."></ion-textarea>
-        <button ion-button id="saveCustomListButton" (click)="saveUserQuizList()">Save Custom List</button>
+        <button ion-button id="saveCustomListButton" (click)="saveUserQuizListReset()">Reset All</button>
+        <button ion-button id="saveCustomListButton" (click)="saveUserQuizList()">Add New Only</button>
       </ion-card>
     </ion-col>
     <ion-col col-14 col-md-10 col-lg-6>

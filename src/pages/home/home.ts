@@ -227,4 +227,13 @@ export class HomePage {
     this.setEmptyCustomList();
   }
 
+  saveUserQuizListReset() {
+    this.userQuizListSplit = this.userQuizList.split(/\r?\n/);
+    for (var x = 0; x < this.userQuizListSplit.length; x++) {
+      this.userQuizListSplit[x] = this.utils.makeAlphagram(this.userQuizListSplit[x]);
+    }
+    this.firebaseService.addDynamicWordListReset(this.userQuizListSplit);
+    this.setEmptyCustomList();
+  }
+  
 }
