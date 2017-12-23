@@ -279,7 +279,7 @@ export class FirebaseService {
         var word_object = {
             last_correct: time,
             next_scheduled: next_scheduled,
-            right: right_answers,
+            right: 0,
             wrong: wrong_answers
         };
         console.log(word_object);
@@ -289,9 +289,6 @@ export class FirebaseService {
                 console.log(trans);
                 if (trans) {
                     let correctness = -1; // reset
-                    if (trans.right) {
-                        word_object.right += trans.right;
-                    }
                     if (trans.wrong) {
                         word_object.wrong += trans.wrong;
                     }
