@@ -284,6 +284,7 @@ export class FirebaseService {
         };
         console.log(word_object);
         if (user) {
+            console.log(`Trying transaction on ${alpha}`);
             firebase.database().ref('/userProfile').child(user.uid).child(alpha).transaction((trans) => {
                 console.log(trans);
                 if (trans) {
