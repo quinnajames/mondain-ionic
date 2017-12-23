@@ -617,7 +617,16 @@ export class QuizPage {
     reschedulePreviousWordToNow(event: boolean) {
       console.log("in reschedulePreviousWord");
       if (this.lastQuizAlpha && this.lastQuizWord) {
-        this.lastQuizWord.next_scheduled = this.rescheduleWordToNow(this.lastQuizAlpha.alpha);
+        this.firebaseService.addRemoteQuizWordReset(this.lastQuizAlpha.alpha, null,
+          this.getCurrentUnixTimestamp(), null);
+        // I'm not sure if resetting last correct on server side is actually what I want in this case.
+        // But it's at least a time-neutral thing to do.
+        this.lastQuizWord.last_correct = null; // Might as well reflect what I'm sending.
+        this.lastQuizWord.next_scheduled = this.getCurrentUnixTimestamp(); // Technically this is wrong --
+        // next scheduled can be up to a half day previous.
+        // Ultimately I should be getting correct data back from the server here,
+        // but it isn't a priority because all that really matters is reflecting that I changed something
+        // and that it's more or less reset the due date.
       }
     }
 
