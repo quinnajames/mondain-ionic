@@ -256,7 +256,7 @@ export class FirebaseService {
         if (user) {
             console.log(list);
             for (let x = 0; x < list.length; x++) { // refactor out moment stuff to a separate service
-                word_objects.push(this.addRemoteQuizWordReset(list[x], null, parseInt(moment().format('x'), 10)));
+                word_objects.push(this.addRemoteQuizWordReset(list[x], null, parseInt(moment().format('x'), 10), false));
                 statsObject[list[x].length]++;
                 statsObject.total++;
             }
@@ -265,7 +265,7 @@ export class FirebaseService {
         return word_objects;
     }
 
-    addRemoteQuizWordReset(alpha: string, time, next_scheduled, correct?: boolean) {
+    addRemoteQuizWordReset(alpha: string, time, next_scheduled, fixedTime: boolean, correct?: boolean) {
         let user = this.authProvider.getCurrentUser();
         let right_answers = 0;
         let wrong_answers = 0;
@@ -292,7 +292,7 @@ export class FirebaseService {
                     if (trans.wrong) {
                         word_object.wrong += trans.wrong;
                     }
-                    console.log(word_object.right); 
+                    console.log(word_object.right);
                     console.log(word_object.wrong);
                     if (trans.last_correct) {
                         word_object.last_correct = parseInt(trans.last_correct, 10);
@@ -302,7 +302,13 @@ export class FirebaseService {
                     }
                     console.log("correctness: " + correctness);
                     const MINS_IN_HALF_DAY = 720;
+                    if (fixedTime) {
+                    word_object.next_scheduled = parseInt(moment().add(5, 'minutes').format('x'), 10);
+                    }
+                    else {
                     word_object.next_scheduled = parseInt(moment().add(correctness * MINS_IN_HALF_DAY + this.getRandomMinutes(correctness), 'minutes').format('x'), 10);
+                    }
+
                 }
                 return word_object; // posts transaction
 
@@ -314,6 +320,7 @@ export class FirebaseService {
                         // return null;
                     }
                     else if (!committed) {
+                        console.log("Not committed, writing new record to db");
                         firebase.database().ref('/userProfile/' + user.uid + '/' + alpha).set(word_object);
                         console.log(word_object);
                     }

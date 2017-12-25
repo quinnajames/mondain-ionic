@@ -603,6 +603,9 @@ export class QuizPage {
       this.clearAnswer(); // Reset global answer
     }
     if (this.nextWord.solutionCount == this.solutionsGiven.length) {
+      console.log("Calling handleCorrect off solutions:");
+      console.log(this.solutionsGiven);
+      console.log("***")
       this.handleCorrect();
     }
   }
@@ -624,7 +627,7 @@ export class QuizPage {
       console.log("in reschedulePreviousWord");
       if (this.lastQuizAlpha && this.lastQuizWord) {
         this.firebaseService.addRemoteQuizWordReset(this.lastQuizAlpha.alpha, null,
-          this.getCurrentUnixTimestamp(), null);
+          this.getCurrentUnixTimestamp(), true, null);
         // I'm not sure if resetting last correct on server side is actually what I want in this case.
         // But it's at least a time-neutral thing to do.
         this.lastQuizWord.last_correct = null; // Might as well reflect what I'm sending.
