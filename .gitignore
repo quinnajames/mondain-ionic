@@ -35,3 +35,5 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 src/app/firebase.config.ts
+
+.sourcemaps
