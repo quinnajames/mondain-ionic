@@ -7,11 +7,12 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding [ngStyle]="{'background-color': pageBackground}">
+<ion-content padding id="content">
+<!-- <ion-content padding [ngStyle]="{'background-color': pageBackground}"> -->
 
   <ion-row>
     <ion-col col-12 col-md-6 col-lg-4>
-      <ion-card class="outer-table translucent" padding>
+      <ion-card id="topCard" class="outer-table translucent" padding>
         <quiz-info [quiz]="dynamicQuiz" [log]="logCount" class="inner-table"></quiz-info>
         <session-stats [stats]="sessionStats" class="inner-table"></session-stats>
       </ion-card>
@@ -30,21 +31,4 @@
     </ion-col>
   </ion-row>
 
-  <!-- <ion-row>
-      <ion-col col-12 col-md-6 col-lg-4>
-        <ion-card class="outer-table translucent" padding>
-          <quiz-info [quiz]="dynamicQuiz" [log]="logCount" class="inner-table"></quiz-info>
-            <h2 class="minimalSolutions" *ngIf="lastQuizAlpha">{{lastQuizAlpha.solutionsStringRep}}</h2>
-        </ion-card>
-
-        <ion-card id="quizCard" class="translucent">
-          <quiz-question *ngIf="nextWord" [question]="nextWord.word"></quiz-question>
-          <span *ngIf="!nextWord" class="quizTwelve">Loading quiz...</span>
-          <input-box [(answer)]="input.answer" [inputSubject]="input$" (answerChanger)="answerOnChange($event)" (isBlankEnter)="handleIncorrect()"></input-box>
-          <solutions-box [solutions]="solutionsGiven"></solutions-box>
-
-        </ion-card>
-
-      </ion-col>
-    </ion-row> -->
 </ion-content>

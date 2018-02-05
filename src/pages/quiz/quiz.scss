@@ -2,28 +2,72 @@ page-quiz {
     html {
         font-size: 10px;
         font-size-adjust: 0.58;
+        font-family: 'Fira Sans', sans-serif;
     }
+    #content {
+      background-color: color($colors, dark);
+    }
+    ion-header, ion-navbar, .toolbar-background, .toolbar-title, .bar-buttons {
+      background-color: color($colors, dark);
+      color: color($colors, light);
+    }
+    #topCard, #quizCard, #bottomCard, #bottomCard h1,
+    #bottomCard h2, #quizCard ion-item, #buttonCard,
+    #topCard h1 {
+      background-color: color($colors, secondary);
+      border: 1px solid color($colors, primary);
+      color: color($colors, light);
+    }
+    #topCard {
+
+    }
+    #quizCard {
+
+    }
+    #quizCard ion-item, #bottomCard h1, #bottomCard h2, #topCard h1 {
+      border: 0px;
+    }
+    .quizQuestion, .quizNine, .quizTwelve, #bottomCard h1 {
+      font-family: 'Encode Sans Expanded', sans-serif;
+      color: color($colors, very-light);
+    }
+    #quizInput {
+      background-color: color($colors, dark);
+      color: color($colors, light);
+      border: 1px solid color($colors, primary);
+    }
+    #bottomCard {
+      font-family: 'Fira Sans', sans-serif;
+    }
+    .solutions {
+        font-size: 120%;
+        font-weight: bold;
+        color: color($colors, very-light);
+    }
+
+
     .mapSize, h1, .headline {
         font-size: 2.7rem;
+        font-family: 'Fira Sans', sans-serif;
     }
     span#logCount {
         font-weight: 600;
+        font-family: 'Fira Sans', sans-serif;
     }
     span.caption {
         font-size: 1.2rem;
         opacity: 0.6;
+        font-family: 'Fira Sans', sans-serif;
     }
     h2.minimalSolutions {
       font-size: 2.2rem;
     }
     h2 {
         font-size: 1.8rem;
-    }
-    .solutions {
-        font-size: 120%;
-        font-weight: bold;
+        font-family: 'Fira Sans', sans-serif;
     }
     #quizAnswer, .centered {
+        font-family: 'Encode Sans Expanded', sans-serif;
         text-align: center;
     }
     .quizSolutions {

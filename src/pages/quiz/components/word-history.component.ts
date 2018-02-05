@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
     selector: 'word-history',
     template: `
-    <ion-card padding *ngIf="lastQuizWord">
+    <ion-card padding *ngIf="lastQuizWord" id="bottomCard">
     <h1>Word History</h1>
     <h2>for {{lastQuizAlpha.alpha}}: <span class="solutions">{{lastQuizAlpha.solutionsStringRep}}</span></h2><br /> {{lastQuizWord.right}} of {{lastQuizWord.right
     + lastQuizWord.wrong}}<br />
