@@ -8,10 +8,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 
-import { HomePage } from './home';
-import { MyApp } from '../../app/app.component';
-import { AuthProvider } from '../../app/shared/providers/auth';
-import { FirebaseService, Utils, AngularFireService } from '../../app/shared/shared';
+import { HomePage } from '../../../pages/home/home';
+import { MyApp } from '../../../app/app.component';
+import { AuthProvider } from '../../../app/shared/providers/auth';
+import { FirebaseService, Utils, AngularFireService } from '../../../app/shared/shared';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 import 'rxjs/add/operator/debounceTime';

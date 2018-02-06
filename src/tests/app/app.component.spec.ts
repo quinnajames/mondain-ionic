@@ -1,8 +1,6 @@
 import { async, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
-import { AuthProvider } from '../app/shared/providers/auth';
 import { IonicStorageModule } from '@ionic/storage';
-import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -12,7 +10,9 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { ErrorHandler } from '@angular/core';
 import { IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-import { FirebaseService, AngularFireService } from './shared/shared';
+import { MyApp } from '../../app/app.component';
+import { AuthProvider } from '../../app/shared/providers/auth';
+import { FirebaseService, AngularFireService } from '../../app/shared/shared';
 import { AngularFireAuth } from 'angularfire2/auth';
 
 describe('MyApp', () => {

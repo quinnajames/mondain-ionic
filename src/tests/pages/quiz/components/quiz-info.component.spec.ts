@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { QuizInfoComponent } from './components';
+import { QuizInfoComponent } from '../../../../pages/quiz/components/components';
 import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 
 @Component({
