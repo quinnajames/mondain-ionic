@@ -94,7 +94,7 @@ export class FirebaseService {
         }
         else {
             return null;
-        }        
+        }
     }
 
     getStats(getFullData = false) {
@@ -126,7 +126,7 @@ export class FirebaseService {
                             14: 0,
                             15: 0
                         }
-                        //console.log(data.val());                    
+                        //console.log(data.val());
                         console.log("querying fulldata")
                         statsObject.total = fulldata.numChildren() - 2;
                         fulldata.forEach((childSnapshot) => {
@@ -350,7 +350,7 @@ export class FirebaseService {
     getWordsDueListener(deadline: number): firebase.database.Query {
         const user = this.authProvider.getCurrentUser();
         if (user) {
-            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").endAt(deadline);
+            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").limitToFirst(3000).endAt(deadline);
         }
         return null;
     }
