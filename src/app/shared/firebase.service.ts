@@ -450,7 +450,7 @@ export class FirebaseService {
     getWordsDueListener(deadline: number): firebase.database.Query {
         const user = this.authProvider.getCurrentUser();
         if (user) {
-            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").endAt(deadline);
+            return firebase.database().ref('/userProfile').child(user.uid).orderByChild("next_scheduled").limitToFirst(3000).endAt(deadline);
         }
         return null;
     }
