@@ -51,7 +51,7 @@ export class QuizPage {
     rescheduletime: number
   }
   rescheduleMoment: moment.Moment;
-  
+
   // solutions
   nextWord: {
     word: string,
@@ -61,10 +61,10 @@ export class QuizPage {
     nextScheduled: number;
   };
   solutionsGiven: string[];
-  
+
   // words
   nextWordDynamic: string;
-  
+
   lastQuizWord: {
     right: number,
     wrong: number,
@@ -320,7 +320,7 @@ export class QuizPage {
 
       console.log("updateDynamicQuiz()")
       if (this.dynamicQuiz) {
-  
+
         this.getIteratorFromEntries();
         let nextword = this.dynamicQuizIterator.next();
         if (nextword.done) {
@@ -434,10 +434,10 @@ export class QuizPage {
       this.rescheduleObj.unixtime, this.rescheduleObj.rescheduletime, lastCorrect)
 
     // get solutions
-    this.updateLastQuizAlphaAndMoveToNext();
+    this.updateLastQuizAlpha();
   }
 
-  updateLastQuizAlphaAndMoveToNext() {
+  updateLastQuizAlpha() {
     this.anagram$.subscribe(subscribeData => {
       let solutionString = "";
       for (var x = 0; x < subscribeData.solutions.length; x++) {
@@ -451,8 +451,8 @@ export class QuizPage {
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-      try { this.loadNextWord() }
-      catch (Exception) { console.log(Exception) };
+      // try { this.loadNextWord() }
+      // catch (Exception) { console.log(Exception) };
     })
   }
 
