@@ -347,6 +347,7 @@ export class QuizPage {
         console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
         nextword = this.dynamicQuizIterator.next();
       }
+      console.log(nextword.done);
       if (!nextword.done) {
         this.nextWordDynamic = nextword.value[0];
         console.log(`${nextword.value[0]} is due: ${nextword.value[1]}`)
@@ -557,15 +558,14 @@ export class QuizPage {
     //addRemoteQuizWord may not be the best name for this function.
 
     // get solutions
-    this.updateLastQuizAlphaAndMoveToNext();
+    this.updateLastQuizAlpha();
   }
 
 
-  /** updateLastQuizAlphaAndMoveToNext makes the current word the
-  previous word, and tries to load the next word. It stringifies the
-  solution set for the previous word so that it can be displayed
-  in the WordHistoryComponent. */
-  updateLastQuizAlphaAndMoveToNext() {
+  /** updateLastQuizAlpha makes the current word the
+  previous word. It stringifies the solution set for the previous word so
+  that it can be displayed in the WordHistoryComponent. */
+  updateLastQuizAlpha() {
     this.anagram$.subscribe(subscribeData => {
 
       let solutionString = "";
@@ -580,8 +580,6 @@ export class QuizPage {
         solutions: subscribeData.solutions,
         solutionsStringRep: solutionString
       };
-      try { this.loadNextWord() }
-      catch (Exception) { console.log(Exception) };
     })
   }
 
